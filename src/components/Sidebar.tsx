@@ -2,15 +2,15 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import {
   Home,
-  Headphones,
+  Brain,
   BarChart3,
   Settings,
   HelpCircle,
   BookOpen,
   Award,
   Heart,
-  Ear,
-  Volume2,
+  Calculator,
+  FileText,
   Map
 } from "lucide-react";
 
@@ -21,7 +21,7 @@ interface SidebarProps {
 
 const menuItems = [
   { id: "home", icon: Home, label: "الرئيسية", group: "الرئيسية" },
-  { id: "exercises", icon: Headphones, label: "التمارين", group: "الرئيسية" },
+  { id: "exercises", icon: Brain, label: "التمارين", group: "الرئيسية" },
   { id: "progress", icon: BarChart3, label: "التقدم", group: "الرئيسية" },
   { id: "settings", icon: Settings, label: "الإعدادات", group: "الرئيسية" },
   { id: "help", icon: HelpCircle, label: "المساعدة", group: "الرئيسية" },
@@ -35,8 +35,8 @@ const guideItems = [
 ];
 
 const resourceItems = [
-  { id: "hearing", icon: Ear, label: "اختبار السمع", group: "الموارد" },
-  { id: "sounds", icon: Volume2, label: "مكتبة الأصوات", group: "الموارد" },
+  { id: "quantitative", icon: Calculator, label: "الكمي", group: "الموارد" },
+  { id: "verbal", icon: FileText, label: "اللفظي", group: "الموارد" },
 ];
 
 const Sidebar = ({ activeSection, onSectionChange }: SidebarProps) => {
@@ -49,7 +49,7 @@ const Sidebar = ({ activeSection, onSectionChange }: SidebarProps) => {
         transition={{ type: "spring", stiffness: 400 }}
       >
         <div className="w-10 h-10 rounded-xl bg-yellow flex items-center justify-center shadow-lg">
-          <Ear className="w-6 h-6 text-yellow-foreground" />
+          <Brain className="w-6 h-6 text-yellow-foreground" />
         </div>
       </motion.div>
 

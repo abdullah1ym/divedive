@@ -15,13 +15,13 @@ import HelpView from "@/components/views/HelpView";
 import LessonsView from "@/components/views/LessonsView";
 import AchievementsView from "@/components/views/AchievementsView";
 import FavoritesView from "@/components/views/FavoritesView";
-import HearingTestView from "@/components/views/HearingTestView";
-import SoundLibraryView from "@/components/views/SoundLibraryView";
+import QuantitativeView from "@/components/views/QuantitativeView";
+import VerbalView from "@/components/views/VerbalView";
 import SkillMapView from "@/components/views/SkillMapView";
 
 const Index = () => {
   const [activeSection, setActiveSection] = useState("home");
-  const [activeCategory, setActiveCategory] = useState("tones");
+  const [activeCategory, setActiveCategory] = useState("quantitative");
   const [adminOpen, setAdminOpen] = useState(false);
   const [selectedExercise, setSelectedExercise] = useState<Exercise | null>(null);
   const [exerciseModalOpen, setExerciseModalOpen] = useState(false);
@@ -90,10 +90,10 @@ const Index = () => {
               <AchievementsView />
             ) : activeSection === "favorites" ? (
               <FavoritesView />
-            ) : activeSection === "hearing" ? (
-              <HearingTestView />
-            ) : activeSection === "sounds" ? (
-              <SoundLibraryView />
+            ) : activeSection === "quantitative" ? (
+              <QuantitativeView />
+            ) : activeSection === "verbal" ? (
+              <VerbalView />
             ) : null}
           </div>
         </main>

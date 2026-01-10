@@ -14,7 +14,7 @@ const LessonsView = () => {
         animate={{ opacity: 1, y: 0 }}
       >
         <h1 className="text-3xl font-bold mb-2">الدروس</h1>
-        <p className="text-muted-foreground">تعلم أساسيات التدريب السمعي خطوة بخطوة</p>
+        <p className="text-muted-foreground">تعلم أساسيات اختبار القدرات خطوة بخطوة</p>
       </motion.div>
 
       {/* Progress Summary */}

@@ -1,4 +1,4 @@
-import { Search, Star, MoreVertical, Ear } from "lucide-react";
+import { Search, Star, MoreVertical, Brain } from "lucide-react";
 import { motion } from "framer-motion";
 
 interface HeaderProps {
@@ -10,8 +10,8 @@ const Header = ({ onManageGuide }: HeaderProps) => {
     <header className="h-16 bg-card/50 backdrop-blur-md border-b border-border flex items-center justify-between px-6">
       {/* Right - Breadcrumb (RTL) */}
       <div className="flex items-center gap-2 text-sm">
-        <Ear className="w-4 h-4 text-turquoise" />
-        <span className="text-muted-foreground">التدريب</span>
+        <Brain className="w-4 h-4 text-turquoise" />
+        <span className="text-muted-foreground">القدرات</span>
         <span className="text-muted-foreground">/</span>
         <span className="font-semibold">التمارين</span>
       </div>
@@ -27,7 +27,7 @@ const Header = ({ onManageGuide }: HeaderProps) => {
           <Search className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <input
             type="text"
-            placeholder="ابحث عن تمرين..."
+            placeholder="ابحث عن سؤال أو تمرين..."
             className="w-full h-10 pr-11 pl-4 bg-muted rounded-xl text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-right"
           />
         </div>

@@ -1,4 +1,4 @@
-import { Play, Volume2 } from "lucide-react";
+import { Play, Brain } from "lucide-react";
 import { motion } from "framer-motion";
 
 const HeroSection = () => {
@@ -27,7 +27,7 @@ const HeroSection = () => {
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.3 }}
           >
-            مقدمة في التدريب السمعي
+            مقدمة في اختبار القدرات
           </motion.h1>
 
           <motion.p
@@ -36,7 +36,7 @@ const HeroSection = () => {
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.4 }}
           >
-            هذا التمرين يقدم لك نظرة عامة على برنامج التدريب السمعي لمستخدمي زراعة القوقعة. نبدأ بالأساسيات ونتدرج للمستويات المتقدمة.
+            تعرف على اختبار القدرات العامة وأقسامه الرئيسية: الكمي واللفظي. نبدأ بالأساسيات ونتدرج للمستويات المتقدمة.
           </motion.p>
 
           <motion.div
@@ -45,7 +45,7 @@ const HeroSection = () => {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.5 }}
           >
-            <span>٥ دقائق</span>
+            <span>١٠ دقائق</span>
             <span>•</span>
             <span>تمهيدي</span>
             <span>•</span>
@@ -63,7 +63,7 @@ const HeroSection = () => {
               المستوى الأول
             </span>
             <span className="px-3 py-1 bg-coral text-coral-foreground rounded-full text-xs font-semibold">
-              أساسيات السمع
+              أساسيات القدرات
             </span>
             <span className="px-3 py-1 bg-muted text-foreground rounded-full text-xs font-semibold">
               ١ من ٤
@@ -80,11 +80,11 @@ const HeroSection = () => {
             transition={{ delay: 0.7 }}
           >
             <Play className="w-5 h-5 fill-current" />
-            ابدأ التمرين
+            ابدأ التدريب
           </motion.button>
         </div>
 
-        {/* Audio Preview */}
+        {/* Preview */}
         <motion.div
           className="relative w-[400px] h-[320px]"
           initial={{ opacity: 0, x: -20 }}
@@ -99,13 +99,13 @@ const HeroSection = () => {
                 animate={{ scale: [1, 1.1, 1] }}
                 transition={{ duration: 2, repeat: Infinity }}
               >
-                <Volume2 className="w-8 h-8 text-turquoise-foreground" />
+                <Brain className="w-8 h-8 text-turquoise-foreground" />
               </motion.div>
-              <p className="text-sm text-muted-foreground">معاينة صوتية</p>
+              <p className="text-sm text-muted-foreground">تدريب ذهني</p>
             </div>
           </div>
 
-          {/* Decorative sound waves */}
+          {/* Decorative elements */}
           <div className="absolute top-4 left-4 w-3 h-3 rounded-full bg-foreground/20 animate-float" />
           <div className="absolute top-12 left-12 w-2 h-2 rounded-full bg-foreground/15 animate-float" style={{ animationDelay: "0.5s" }} />
           <div className="absolute bottom-8 left-8 w-4 h-4 rounded-full bg-foreground/10 animate-float" style={{ animationDelay: "1s" }} />

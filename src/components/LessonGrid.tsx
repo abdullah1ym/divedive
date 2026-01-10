@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Play, Info, Volume2, Clock } from "lucide-react";
+import { Play, Info, Brain, Clock } from "lucide-react";
 import { useExercises, Exercise } from "@/contexts/ExercisesContext";
 
 interface LessonGridProps {
@@ -8,11 +8,11 @@ interface LessonGridProps {
 }
 
 const categoryNames: Record<string, string> = {
-  "tones": "تمييز النغمات",
-  "words": "الكلمات والمقاطع",
-  "sentences": "الجمل والحوارات",
-  "environment": "الأصوات البيئية",
-  "advanced": "التدريب المتقدم",
+  "quantitative": "الكمي - حساب",
+  "algebra": "الكمي - جبر",
+  "verbal": "اللفظي - استيعاب",
+  "analogy": "اللفظي - تناظر",
+  "mixed": "اختبار شامل",
 };
 
 const difficultyLabels: Record<string, string> = {
@@ -85,7 +85,7 @@ const LessonGrid = ({ category, onExerciseClick }: LessonGridProps) => {
             {/* Header */}
             <div className="flex items-start justify-between mb-4">
               <div className="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center group-hover:bg-primary/30 transition-colors">
-                <Volume2 className="w-6 h-6 text-primary" />
+                <Brain className="w-6 h-6 text-primary" />
               </div>
               <span className={`px-3 py-1 rounded-full text-xs font-semibold ${difficultyColors[exercise.difficulty]}`}>
                 {difficultyLabels[exercise.difficulty]}
@@ -121,7 +121,7 @@ const LessonGrid = ({ category, onExerciseClick }: LessonGridProps) => {
 
         {exercises.length === 0 && (
           <div className="col-span-full text-center py-12 text-muted-foreground">
-            <Volume2 className="w-12 h-12 mx-auto mb-4 opacity-50" />
+            <Brain className="w-12 h-12 mx-auto mb-4 opacity-50" />
             <p>لا توجد تمارين في هذا القسم حالياً</p>
             <p className="text-sm">سيتم إضافة تمارين جديدة قريباً</p>
           </div>

@@ -7,84 +7,84 @@
 
 @layer base {
   :root {
-    /* Ocean Theme - Deep Sea Colors */
-    --background: 230 70% 12%;
-    --foreground: 200 100% 98%;
+    /* Green & Purple Theme */
+    --background: 220 50% 8%;
+    --foreground: 0 0% 96%;
 
-    --card: 230 60% 18%;
-    --card-foreground: 200 100% 98%;
+    --card: 220 45% 13%;
+    --card-foreground: 0 0% 96%;
 
-    --popover: 230 60% 18%;
-    --popover-foreground: 200 100% 98%;
+    --popover: 220 45% 13%;
+    --popover-foreground: 0 0% 96%;
 
-    /* Primary - Ocean Blue */
-    --primary: 220 85% 55%;
-    --primary-foreground: 200 100% 98%;
+    /* Primary - Vibrant Green */
+    --primary: 150 70% 50%;
+    --primary-foreground: 220 50% 8%;
 
-    /* Secondary - Deeper Blue */
-    --secondary: 225 65% 25%;
-    --secondary-foreground: 200 100% 98%;
+    /* Secondary - Navy */
+    --secondary: 220 45% 18%;
+    --secondary-foreground: 0 0% 96%;
 
-    /* Muted - Deep Navy */
-    --muted: 228 50% 20%;
-    --muted-foreground: 210 30% 65%;
+    /* Muted */
+    --muted: 220 40% 15%;
+    --muted-foreground: 220 20% 55%;
 
-    /* Accent - Coral Pink */
-    --accent: 350 80% 65%;
-    --accent-foreground: 200 100% 98%;
+    /* Accent - True Purple */
+    --accent: 260 60% 60%;
+    --accent-foreground: 0 0% 98%;
 
-    /* Coral */
-    --coral: 350 80% 65%;
-    --coral-foreground: 200 100% 98%;
+    /* Coral - Purple-Pink */
+    --coral: 310 60% 60%;
+    --coral-foreground: 0 0% 98%;
 
-    /* Turquoise */
-    --turquoise: 175 70% 50%;
-    --turquoise-foreground: 230 70% 12%;
+    /* Turquoise - True Purple */
+    --turquoise: 260 60% 60%;
+    --turquoise-foreground: 0 0% 98%;
 
-    /* Yellow - Sunny */
-    --yellow: 45 95% 60%;
-    --yellow-foreground: 230 70% 12%;
+    /* Yellow - True Purple */
+    --yellow: 255 55% 58%;
+    --yellow-foreground: 0 0% 98%;
 
-    /* Mint Green */
-    --mint: 155 60% 55%;
-    --mint-foreground: 230 70% 12%;
+    /* Mint - True Purple */
+    --mint: 258 55% 55%;
+    --mint-foreground: 0 0% 98%;
 
-    /* Purple - Jellyfish */
-    --jellyfish: 280 60% 65%;
-    --jellyfish-foreground: 200 100% 98%;
+    /* Jellyfish - True Purple */
+    --jellyfish: 262 60% 62%;
+    --jellyfish-foreground: 0 0% 98%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 65% 55%;
+    --destructive-foreground: 0 0% 98%;
 
-    --border: 225 50% 25%;
-    --input: 225 50% 25%;
-    --ring: 220 85% 55%;
+    --border: 220 40% 20%;
+    --input: 220 40% 20%;
+    --ring: 150 70% 50%;
 
     --radius: 1rem;
 
     /* Gradients */
-    --gradient-ocean: linear-gradient(180deg, hsl(225 75% 45%) 0%, hsl(230 70% 12%) 100%);
-    --gradient-card: linear-gradient(135deg, hsl(230 60% 22%) 0%, hsl(230 60% 16%) 100%);
-    --gradient-coral: linear-gradient(135deg, hsl(350 80% 65%) 0%, hsl(340 75% 55%) 100%);
-    --gradient-turquoise: linear-gradient(135deg, hsl(175 70% 50%) 0%, hsl(185 65% 45%) 100%);
-    --gradient-yellow: linear-gradient(135deg, hsl(45 95% 60%) 0%, hsl(35 90% 55%) 100%);
-    --gradient-mint: linear-gradient(135deg, hsl(155 60% 55%) 0%, hsl(165 55% 45%) 100%);
-    --gradient-jellyfish: linear-gradient(135deg, hsl(280 60% 65%) 0%, hsl(270 55% 55%) 100%);
+    --gradient-ocean: linear-gradient(135deg, hsl(150 70% 45%) 0%, hsl(260 60% 55%) 100%);
+    --gradient-card: linear-gradient(135deg, hsl(220 45% 15%) 0%, hsl(220 45% 11%) 100%);
+    --gradient-coral: linear-gradient(135deg, hsl(260 60% 60%) 0%, hsl(255 55% 55%) 100%);
+    --gradient-turquoise: linear-gradient(135deg, hsl(260 60% 60%) 0%, hsl(255 55% 55%) 100%);
+    --gradient-yellow: linear-gradient(135deg, hsl(255 55% 58%) 0%, hsl(250 50% 55%) 100%);
+    --gradient-mint: linear-gradient(135deg, hsl(258 55% 55%) 0%, hsl(252 50% 52%) 100%);
+    --gradient-jellyfish: linear-gradient(135deg, hsl(262 60% 62%) 0%, hsl(256 55% 58%) 100%);
 
     /* Shadows */
-    --shadow-glow: 0 0 40px hsl(220 85% 55% / 0.3);
-    --shadow-card: 0 8px 32px hsl(230 70% 8% / 0.5);
-    --shadow-button: 0 4px 16px hsl(230 70% 8% / 0.4);
+    --shadow-glow: 0 0 30px hsl(150 70% 45% / 0.25);
+    --shadow-card: 0 8px 24px hsl(220 50% 4% / 0.5);
+    --shadow-button: 0 4px 16px hsl(150 70% 45% / 0.2);
 
     /* Sidebar */
-    --sidebar-background: 230 65% 10%;
-    --sidebar-foreground: 200 100% 98%;
-    --sidebar-primary: 220 85% 55%;
-    --sidebar-primary-foreground: 200 100% 98%;
-    --sidebar-accent: 230 60% 18%;
-    --sidebar-accent-foreground: 200 100% 98%;
-    --sidebar-border: 225 50% 20%;
-    --sidebar-ring: 220 85% 55%;
+    --sidebar-background: 220 50% 6%;
+    --sidebar-foreground: 0 0% 96%;
+    --sidebar-primary: 150 70% 50%;
+    --sidebar-primary-foreground: 220 50% 8%;
+    --sidebar-accent: 220 45% 14%;
+    --sidebar-accent-foreground: 0 0% 96%;
+    --sidebar-border: 220 40% 18%;
+    --sidebar-ring: 150 70% 50%;
   }
 }
 
