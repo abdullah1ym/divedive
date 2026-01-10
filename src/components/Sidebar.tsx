@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { motion } from "framer-motion";
 import {
   Home,
@@ -13,6 +12,7 @@ import {
   FileText,
   Map
 } from "lucide-react";
+import Logo from "./Logo";
 
 interface SidebarProps {
   activeSection: string;
@@ -49,7 +49,7 @@ const Sidebar = ({ activeSection, onSectionChange }: SidebarProps) => {
         transition={{ type: "spring", stiffness: 400 }}
       >
         <div className="w-10 h-10 rounded-xl bg-yellow flex items-center justify-center shadow-lg">
-          <Brain className="w-6 h-6 text-yellow-foreground" />
+          <Logo className="w-6 h-6 text-yellow-foreground" />
         </div>
       </motion.div>
 

@@ -1,10 +1,11 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { Check, Lock, Play, Star, Volume2, Music, Ear, Type, MessageCircle, MessageSquare, Users, TreePine, Radio, Award, X } from "lucide-react";
-import { useSkills, SkillNode } from "@/contexts/SkillsContext";
+import { createPortal } from "react-dom";
+import { Check, Lock, Play, Star, Volume2, Music, Ear, Type, MessageCircle, MessageSquare, Users, TreePine, Radio, Award, X, Calculator, BookOpen } from "lucide-react";
+import { useSkills, SkillNode, MapType } from "@/contexts/SkillsContext";
 
 interface ProgressMapProps {
   open: boolean;
-  onOpenChange: (open: boolean) => void;
+  onClose: () => void;
 }
 
 const iconMap: Record<string, React.ReactNode> = {
@@ -58,16 +59,27 @@ const getNodeStyles = (node: SkillNode) => {
   }
 };
 
-const ProgressMap = ({ open, onOpenChange }: ProgressMapProps) => {
-  const { skills: skillNodes } = useSkills();
+const ProgressMap = ({ open, onClose }: ProgressMapProps) => {
+  const { skills: skillNodes, activeMap, setActiveMap } = useSkills();
   const completedCount = skillNodes.filter(n => n.status === "completed").length;
   const totalCount = skillNodes.length;
 
-  return (
+  const mapTitle = activeMap === "math" ? "خريطة الكمي" : "خريطة اللفظي";
+
+  return createPortal(
     <AnimatePresence>
       {open && (
-        <motion.div 
-          className="fixed inset-0 z-50 bg-background"
+        <motion.div
+          className="bg-background overflow-hidden"
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: '5rem',
+            bottom: 0,
+            height: '100vh',
+            zIndex: 40,
+          }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -75,23 +87,63 @@ const ProgressMap = ({ open, onOpenChange }: ProgressMapProps) => {
           {/* Header */}
           <div className="absolute top-0 left-0 right-0 z-10 flex items-center justify-between p-6 bg-gradient-to-b from-background via-background/80 to-transparent">
             <div className="flex items-center gap-3">
-              <Award className="w-6 h-6 text-yellow" />
-              <h1 className="text-2xl font-bold">شجرة المهارات</h1>
+              {activeMap === "math" ? (
+                <Calculator className="w-6 h-6 text-yellow" />
+              ) : (
+                <BookOpen className="w-6 h-6 text-yellow" />
+              )}
+              <h1 className="text-2xl font-bold">{mapTitle}</h1>
               <span className="text-sm text-muted-foreground">
                 {completedCount}/{totalCount} مهارة مكتملة
               </span>
             </div>
-            <motion.button
-              onClick={() => onOpenChange(false)}
-              className="p-2 rounded-full bg-card hover:bg-muted transition-colors"
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
-            >
-              <X className="w-5 h-5" />
-            </motion.button>
+            <div className="flex items-center gap-3">
+              {/* Map Toggle Button */}
+              <motion.div
+                className="flex items-center bg-card rounded-full p-1 gap-1"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+              >
+                <motion.button
+                  onClick={() => setActiveMap("math")}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all ${
+                    activeMap === "math"
+                      ? "bg-primary text-primary-foreground"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  <Calculator className="w-4 h-4" />
+                  الكمي
+                </motion.button>
+                <motion.button
+                  onClick={() => setActiveMap("verbal")}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all ${
+                    activeMap === "verbal"
+                      ? "bg-primary text-primary-foreground"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  <BookOpen className="w-4 h-4" />
+                  اللفظي
+                </motion.button>
+              </motion.div>
+
+              <motion.button
+                onClick={onClose}
+                className="p-2 rounded-full bg-card hover:bg-muted transition-colors"
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+              >
+                <X className="w-5 h-5" />
+              </motion.button>
+            </div>
           </div>
           
-          <div className="absolute inset-0 pt-20 bg-gradient-to-b from-primary/30 via-background to-turquoise/10">
+          <div className="absolute inset-0 bg-gradient-to-b from-turquoise/15 via-background to-primary/15">
             {/* Grid pattern background */}
             <div 
               className="absolute inset-0 opacity-10"
@@ -268,7 +320,8 @@ const ProgressMap = ({ open, onOpenChange }: ProgressMapProps) => {
           </div>
         </motion.div>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 };
 
