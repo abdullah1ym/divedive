@@ -110,8 +110,8 @@ const SidebarButton = ({ icon: Icon, label, isActive, onClick }: SidebarButtonPr
     <motion.button
       onClick={onClick}
       className={`relative w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-300 group ${
-        isActive 
-          ? "bg-primary text-primary-foreground shadow-lg" 
+        isActive
+          ? "bg-primary text-primary-foreground shadow-lg"
           : "text-muted-foreground hover:text-foreground hover:bg-sidebar-accent"
       }`}
       whileHover={{ scale: 1.05 }}
