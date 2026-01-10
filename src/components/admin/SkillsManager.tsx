@@ -93,7 +93,7 @@ const SkillsManager = () => {
   };
 
   const handleReset = () => {
-    localStorage.removeItem("deepdive-skills");
+    localStorage.removeItem("divedive-skills");
     window.location.reload();
   };
 

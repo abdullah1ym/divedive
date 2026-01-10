@@ -89,7 +89,7 @@ const AdminPanel = ({ open, onOpenChange }: AdminPanelProps) => {
 
   const resetToDefaults = () => {
     if (confirm("إعادة تعيين جميع المهارات؟ سيتم حذف أي مهارات مخصصة.")) {
-      localStorage.removeItem("deepdive-skills");
+      localStorage.removeItem("divedive-skills");
       window.location.reload();
     }
   };
