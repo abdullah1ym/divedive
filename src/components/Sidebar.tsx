@@ -22,13 +22,10 @@ interface SidebarProps {
 const menuItems = [
   { id: "home", icon: Home, label: "الرئيسية", group: "الرئيسية" },
   { id: "exercises", icon: Brain, label: "التمارين", group: "الرئيسية" },
-  { id: "progress", icon: BarChart3, label: "التقدم", group: "الرئيسية" },
-  { id: "settings", icon: Settings, label: "الإعدادات", group: "الرئيسية" },
-  { id: "help", icon: HelpCircle, label: "المساعدة", group: "الرئيسية" },
+  { id: "lessons", icon: BookOpen, label: "الدروس", group: "الرئيسية" },
 ];
 
 const guideItems = [
-  { id: "lessons", icon: BookOpen, label: "الدروس", group: "التعلم" },
   { id: "skillmap", icon: Map, label: "خريطة المهارات", group: "التعلم" },
   { id: "achievements", icon: Award, label: "الإنجازات", group: "التعلم" },
   { id: "favorites", icon: Heart, label: "المفضلة", group: "التعلم" },
@@ -37,6 +34,12 @@ const guideItems = [
 const resourceItems = [
   { id: "quantitative", icon: Calculator, label: "الكمي", group: "الموارد" },
   { id: "verbal", icon: FileText, label: "اللفظي", group: "الموارد" },
+];
+
+const systemItems = [
+  { id: "settings", icon: Settings, label: "الإعدادات", group: "النظام" },
+  { id: "progress", icon: BarChart3, label: "التقدم", group: "النظام" },
+  { id: "help", icon: HelpCircle, label: "المساعدة", group: "النظام" },
 ];
 
 const Sidebar = ({ activeSection, onSectionChange }: SidebarProps) => {
@@ -82,9 +85,26 @@ const Sidebar = ({ activeSection, onSectionChange }: SidebarProps) => {
       </div>
 
       {/* Resources Section */}
-      <div className="flex flex-col items-center gap-1">
+      <div className="flex flex-col items-center gap-1 mb-6">
         <span className="text-[10px] text-muted-foreground font-semibold tracking-wider mb-2">الموارد</span>
         {resourceItems.map((item) => (
+          <SidebarButton
+            key={item.id}
+            icon={item.icon}
+            label={item.label}
+            isActive={activeSection === item.id}
+            onClick={() => onSectionChange(item.id)}
+          />
+        ))}
+      </div>
+
+      {/* Spacer to push system items to bottom */}
+      <div className="flex-1" />
+
+      {/* System Section */}
+      <div className="flex flex-col items-center gap-1">
+        <span className="text-[10px] text-muted-foreground font-semibold tracking-wider mb-2">النظام</span>
+        {systemItems.map((item) => (
           <SidebarButton
             key={item.id}
             icon={item.icon}
