@@ -166,6 +166,13 @@ export const ExercisesProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const getExercisesByCategory = (category: string) => {
+    // Handle "all" categories
+    if (category === "quantitative-all") {
+      return exercises.filter(e => e.category === "quantitative" || e.category === "algebra");
+    }
+    if (category === "verbal-all") {
+      return exercises.filter(e => e.category === "verbal" || e.category === "analogy");
+    }
     return exercises.filter(e => e.category === category);
   };
 

@@ -15,10 +15,12 @@ const mainSets = [
 
 const supersets: Record<string, { id: string; label: string; icon: typeof Calculator; color: string }[]> = {
   quantitative: [
+    { id: "quantitative-all", label: "الكل", icon: Calculator, color: "coral" },
     { id: "quantitative", label: "حساب", icon: Calculator, color: "coral" },
     { id: "algebra", label: "جبر", icon: Shapes, color: "primary" },
   ],
   verbal: [
+    { id: "verbal-all", label: "الكل", icon: FileText, color: "turquoise" },
     { id: "verbal", label: "استيعاب", icon: FileText, color: "turquoise" },
     { id: "analogy", label: "تناظر", icon: BarChart3, color: "mint" },
   ],
