@@ -10,7 +10,7 @@ interface CategoryTabsProps {
 const mainSets = [
   { id: "quantitative", label: "الكمي", icon: Calculator, color: "coral" },
   { id: "verbal", label: "اللفظي", icon: FileText, color: "turquoise" },
-  { id: "mixed", label: "اختبار شامل", icon: Award, color: "jellyfish" },
+  { id: "mixed", label: "اختبار شامل", icon: Award, color: "primary" },
 ];
 
 const supersets: Record<string, { id: string; label: string; icon: typeof Calculator; color: string }[]> = {
@@ -80,19 +80,28 @@ const CategoryTabs = ({ activeCategory, onCategoryChange }: CategoryTabsProps) =
           >
             {mainSets.map((set, index) => {
               const Icon = set.icon;
+              // Check if this main set is active (either directly or through its supersets)
+              const isActive = activeCategory === set.id ||
+                (supersets[set.id] && supersets[set.id].some(s => s.id === activeCategory));
 
               return (
                 <motion.button
                   key={set.id}
                   onClick={() => handleMainSetClick(set.id)}
-                  className="flex items-center gap-3 px-8 py-3 rounded-xl font-semibold text-sm transition-all whitespace-nowrap bg-card text-muted-foreground hover:text-foreground hover:bg-muted"
+                  className={`flex items-center gap-3 px-8 py-3 rounded-xl font-semibold text-sm transition-all whitespace-nowrap ${
+                    isActive
+                      ? `${gradientClasses[set.color]} shadow-lg`
+                      : "bg-card text-muted-foreground hover:text-foreground hover:bg-muted"
+                  }`}
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: index * 0.02 }}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                 >
-                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${iconBgClasses[set.color]}`}>
+                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
+                    isActive ? "bg-foreground/20" : iconBgClasses[set.color]
+                  }`}>
                     <Icon className="w-4 h-4" />
                   </div>
                   {set.label}

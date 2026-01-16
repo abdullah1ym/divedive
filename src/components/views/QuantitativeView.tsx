@@ -1,18 +1,34 @@
-import { motion } from "framer-motion";
-import { Calculator, Play, CheckCircle, Target, TrendingUp } from "lucide-react";
 import { useState } from "react";
-
-const topics = [
-  { id: 1, name: "الحساب", questions: 45, progress: 80 },
-  { id: 2, name: "الجبر", questions: 38, progress: 65 },
-  { id: 3, name: "الهندسة", questions: 42, progress: 40 },
-  { id: 4, name: "الإحصاء والاحتمالات", questions: 30, progress: 25 },
-  { id: 5, name: "المقارنة والتحليل", questions: 35, progress: 0 },
-];
+import { motion, AnimatePresence } from "framer-motion";
+import { Calculator, Target, TrendingUp, CheckCircle, Brain } from "lucide-react";
+import { useUnits } from "@/contexts/UnitsContext";
+import { LearningUnit } from "@/types/units";
+import UnitCard from "@/components/units/UnitCard";
+import UnitView from "@/components/units/UnitView";
 
 const QuantitativeView = () => {
-  const totalQuestions = topics.reduce((sum, t) => sum + t.questions, 0);
-  const avgProgress = Math.round(topics.reduce((sum, t) => sum + t.progress, 0) / topics.length);
+  const { getUnitsByCategory, getUnitProgress, getOverallStats } = useUnits();
+  const [selectedUnit, setSelectedUnit] = useState<LearningUnit | null>(null);
+
+  const units = getUnitsByCategory("quantitative");
+  const stats = getOverallStats();
+
+  // Calculate quantitative-specific stats
+  const quantUnits = units.length;
+  const totalQuestions = units.reduce((sum, u) => sum + u.totalQuestions, 0);
+  const progressValues = units.map(u => getUnitProgress(u.id)?.overallProgress || 0);
+  const avgProgress = progressValues.length > 0
+    ? Math.round(progressValues.reduce((a, b) => a + b, 0) / progressValues.length)
+    : 0;
+
+  if (selectedUnit) {
+    return (
+      <UnitView
+        unit={selectedUnit}
+        onBack={() => setSelectedUnit(null)}
+      />
+    );
+  }
 
   return (
     <div className="space-y-6 max-w-3xl mx-auto">
@@ -49,58 +65,39 @@ const QuantitativeView = () => {
           <div className="w-12 h-12 mx-auto mb-2 rounded-xl bg-mint/20 flex items-center justify-center">
             <CheckCircle className="w-6 h-6 text-mint" />
           </div>
-          <p className="text-2xl font-bold">{topics.length}</p>
-          <p className="text-sm text-muted-foreground">مواضيع</p>
+          <p className="text-2xl font-bold">{quantUnits}</p>
+          <p className="text-sm text-muted-foreground">وحدة</p>
         </div>
       </motion.div>
 
-      {/* Topics */}
+      {/* Units Grid */}
       <motion.div
-        className="space-y-4"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
       >
-        <h2 className="text-xl font-bold">المواضيع</h2>
-        {topics.map((topic, index) => (
-          <motion.div
-            key={topic.id}
-            className="bg-card rounded-2xl p-5 hover:bg-muted/50 transition-colors cursor-pointer group"
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.3 + index * 0.1 }}
-            whileHover={{ scale: 1.01 }}
-          >
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center group-hover:bg-primary/30 transition-colors">
-                  <Calculator className="w-6 h-6 text-primary" />
-                </div>
-                <div>
-                  <h3 className="font-bold text-lg">{topic.name}</h3>
-                  <p className="text-sm text-muted-foreground">{topic.questions} سؤال</p>
-                </div>
-              </div>
-              <motion.button
-                className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-xl font-medium text-sm"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <Play className="w-4 h-4 fill-current" />
-                تدريب
-              </motion.button>
+        <h2 className="text-xl font-bold mb-4">الوحدات التعليمية</h2>
+
+        {units.length === 0 ? (
+          <div className="bg-card rounded-2xl p-8 text-center">
+            <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-muted flex items-center justify-center">
+              <Brain className="w-8 h-8 text-muted-foreground" />
             </div>
-            <div className="flex items-center gap-3">
-              <div className="flex-1 h-2 bg-muted rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-turquoise rounded-full transition-all"
-                  style={{ width: `${topic.progress}%` }}
-                />
-              </div>
-              <span className="text-sm font-medium text-muted-foreground w-12">{topic.progress}٪</span>
-            </div>
-          </motion.div>
-        ))}
+            <p className="text-muted-foreground">سيتم إضافة الوحدات قريباً</p>
+          </div>
+        ) : (
+          <div className="grid gap-4">
+            {units.map((unit, index) => (
+              <UnitCard
+                key={unit.id}
+                unit={unit}
+                progress={getUnitProgress(unit.id)}
+                onClick={() => setSelectedUnit(unit)}
+                index={index}
+              />
+            ))}
+          </div>
+        )}
       </motion.div>
 
       {/* Quick Practice */}
@@ -108,7 +105,7 @@ const QuantitativeView = () => {
         className="bg-gradient-to-br from-primary/20 to-turquoise/20 rounded-2xl p-8 text-center"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.7 }}
+        transition={{ delay: 0.4 }}
       >
         <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-primary/20 flex items-center justify-center">
           <Calculator className="w-8 h-8 text-primary" />

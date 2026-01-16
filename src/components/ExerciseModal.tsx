@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Volume2, Play, CheckCircle, XCircle, RotateCcw, ChevronLeft } from "lucide-react";
-import { Exercise, Question } from "@/contexts/ExercisesContext";
+import { X, Volume2, Play, CheckCircle, XCircle, RotateCcw, ChevronLeft, Zap } from "lucide-react";
+import { Exercise } from "@/contexts/ExercisesContext";
+import { useUserProfile } from "@/contexts/UserProfileContext";
 
 interface ExerciseModalProps {
   exercise: Exercise | null;
@@ -16,6 +17,16 @@ const ExerciseModal = ({ exercise, open, onClose }: ExerciseModalProps) => {
   const [score, setScore] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [completed, setCompleted] = useState(false);
+  const [xpEarned, setXpEarned] = useState(0);
+
+  const { recordAnswer, completeExercise } = useUserProfile();
+  const questionStartTime = useRef<number>(Date.now());
+
+  useEffect(() => {
+    if (open && !completed) {
+      questionStartTime.current = Date.now();
+    }
+  }, [currentQuestion, open, completed]);
 
   if (!exercise) return null;
 
@@ -33,7 +44,23 @@ const ExerciseModal = ({ exercise, open, onClose }: ExerciseModalProps) => {
     if (showResult) return;
     setSelectedAnswer(index);
     setShowResult(true);
-    if (index === question.correctAnswer) {
+
+    const isCorrect = index === question.correctAnswer;
+    const timeSpent = Math.round((Date.now() - questionStartTime.current) / 60000);
+
+    // Pass question data for flashcard creation if wrong
+    recordAnswer(isCorrect, timeSpent, {
+      prompt: question.prompt,
+      options: question.options,
+      correctAnswer: question.correctAnswer,
+      exerciseTitle: exercise.title,
+      exerciseType: exercise.type,
+    }, index);
+
+    const xpGained = isCorrect ? 10 : 2;
+    setXpEarned(prev => prev + xpGained);
+
+    if (isCorrect) {
       setScore(score + 1);
     }
   };
@@ -41,6 +68,8 @@ const ExerciseModal = ({ exercise, open, onClose }: ExerciseModalProps) => {
   const handleNext = () => {
     if (isLastQuestion) {
       setCompleted(true);
+      completeExercise();
+      setXpEarned(prev => prev + 25);
     } else {
       setCurrentQuestion(currentQuestion + 1);
       setSelectedAnswer(null);
@@ -54,6 +83,7 @@ const ExerciseModal = ({ exercise, open, onClose }: ExerciseModalProps) => {
     setShowResult(false);
     setScore(0);
     setCompleted(false);
+    setXpEarned(0);
   };
 
   const handleClose = () => {
@@ -240,7 +270,7 @@ const ExerciseModal = ({ exercise, open, onClose }: ExerciseModalProps) => {
                   <h3 className="text-2xl font-bold mb-2">أحسنت!</h3>
                   <p className="text-muted-foreground mb-6">لقد أكملت التمرين</p>
 
-                  <div className="bg-muted/50 rounded-xl p-6 mb-6">
+                  <div className="bg-muted/50 rounded-xl p-6 mb-4">
                     <p className="text-4xl font-bold text-turquoise mb-2">
                       {score}/{exercise.questions.length}
                     </p>
@@ -252,6 +282,16 @@ const ExerciseModal = ({ exercise, open, onClose }: ExerciseModalProps) => {
                         : "حاول مرة أخرى للتحسن"}
                     </p>
                   </div>
+
+                  <motion.div
+                    className="bg-gradient-to-r from-yellow/20 to-orange-500/20 rounded-xl p-4 mb-6 flex items-center justify-center gap-3"
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.3 }}
+                  >
+                    <Zap className="w-6 h-6 text-yellow" />
+                    <span className="text-xl font-bold text-yellow">+{xpEarned} XP</span>
+                  </motion.div>
 
                   <div className="flex gap-3">
                     <motion.button

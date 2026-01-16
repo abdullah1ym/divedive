@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 const HeroSection = () => {
   return (
     <motion.div
-      className="relative rounded-2xl overflow-hidden bg-card dark:bg-none dark:bg-gradient-to-br dark:from-primary/20 dark:to-secondary h-full"
+      className="relative rounded-2xl overflow-hidden bg-gradient-to-br from-primary/10 to-secondary/10 dark:from-primary/20 dark:to-secondary h-full"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
@@ -91,8 +91,8 @@ const HeroSection = () => {
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.3, duration: 0.6 }}
         >
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent dark:to-secondary/80 z-10 dark:block hidden" />
-          <div className="w-full h-full bg-white dark:bg-gradient-to-br dark:from-primary/40 dark:to-turquoise/30 flex items-center justify-center">
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent to-background/80 z-10" />
+          <div className="w-full h-full bg-gradient-to-br from-primary/20 to-turquoise/20 dark:from-primary/40 dark:to-turquoise/30 flex items-center justify-center">
             <div className="text-center">
               <motion.div
                 className="w-20 h-20 mx-auto mb-4 rounded-full gradient-turquoise flex items-center justify-center"

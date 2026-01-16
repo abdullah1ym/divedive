@@ -7,6 +7,8 @@ import { ThemeProvider } from "next-themes";
 import { SkillsProvider } from "@/contexts/SkillsContext";
 import { ExercisesProvider } from "@/contexts/ExercisesContext";
 import { LessonsProvider } from "@/contexts/LessonsContext";
+import { UserProfileProvider } from "@/contexts/UserProfileContext";
+import { UnitsProvider } from "@/contexts/UnitsContext";
 import Index from "./pages/Index";
 import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
@@ -16,24 +18,27 @@ const queryClient = new QueryClient();
 const App = () => (
   <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
     <QueryClientProvider client={queryClient}>
-      <SkillsProvider>
-        <ExercisesProvider>
-          <LessonsProvider>
-            <TooltipProvider>
-              <Toaster />
-              <Sonner />
-              <BrowserRouter>
-                <Routes>
-                  <Route path="/" element={<Index />} />
-                  <Route path="/admin" element={<Admin />} />
-                  {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
-              </BrowserRouter>
-            </TooltipProvider>
-          </LessonsProvider>
-        </ExercisesProvider>
-      </SkillsProvider>
+      <UserProfileProvider>
+        <SkillsProvider>
+          <ExercisesProvider>
+            <LessonsProvider>
+              <UnitsProvider>
+                <TooltipProvider>
+                <Toaster />
+                <Sonner />
+                <BrowserRouter>
+                  <Routes>
+                    <Route path="/" element={<Index />} />
+                    <Route path="/admin" element={<Admin />} />
+                    <Route path="*" element={<NotFound />} />
+                  </Routes>
+                </BrowserRouter>
+                </TooltipProvider>
+              </UnitsProvider>
+            </LessonsProvider>
+          </ExercisesProvider>
+        </SkillsProvider>
+      </UserProfileProvider>
     </QueryClientProvider>
   </ThemeProvider>
 );

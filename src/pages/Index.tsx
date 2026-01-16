@@ -18,6 +18,7 @@ import FavoritesView from "@/components/views/FavoritesView";
 import QuantitativeView from "@/components/views/QuantitativeView";
 import VerbalView from "@/components/views/VerbalView";
 import SkillMapView from "@/components/views/SkillMapView";
+import ProfileView from "@/components/views/ProfileView";
 
 const Index = () => {
   const [activeSection, setActiveSection] = useState("home");
@@ -49,7 +50,7 @@ const Index = () => {
 
       {/* Main Content */}
       <div className="mr-20 relative z-10">
-        <Header onManageGuide={() => setAdminOpen(true)} />
+        <Header onManageGuide={() => setAdminOpen(true)} onProfileClick={() => setActiveSection("profile")} />
         
         <main className="p-6">
           <div className="max-w-7xl mx-auto">
@@ -76,6 +77,8 @@ const Index = () => {
                 {/* Lesson Grid */}
                 <LessonGrid category={activeCategory} onExerciseClick={handleExerciseClick} />
               </>
+            ) : activeSection === "profile" ? (
+              <ProfileView />
             ) : activeSection === "progress" ? (
               <ProgressView />
             ) : activeSection === "settings" ? (

@@ -10,7 +10,8 @@ import {
   Heart,
   Calculator,
   FileText,
-  Map
+  Map,
+  User
 } from "lucide-react";
 import Logo from "./Logo";
 
@@ -26,6 +27,7 @@ const menuItems = [
 ];
 
 const guideItems = [
+  { id: "profile", icon: User, label: "الملف الشخصي", group: "التعلم" },
   { id: "skillmap", icon: Map, label: "خريطة المهارات", group: "التعلم" },
   { id: "achievements", icon: Award, label: "الإنجازات", group: "التعلم" },
   { id: "favorites", icon: Heart, label: "المفضلة", group: "التعلم" },
