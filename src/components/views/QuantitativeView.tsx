@@ -1,10 +1,15 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Calculator, Target, TrendingUp, CheckCircle, Brain } from "lucide-react";
+import { Calculator, Target, TrendingUp, CheckCircle, Brain, Library, Play } from "lucide-react";
 import { useUnits } from "@/contexts/UnitsContext";
 import { LearningUnit } from "@/types/units";
 import UnitCard from "@/components/units/UnitCard";
 import UnitView from "@/components/units/UnitView";
+
+const collections = [
+  { id: 1, name: "تجميعات 1446", questions: 120, description: "أحدث تجميعات الاختبارات" },
+  { id: 2, name: "تجميعات 1445", questions: 150, description: "تجميعات العام الماضي" },
+];
 
 const QuantitativeView = () => {
   const { getUnitsByCategory, getUnitProgress, getOverallStats } = useUnits();
@@ -70,11 +75,52 @@ const QuantitativeView = () => {
         </div>
       </motion.div>
 
+      {/* Collections - Pinned at top */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.15 }}
+      >
+        <h2 className="text-xl font-bold mb-4">التجميعات</h2>
+        <div className="grid gap-3">
+          {collections.map((collection, index) => (
+            <motion.div
+              key={collection.id}
+              className="bg-gradient-to-l from-primary/10 to-turquoise/10 border border-primary/20 rounded-2xl p-5 hover:border-primary/40 transition-colors cursor-pointer group"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.2 + index * 0.05 }}
+              whileHover={{ scale: 1.01 }}
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center group-hover:bg-primary/30 transition-colors">
+                    <Library className="w-6 h-6 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-lg">{collection.name}</h3>
+                    <p className="text-sm text-muted-foreground">{collection.description} • {collection.questions} سؤال</p>
+                  </div>
+                </div>
+                <motion.button
+                  className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-xl font-medium text-sm"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <Play className="w-4 h-4 fill-current" />
+                  ابدأ
+                </motion.button>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </motion.div>
+
       {/* Units Grid */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2 }}
+        transition={{ delay: 0.3 }}
       >
         <h2 className="text-xl font-bold mb-4">الوحدات التعليمية</h2>
 

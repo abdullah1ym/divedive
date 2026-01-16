@@ -4,7 +4,7 @@ import Header from "@/components/Header";
 import HeroSection from "@/components/HeroSection";
 import RecommendationPanel from "@/components/RecommendationPanel";
 import CategoryTabs from "@/components/CategoryTabs";
-import LessonGrid from "@/components/LessonGrid";
+import LessonGrid, { Collection } from "@/components/LessonGrid";
 import BubbleDecoration from "@/components/BubbleDecoration";
 import AdminPanel from "@/components/AdminPanel";
 import ExerciseModal from "@/components/ExerciseModal";
@@ -19,6 +19,7 @@ import QuantitativeView from "@/components/views/QuantitativeView";
 import VerbalView from "@/components/views/VerbalView";
 import SkillMapView from "@/components/views/SkillMapView";
 import ProfileView from "@/components/views/ProfileView";
+import CollectionView from "@/components/views/CollectionView";
 
 const Index = () => {
   const [activeSection, setActiveSection] = useState("home");
@@ -26,6 +27,7 @@ const Index = () => {
   const [adminOpen, setAdminOpen] = useState(false);
   const [selectedExercise, setSelectedExercise] = useState<Exercise | null>(null);
   const [exerciseModalOpen, setExerciseModalOpen] = useState(false);
+  const [selectedCollection, setSelectedCollection] = useState<Collection | null>(null);
 
   const handleExerciseClick = (exercise: Exercise) => {
     setSelectedExercise(exercise);
@@ -35,6 +37,14 @@ const Index = () => {
   const handleExerciseClose = () => {
     setExerciseModalOpen(false);
     setSelectedExercise(null);
+  };
+
+  const handleCollectionClick = (collection: Collection) => {
+    setSelectedCollection(collection);
+  };
+
+  const handleCollectionBack = () => {
+    setSelectedCollection(null);
   };
 
   return (
@@ -55,28 +65,39 @@ const Index = () => {
         <main className="p-6">
           <div className="max-w-7xl mx-auto">
             {activeSection === "home" || activeSection === "exercises" ? (
-              <>
-                {/* Hero + Recommendation Grid */}
-                <div className="grid grid-cols-3 gap-6 mb-8 items-stretch">
-                  <div className="col-span-2 h-full">
-                    <HeroSection />
+              selectedCollection ? (
+                <CollectionView
+                  collection={selectedCollection}
+                  onBack={handleCollectionBack}
+                />
+              ) : (
+                <>
+                  {/* Hero + Recommendation Grid */}
+                  <div className="grid grid-cols-3 gap-6 mb-8 items-stretch">
+                    <div className="col-span-2 h-full">
+                      <HeroSection />
+                    </div>
+                    <div className="col-span-1 h-full">
+                      <RecommendationPanel />
+                    </div>
                   </div>
-                  <div className="col-span-1 h-full">
-                    <RecommendationPanel />
-                  </div>
-                </div>
 
-                {/* Category Tabs */}
-                <div className="mb-6">
-                  <CategoryTabs
-                    activeCategory={activeCategory}
-                    onCategoryChange={setActiveCategory}
+                  {/* Category Tabs */}
+                  <div className="mb-6">
+                    <CategoryTabs
+                      activeCategory={activeCategory}
+                      onCategoryChange={setActiveCategory}
+                    />
+                  </div>
+
+                  {/* Lesson Grid */}
+                  <LessonGrid
+                    category={activeCategory}
+                    onExerciseClick={handleExerciseClick}
+                    onCollectionClick={handleCollectionClick}
                   />
-                </div>
-
-                {/* Lesson Grid */}
-                <LessonGrid category={activeCategory} onExerciseClick={handleExerciseClick} />
-              </>
+                </>
+              )
             ) : activeSection === "profile" ? (
               <ProfileView />
             ) : activeSection === "progress" ? (

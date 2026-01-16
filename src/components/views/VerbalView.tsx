@@ -1,6 +1,11 @@
 import { motion } from "framer-motion";
-import { FileText, Play, CheckCircle, Target, TrendingUp } from "lucide-react";
+import { FileText, Play, CheckCircle, Target, TrendingUp, Library } from "lucide-react";
 import { useState } from "react";
+
+const collections = [
+  { id: 1, name: "تجميعات 1446", questions: 100, description: "أحدث تجميعات الاختبارات" },
+  { id: 2, name: "تجميعات 1445", questions: 130, description: "تجميعات العام الماضي" },
+];
 
 const topics = [
   { id: 1, name: "استيعاب المقروء", questions: 50, progress: 70 },
@@ -54,12 +59,53 @@ const VerbalView = () => {
         </div>
       </motion.div>
 
+      {/* Collections - Pinned at top */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.15 }}
+      >
+        <h2 className="text-xl font-bold mb-4">التجميعات</h2>
+        <div className="grid gap-3">
+          {collections.map((collection, index) => (
+            <motion.div
+              key={collection.id}
+              className="bg-gradient-to-l from-coral/10 to-yellow/10 border border-coral/20 rounded-2xl p-5 hover:border-coral/40 transition-colors cursor-pointer group"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.2 + index * 0.05 }}
+              whileHover={{ scale: 1.01 }}
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-xl bg-coral/20 flex items-center justify-center group-hover:bg-coral/30 transition-colors">
+                    <Library className="w-6 h-6 text-coral" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-lg">{collection.name}</h3>
+                    <p className="text-sm text-muted-foreground">{collection.description} • {collection.questions} سؤال</p>
+                  </div>
+                </div>
+                <motion.button
+                  className="flex items-center gap-2 px-4 py-2 bg-coral text-coral-foreground rounded-xl font-medium text-sm"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <Play className="w-4 h-4 fill-current" />
+                  ابدأ
+                </motion.button>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </motion.div>
+
       {/* Topics */}
       <motion.div
         className="space-y-4"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2 }}
+        transition={{ delay: 0.3 }}
       >
         <h2 className="text-xl font-bold">المواضيع</h2>
         {topics.map((topic, index) => (
@@ -68,7 +114,7 @@ const VerbalView = () => {
             className="bg-card rounded-2xl p-5 hover:bg-muted/50 transition-colors cursor-pointer group"
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.3 + index * 0.1 }}
+            transition={{ delay: 0.4 + index * 0.1 }}
             whileHover={{ scale: 1.01 }}
           >
             <div className="flex items-center justify-between mb-3">
@@ -108,7 +154,7 @@ const VerbalView = () => {
         className="bg-gradient-to-br from-coral/20 to-yellow/20 rounded-2xl p-8 text-center"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.7 }}
+        transition={{ delay: 0.9 }}
       >
         <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-coral/20 flex items-center justify-center">
           <FileText className="w-8 h-8 text-coral" />
