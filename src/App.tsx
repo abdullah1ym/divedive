@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "next-themes";
 import { SkillsProvider } from "@/contexts/SkillsContext";
+import { SkillProgressProvider } from "@/contexts/SkillProgressContext";
 import { ExercisesProvider } from "@/contexts/ExercisesContext";
 import { LessonsProvider } from "@/contexts/LessonsContext";
 import { UserProfileProvider } from "@/contexts/UserProfileContext";
@@ -20,7 +21,8 @@ const App = () => (
     <QueryClientProvider client={queryClient}>
       <UserProfileProvider>
         <SkillsProvider>
-          <ExercisesProvider>
+          <SkillProgressProvider>
+            <ExercisesProvider>
             <LessonsProvider>
               <UnitsProvider>
                 <TooltipProvider>
@@ -36,7 +38,8 @@ const App = () => (
                 </TooltipProvider>
               </UnitsProvider>
             </LessonsProvider>
-          </ExercisesProvider>
+            </ExercisesProvider>
+          </SkillProgressProvider>
         </SkillsProvider>
       </UserProfileProvider>
     </QueryClientProvider>
