@@ -86,7 +86,7 @@ const RecommendationPanel = () => {
         </div>
       </motion.div>
 
-      <ProgressMap open={mapOpen} onOpenChange={setMapOpen} />
+      <ProgressMap open={mapOpen} onClose={() => setMapOpen(false)} />
     </>
   );
 };

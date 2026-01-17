@@ -8,8 +8,10 @@ interface LessonGridProps {
 }
 
 const categoryNames: Record<string, string> = {
+  "all-math": "الكمي - الكل",
   "quantitative": "الكمي - حساب",
   "algebra": "الكمي - جبر",
+  "all-verbal": "اللفظي - الكل",
   "verbal": "اللفظي - استيعاب",
   "analogy": "اللفظي - تناظر",
   "mixed": "اختبار شامل",
