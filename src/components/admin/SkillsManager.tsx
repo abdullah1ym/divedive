@@ -48,7 +48,7 @@ const SkillsManager = () => {
       iconName: skill.iconName,
       color: skill.color,
       size: skill.size,
-      connections: [...skill.connections],
+      connections: Array.isArray(skill.connections) ? [...skill.connections] : [],
     });
   };
 
@@ -335,20 +335,40 @@ const SkillsManager = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-2">الاتصالات (IDs مفصولة بفواصل)</label>
-                <input
-                  type="text"
-                  value={form.connections.join(", ")}
-                  onChange={(e) => {
-                    const ids = e.target.value
-                      .split(",")
-                      .map(s => parseInt(s.trim()))
-                      .filter(n => !isNaN(n));
-                    setForm(prev => ({ ...prev, connections: ids }));
-                  }}
-                  className="w-full px-4 py-2 bg-muted rounded-xl outline-none focus:ring-2 focus:ring-primary/50"
-                  placeholder="مثال: 2, 3, 4"
-                />
+                <label className="block text-sm font-medium mb-2">ربط الخطوط بـ:</label>
+                <div className="grid grid-cols-2 gap-2 max-h-48 overflow-y-auto p-2 bg-muted/50 rounded-xl">
+                  {skills
+                    .filter(s => s.id !== editingId)
+                    .map((skill) => (
+                      <label
+                        key={skill.id}
+                        className={`flex items-center gap-2 p-2 rounded-lg cursor-pointer transition-colors ${
+                          form.connections.includes(skill.id)
+                            ? "bg-primary/20 border border-primary"
+                            : "bg-muted hover:bg-muted/80 border border-transparent"
+                        }`}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={form.connections.includes(skill.id)}
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              setForm(prev => ({ ...prev, connections: [...prev.connections, skill.id] }));
+                            } else {
+                              setForm(prev => ({ ...prev, connections: prev.connections.filter(id => id !== skill.id) }));
+                            }
+                          }}
+                          className="accent-primary"
+                        />
+                        <span className="text-sm truncate">{skill.title}</span>
+                      </label>
+                    ))}
+                </div>
+                {form.connections.length > 0 && (
+                  <p className="text-xs text-muted-foreground mt-2">
+                    متصل بـ {form.connections.length} مهارة
+                  </p>
+                )}
               </div>
             </div>
 

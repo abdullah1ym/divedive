@@ -2,6 +2,7 @@ import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronRight, CheckCircle, XCircle, Library, Zap, Lock, ChevronDown, ChevronUp, Layers, List, Unlock, Lightbulb } from "lucide-react";
 import { Collection } from "@/components/LessonGrid";
+import { useSkillProgress } from "@/contexts/SkillProgressContext";
 
 interface CollectionViewProps {
   collection: Collection;
@@ -34,6 +35,9 @@ const CollectionView = ({ collection, onBack }: CollectionViewProps) => {
   const [failedAttempts, setFailedAttempts] = useState<Record<number, { question: typeof collection.questions[0], wrongAnswer: number }[]>>({});
 
   const questionRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+  // Skill progress tracking
+  const { recordCorrectAnswer } = useSkillProgress();
 
   // Get current question (original or variant)
   const getCurrentQuestion = (qIndex: number) => {
@@ -91,6 +95,12 @@ const CollectionView = ({ collection, onBack }: CollectionViewProps) => {
 
     // Record the answer
     setAnswers(prev => ({ ...prev, [questionId]: answerIndex }));
+
+    // Record skill progress for correct answers
+    if (isCorrect && currentQ.skillTag) {
+      const category = collection.category === "quantitative" ? "math" : "verbal";
+      recordCorrectAnswer(currentQ.skillTag, questionId, category);
+    }
 
     // Progressive mode: reveal next question
     if (viewMode === "progressive" && qIndex + 1 < collection.questions.length && qIndex + 1 >= revealedCount) {
