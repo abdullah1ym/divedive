@@ -276,31 +276,46 @@ const CollectionView = ({ collection, onBack }: CollectionViewProps) => {
       </motion.div>
 
       {/* Results Banner */}
-      {submitted && (
-        <motion.div
-          className="bg-gradient-to-l from-green-500/20 to-primary/20 border border-green-500/30 rounded-3xl p-6 mb-6"
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-        >
-          <div className="flex items-center justify-between">
-            <div>
-              <h2 className="text-xl font-bold mb-1">النتيجة</h2>
-              <p className="text-4xl font-bold text-green-500">{score}/{collection.questions.length}</p>
-              <p className="text-sm text-muted-foreground mt-1">
-                {score === collection.questions.length
-                  ? "ممتاز! إجابات صحيحة بالكامل"
-                  : score >= collection.questions.length / 2
-                  ? "جيد جداً! استمر في التدريب"
-                  : "حاول مرة أخرى للتحسن"}
-              </p>
+      {submitted && (() => {
+        const percentage = (score / collection.questions.length) * 100;
+        const gradeColor = percentage >= 80 ? 'green' : percentage >= 50 ? 'yellow' : 'red';
+        const bgClass = gradeColor === 'green'
+          ? 'from-green-500/20 to-primary/20'
+          : gradeColor === 'yellow'
+          ? 'from-yellow-500/20 to-primary/20'
+          : 'from-red-500/20 to-primary/20';
+        const textClass = gradeColor === 'green'
+          ? 'text-green-500'
+          : gradeColor === 'yellow'
+          ? 'text-yellow-500'
+          : 'text-red-500';
+
+        return (
+          <motion.div
+            className={`bg-gradient-to-l ${bgClass} rounded-3xl p-6 mb-6`}
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+          >
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-xl font-bold mb-1">النتيجة</h2>
+                <p className={`text-4xl font-bold ${textClass}`}>{score}/{collection.questions.length}</p>
+                <p className="text-sm text-muted-foreground mt-1">
+                  {score === collection.questions.length
+                    ? "ممتاز! إجابات صحيحة بالكامل"
+                    : score >= collection.questions.length / 2
+                    ? "جيد جداً! استمر في التدريب"
+                    : "حاول مرة أخرى للتحسن"}
+                </p>
+              </div>
+              <div className="flex items-center gap-2 bg-yellow/20 px-4 py-2 rounded-2xl">
+                <Zap className="w-6 h-6 text-yellow" />
+                <span className="text-xl font-bold text-yellow">+{xpEarned} XP</span>
+              </div>
             </div>
-            <div className="flex items-center gap-2 bg-yellow/20 px-4 py-2 rounded-2xl">
-              <Zap className="w-6 h-6 text-yellow" />
-              <span className="text-xl font-bold text-yellow">+{xpEarned} XP</span>
-            </div>
-          </div>
-        </motion.div>
-      )}
+          </motion.div>
+        );
+      })()}
 
       {/* MODE 1: Progressive Reveal */}
       {viewMode === "progressive" && (
