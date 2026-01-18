@@ -1,11 +1,50 @@
-import { Search, Star, MoreVertical, Brain } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Search, Star, MoreVertical, Brain, Flame } from "lucide-react";
 import { motion } from "framer-motion";
+import { useUserProfile } from "@/contexts/UserProfileContext";
 
 interface HeaderProps {
   onManageGuide?: () => void;
+  onProfileClick?: () => void;
 }
 
-const Header = ({ onManageGuide }: HeaderProps) => {
+const Header = ({ onManageGuide, onProfileClick }: HeaderProps) => {
+  const [profileOpen, setProfileOpen] = useState(false);
+  const { stats } = useUserProfile();
+  const [hasReviewQuestions, setHasReviewQuestions] = useState(false);
+
+  // Check if there are questions to review
+  useEffect(() => {
+    const checkReviewQuestions = () => {
+      const saved = localStorage.getItem("reviewMistakes");
+      if (saved) {
+        const questions = JSON.parse(saved);
+        setHasReviewQuestions(questions.length > 0);
+      } else {
+        setHasReviewQuestions(false);
+      }
+    };
+
+    checkReviewQuestions();
+    // Listen for storage changes
+    window.addEventListener("storage", checkReviewQuestions);
+    // Check periodically in case of same-tab changes
+    const interval = setInterval(checkReviewQuestions, 1000);
+
+    return () => {
+      window.removeEventListener("storage", checkReviewQuestions);
+      clearInterval(interval);
+    };
+  }, []);
+
+  const handleProfileClick = () => {
+    if (onProfileClick) {
+      onProfileClick();
+    } else {
+      setProfileOpen(true);
+    }
+  };
+
   return (
     <header className="h-16 bg-card/50 backdrop-blur-md border-b border-border flex items-center justify-between px-6">
       {/* Right - Breadcrumb (RTL) */}
@@ -44,7 +83,7 @@ const Header = ({ onManageGuide }: HeaderProps) => {
           onClick={onManageGuide}
           className="px-4 py-2 bg-turquoise text-turquoise-foreground rounded-xl text-sm font-semibold hover:opacity-90 transition-opacity"
         >
-          إدارة التقدم
+          راجع أخطاءك
         </button>
 
         <button className="p-2 text-muted-foreground hover:text-foreground transition-colors">
@@ -55,6 +94,7 @@ const Header = ({ onManageGuide }: HeaderProps) => {
         <motion.div
           className="w-9 h-9 rounded-full gradient-coral flex items-center justify-center text-sm font-bold cursor-pointer"
           whileHover={{ scale: 1.1 }}
+          onClick={handleProfileClick}
         >
           م
         </motion.div>

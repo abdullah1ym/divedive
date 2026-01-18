@@ -10,6 +10,8 @@ export interface SkillNode {
   color: string;
   size: "small" | "medium" | "large";
   connections: number[];
+  skillTag?: string;       // ربط بـ skillTag الأسئلة
+  totalQuestions?: number; // إجمالي أسئلة هذه المهارة
 }
 
 export type MapType = "math" | "verbal";
@@ -27,34 +29,53 @@ interface SkillsContextType {
 }
 
 const defaultMathSkills: SkillNode[] = [
-  { id: 1, title: "أساسيات الرياضيات", status: "completed", x: 50, y: 15, iconName: "Calculator", color: "turquoise", size: "large", connections: [2, 3] },
-  { id: 2, title: "العمليات الحسابية", status: "completed", x: 30, y: 35, iconName: "Plus", color: "turquoise", size: "medium", connections: [4, 5] },
-  { id: 3, title: "النسب والتناسب", status: "completed", x: 70, y: 35, iconName: "Percent", color: "turquoise", size: "medium", connections: [5, 6] },
-  { id: 4, title: "الجبر والمعادلات", status: "current", x: 15, y: 55, iconName: "Sigma", color: "yellow", size: "medium", connections: [7] },
-  { id: 5, title: "الهندسة", status: "available", x: 50, y: 55, iconName: "Shapes", color: "muted", size: "large", connections: [7, 8, 9] },
-  { id: 6, title: "الإحصاء والاحتمالات", status: "available", x: 85, y: 55, iconName: "BarChart", color: "muted", size: "medium", connections: [9] },
-  { id: 7, title: "المقارنة والتحليل", status: "locked", x: 25, y: 75, iconName: "Scale", color: "muted", size: "medium", connections: [10] },
-  { id: 8, title: "الأسس واللوغاريتمات", status: "locked", x: 50, y: 80, iconName: "Superscript", color: "muted", size: "small", connections: [10] },
-  { id: 9, title: "التفاضل والتكامل", status: "locked", x: 75, y: 75, iconName: "TrendingUp", color: "muted", size: "medium", connections: [10] },
+  { id: 1, title: "أساسيات الرياضيات", status: "available", x: 50, y: 15, iconName: "Calculator", color: "muted", size: "large", connections: [], skillTag: "basics", totalQuestions: 5 },
+  { id: 2, title: "العمليات الحسابية", status: "available", x: 30, y: 35, iconName: "Plus", color: "muted", size: "medium", connections: [], skillTag: "arithmetic", totalQuestions: 5 },
+  { id: 3, title: "النسب والتناسب", status: "available", x: 70, y: 35, iconName: "Percent", color: "muted", size: "medium", connections: [], skillTag: "ratios", totalQuestions: 5 },
+  { id: 4, title: "الجبر والمعادلات", status: "available", x: 15, y: 55, iconName: "Sigma", color: "muted", size: "medium", connections: [], skillTag: "algebra", totalQuestions: 5 },
+  { id: 5, title: "الهندسة", status: "available", x: 50, y: 55, iconName: "Shapes", color: "muted", size: "large", connections: [], skillTag: "geometry", totalQuestions: 5 },
+  { id: 6, title: "الإحصاء والاحتمالات", status: "available", x: 85, y: 55, iconName: "BarChart", color: "muted", size: "medium", connections: [], skillTag: "statistics", totalQuestions: 5 },
+  { id: 7, title: "المقارنة والتحليل", status: "available", x: 25, y: 75, iconName: "Scale", color: "muted", size: "medium", connections: [], skillTag: "comparison", totalQuestions: 5 },
+  { id: 8, title: "الأسس واللوغاريتمات", status: "available", x: 50, y: 80, iconName: "Superscript", color: "muted", size: "small", connections: [], skillTag: "exponents", totalQuestions: 5 },
+  { id: 9, title: "التفاضل والتكامل", status: "available", x: 75, y: 75, iconName: "TrendingUp", color: "muted", size: "medium", connections: [], skillTag: "calculus", totalQuestions: 5 },
   { id: 10, title: "إتقان الكمي", status: "locked", x: 50, y: 95, iconName: "Award", color: "jellyfish", size: "large", connections: [] },
 ];
 
 const defaultVerbalSkills: SkillNode[] = [
-  { id: 1, title: "أساسيات اللغة", status: "completed", x: 50, y: 15, iconName: "BookOpen", color: "turquoise", size: "large", connections: [2, 3] },
-  { id: 2, title: "المفردات والمعاني", status: "completed", x: 30, y: 35, iconName: "Type", color: "turquoise", size: "medium", connections: [4, 5] },
-  { id: 3, title: "القواعد النحوية", status: "completed", x: 70, y: 35, iconName: "FileText", color: "turquoise", size: "medium", connections: [5, 6] },
-  { id: 4, title: "التناظر اللفظي", status: "current", x: 15, y: 55, iconName: "GitCompare", color: "yellow", size: "medium", connections: [7] },
-  { id: 5, title: "استيعاب المقروء", status: "available", x: 50, y: 55, iconName: "FileSearch", color: "muted", size: "large", connections: [7, 8, 9] },
-  { id: 6, title: "إكمال الجمل", status: "available", x: 85, y: 55, iconName: "PenLine", color: "muted", size: "medium", connections: [9] },
-  { id: 7, title: "الخطأ السياقي", status: "locked", x: 25, y: 75, iconName: "AlertCircle", color: "muted", size: "medium", connections: [10] },
-  { id: 8, title: "الارتباط والاختلاف", status: "locked", x: 50, y: 80, iconName: "Link", color: "muted", size: "small", connections: [10] },
-  { id: 9, title: "التحليل الأدبي", status: "locked", x: 75, y: 75, iconName: "Feather", color: "muted", size: "medium", connections: [10] },
+  { id: 1, title: "أساسيات اللغة", status: "available", x: 50, y: 15, iconName: "BookOpen", color: "muted", size: "large", connections: [], skillTag: "language-basics", totalQuestions: 5 },
+  { id: 2, title: "المفردات والمعاني", status: "available", x: 30, y: 35, iconName: "Type", color: "muted", size: "medium", connections: [], skillTag: "vocabulary", totalQuestions: 5 },
+  { id: 3, title: "القواعد النحوية", status: "available", x: 70, y: 35, iconName: "FileText", color: "muted", size: "medium", connections: [], skillTag: "grammar", totalQuestions: 5 },
+  { id: 4, title: "التناظر اللفظي", status: "available", x: 15, y: 55, iconName: "GitCompare", color: "muted", size: "medium", connections: [], skillTag: "analogy", totalQuestions: 5 },
+  { id: 5, title: "استيعاب المقروء", status: "available", x: 50, y: 55, iconName: "FileSearch", color: "muted", size: "large", connections: [], skillTag: "reading", totalQuestions: 5 },
+  { id: 6, title: "إكمال الجمل", status: "available", x: 85, y: 55, iconName: "PenLine", color: "muted", size: "medium", connections: [], skillTag: "completion", totalQuestions: 5 },
+  { id: 7, title: "الخطأ السياقي", status: "available", x: 25, y: 75, iconName: "AlertCircle", color: "muted", size: "medium", connections: [], skillTag: "contextual-error", totalQuestions: 5 },
+  { id: 8, title: "الارتباط والاختلاف", status: "locked", x: 50, y: 80, iconName: "Link", color: "muted", size: "small", connections: [] },
+  { id: 9, title: "التحليل الأدبي", status: "locked", x: 75, y: 75, iconName: "Feather", color: "muted", size: "medium", connections: [] },
   { id: 10, title: "إتقان اللفظي", status: "locked", x: 50, y: 95, iconName: "Award", color: "jellyfish", size: "large", connections: [] },
 ];
 
-const MATH_STORAGE_KEY = "divedive-math-skills";
-const VERBAL_STORAGE_KEY = "divedive-verbal-skills";
+const MATH_STORAGE_KEY = "dd-math-v9";
+const VERBAL_STORAGE_KEY = "dd-verbal-v9";
 const ACTIVE_MAP_KEY = "divedive-active-map";
+
+// دمج البيانات المحفوظة مع الافتراضية لإضافة الحقول الجديدة
+const mergeWithDefaults = (stored: SkillNode[], defaults: SkillNode[]): SkillNode[] => {
+  return defaults.map(defaultNode => {
+    const storedNode = stored.find(s => s.id === defaultNode.id);
+    if (storedNode) {
+      return {
+        ...defaultNode,
+        ...storedNode,
+        skillTag: storedNode.skillTag || defaultNode.skillTag,
+        totalQuestions: storedNode.totalQuestions || defaultNode.totalQuestions,
+        connections: Array.isArray(storedNode.connections) ? storedNode.connections : [],
+      };
+    }
+    return { ...defaultNode, connections: [] };
+  });
+};
+
+// تم إزالة الريست التلقائي - الاتصالات تُحفظ الآن بشكل دائم
 
 const SkillsContext = createContext<SkillsContextType | undefined>(undefined);
 
@@ -68,7 +89,8 @@ export const SkillsProvider = ({ children }: { children: ReactNode }) => {
     const stored = localStorage.getItem(MATH_STORAGE_KEY);
     if (stored) {
       try {
-        return JSON.parse(stored);
+        const parsed = JSON.parse(stored);
+        return mergeWithDefaults(parsed, defaultMathSkills);
       } catch {
         return defaultMathSkills;
       }
@@ -80,7 +102,8 @@ export const SkillsProvider = ({ children }: { children: ReactNode }) => {
     const stored = localStorage.getItem(VERBAL_STORAGE_KEY);
     if (stored) {
       try {
-        return JSON.parse(stored);
+        const parsed = JSON.parse(stored);
+        return mergeWithDefaults(parsed, defaultVerbalSkills);
       } catch {
         return defaultVerbalSkills;
       }

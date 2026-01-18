@@ -18,6 +18,7 @@ import FavoritesView from "@/components/views/FavoritesView";
 import QuantitativeView from "@/components/views/QuantitativeView";
 import VerbalView from "@/components/views/VerbalView";
 import SkillMapView from "@/components/views/SkillMapView";
+import ReviewMistakesView from "@/components/views/ReviewMistakesView";
 
 const Index = () => {
   const [activeSection, setActiveSection] = useState("home");
@@ -49,8 +50,8 @@ const Index = () => {
 
       {/* Main Content */}
       <div className="mr-20 relative z-10">
-        <Header onManageGuide={() => setAdminOpen(true)} />
-        
+        <Header onManageGuide={() => setActiveSection("reviewMistakes")} />
+
         <main className="p-6">
           <div className="max-w-7xl mx-auto">
             {activeSection === "home" || activeSection === "exercises" ? (
@@ -94,6 +95,8 @@ const Index = () => {
               <QuantitativeView />
             ) : activeSection === "verbal" ? (
               <VerbalView />
+            ) : activeSection === "reviewMistakes" ? (
+              <ReviewMistakesView onBack={() => setActiveSection("home")} />
             ) : null}
           </div>
         </main>
