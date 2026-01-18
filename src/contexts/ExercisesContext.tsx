@@ -136,7 +136,12 @@ export const ExercisesProvider = ({ children }: { children: ReactNode }) => {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored) {
       try {
-        return JSON.parse(stored);
+        const parsed = JSON.parse(stored);
+        // If parsed is empty or invalid, use defaults
+        if (!Array.isArray(parsed) || parsed.length === 0) {
+          return defaultExercises;
+        }
+        return parsed;
       } catch {
         return defaultExercises;
       }
