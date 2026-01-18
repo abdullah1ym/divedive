@@ -20,6 +20,7 @@ import VerbalView from "@/components/views/VerbalView";
 import SkillMapView from "@/components/views/SkillMapView";
 import ReviewMistakesView from "@/components/views/ReviewMistakesView";
 import CollectionView from "@/components/views/CollectionView";
+import ProfileView from "@/components/views/ProfileView";
 
 const Index = () => {
   const [activeSection, setActiveSection] = useState("home");
@@ -60,7 +61,7 @@ const Index = () => {
 
       {/* Main Content */}
       <div className="mr-20 relative z-10">
-        <Header onManageGuide={() => setActiveSection("reviewMistakes")} />
+        <Header onManageGuide={() => setActiveSection("reviewMistakes")} onProfileClick={() => setActiveSection("profile")} />
 
         <main className="p-6">
           <div className="max-w-7xl mx-auto">
@@ -118,6 +119,8 @@ const Index = () => {
               <VerbalView />
             ) : activeSection === "reviewMistakes" ? (
               <ReviewMistakesView onBack={() => setActiveSection("home")} />
+            ) : activeSection === "profile" ? (
+              <ProfileView />
             ) : null}
           </div>
         </main>

@@ -1,8 +1,10 @@
 import { motion } from "framer-motion";
 import { Volume2, Bell, Moon, Globe, RotateCcw } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
+import { useTheme } from "next-themes";
 
 const SettingsView = () => {
+  const { theme, setTheme } = useTheme();
   return (
     <div className="space-y-6 max-w-3xl mx-auto">
       <motion.div
@@ -107,7 +109,10 @@ const SettingsView = () => {
               <p className="font-medium">الوضع الداكن</p>
               <p className="text-sm text-muted-foreground">تفعيل المظهر الداكن</p>
             </div>
-            <Switch defaultChecked />
+            <Switch
+              checked={theme === "dark"}
+              onCheckedChange={(checked) => setTheme(checked ? "dark" : "light")}
+            />
           </div>
         </div>
       </motion.div>

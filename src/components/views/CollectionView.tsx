@@ -1,7 +1,8 @@
 import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronRight, CheckCircle, XCircle, Library, Zap, Lock, ChevronDown, ChevronUp, Layers, List, Unlock, Lightbulb } from "lucide-react";
+import { ChevronRight, CheckCircle, XCircle, Library, Zap, Lock, ChevronDown, ChevronUp, Layers, List, Unlock, Lightbulb, AlertCircle } from "lucide-react";
 import { Collection } from "@/components/LessonGrid";
+import { useSkillProgress } from "@/contexts/SkillProgressContext";
 
 interface CollectionViewProps {
   collection: Collection;
@@ -33,7 +34,13 @@ const CollectionView = ({ collection, onBack }: CollectionViewProps) => {
   // Track failed questions with their wrong answers (to show on left side)
   const [failedAttempts, setFailedAttempts] = useState<Record<number, { question: typeof collection.questions[0], wrongAnswer: number }[]>>({});
 
+  // Notification for questions moved to "راجع أخطاءك"
+  const [reviewNotification, setReviewNotification] = useState<{ show: boolean; questionPrompt: string }>({ show: false, questionPrompt: "" });
+
   const questionRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+  // Skill progress tracking
+  const { recordCorrectAnswer } = useSkillProgress();
 
   // Get current question (original or variant)
   const getCurrentQuestion = (qIndex: number) => {
@@ -89,8 +96,35 @@ const CollectionView = ({ collection, onBack }: CollectionViewProps) => {
       return;
     }
 
+    // If wrong and NO more variants (3rd wrong attempt) - move to "راجع أخطاءك"
+    if (!isCorrect && !hasMoreVariants && currentVIndex > 0) {
+      // Save to "راجع أخطاءك" in localStorage
+      const reviewQuestions = JSON.parse(localStorage.getItem("reviewMistakes") || "[]");
+      const questionToSave = {
+        ...originalQuestion,
+        collectionName: collection.name,
+        failedAt: new Date().toISOString(),
+        attempts: currentVIndex + 1
+      };
+      // Avoid duplicates
+      if (!reviewQuestions.find((q: { id: string }) => q.id === originalQuestion.id)) {
+        reviewQuestions.push(questionToSave);
+        localStorage.setItem("reviewMistakes", JSON.stringify(reviewQuestions));
+      }
+
+      // Show notification
+      setReviewNotification({ show: true, questionPrompt: originalQuestion.prompt });
+      setTimeout(() => setReviewNotification({ show: false, questionPrompt: "" }), 4000);
+    }
+
     // Record the answer
     setAnswers(prev => ({ ...prev, [questionId]: answerIndex }));
+
+    // Record skill progress for correct answers
+    if (isCorrect && currentQ.skillTag) {
+      const category = collection.category === "quantitative" ? "math" : "verbal";
+      recordCorrectAnswer(currentQ.skillTag, questionId, category);
+    }
 
     // Progressive mode: reveal next question
     if (viewMode === "progressive" && qIndex + 1 < collection.questions.length && qIndex + 1 >= revealedCount) {
@@ -140,6 +174,25 @@ const CollectionView = ({ collection, onBack }: CollectionViewProps) => {
 
   return (
     <div className="max-w-4xl mx-auto pb-8">
+      {/* Notification for "راجع أخطاءك" */}
+      <AnimatePresence>
+        {reviewNotification.show && (
+          <motion.div
+            className="fixed top-20 left-1/2 -translate-x-1/2 z-50 bg-violet-500/90 text-white px-6 py-4 rounded-2xl shadow-lg flex items-center gap-3 max-w-md"
+            initial={{ opacity: 0, y: -50, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -50, scale: 0.9 }}
+            transition={{ type: "spring", stiffness: 300, damping: 25 }}
+          >
+            <AlertCircle className="w-6 h-6 flex-shrink-0" />
+            <div>
+              <p className="font-bold text-sm">انتقل السؤال لـ "راجع أخطاءك"</p>
+              <p className="text-xs opacity-90 mt-1">يمكنك مراجعته لاحقاً من القائمة الرئيسية</p>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Header */}
       <motion.div
         className="flex items-center gap-3 mb-6 sticky top-4 bg-card/95 backdrop-blur-sm py-4 px-4 z-20 rounded-3xl shadow-sm border border-border/50"
