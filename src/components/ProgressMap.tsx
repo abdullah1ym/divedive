@@ -1,8 +1,10 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { createPortal } from "react-dom";
+import { useState } from "react";
 import { Check, Lock, Play, Star, Volume2, Music, Ear, Type, MessageCircle, MessageSquare, Users, TreePine, Radio, Award, X, Calculator, BookOpen } from "lucide-react";
 import { useSkills, SkillNode, MapType } from "@/contexts/SkillsContext";
 import { useSkillProgress } from "@/contexts/SkillProgressContext";
+import SkillQuestionsView from "./views/SkillQuestionsView";
 
 interface ProgressMapProps {
   open: boolean;
@@ -77,6 +79,7 @@ const getNodeRadiusPercent = (size: "small" | "medium" | "large", containerWidth
 const ProgressMap = ({ open, onClose }: ProgressMapProps) => {
   const { skills: skillNodes, activeMap, setActiveMap } = useSkills();
   const { getSkillProgress } = useSkillProgress();
+  const [selectedSkill, setSelectedSkill] = useState<SkillNode | null>(null);
 
   // حساب النسبة لكل مهارة
   // TEST MODE: Remove this after testing fluid animation
@@ -220,11 +223,17 @@ const ProgressMap = ({ open, onClose }: ProgressMapProps) => {
               return (
                 <motion.div
                   key={node.id}
-                  className="absolute transform -translate-x-1/2 -translate-y-1/2 group"
+                  className="absolute transform -translate-x-1/2 -translate-y-1/2 group cursor-pointer"
                   style={{ left: `${node.x}%`, top: `${node.y}%` }}
                   initial={{ scale: 0, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
-                  transition={{ delay: index * 0.05, type: "spring", stiffness: 200 }}
+                  whileHover={{ scale: 1.2 }}
+                  transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                  onClick={() => {
+                    if (node.skillTag) {
+                      setSelectedSkill(node);
+                    }
+                  }}
                 >
                   {/* Progress ring around node */}
                   {node.skillTag && !isLocked && progress > 0 && (
@@ -270,14 +279,12 @@ const ProgressMap = ({ open, onClose }: ProgressMapProps) => {
 
                   {/* Node button */}
                   <motion.div
-                    className={`relative ${styles.size} rounded-full ${styles.glow} flex items-center justify-center cursor-pointer transition-all duration-300 overflow-hidden`}
+                    className={`relative ${styles.size} rounded-full ${styles.glow} flex items-center justify-center transition-all duration-300 overflow-hidden`}
                     style={{
                       background: (!isLocked && node.skillTag && progress > 0)
                         ? "hsl(var(--background))"
                         : undefined
                     }}
-                    whileHover={{ scale: 1.15 }}
-                    whileTap={{ scale: 0.95 }}
                     animate={isInProgress ? {
                       boxShadow: [
                         "0 0 20px hsl(var(--yellow) / 0.4)",
@@ -423,6 +430,15 @@ const ProgressMap = ({ open, onClose }: ProgressMapProps) => {
               </div>
             </div>
           </div>
+
+          {/* Skill Questions View */}
+          {selectedSkill && (
+            <SkillQuestionsView
+              skill={selectedSkill}
+              onBack={() => setSelectedSkill(null)}
+              mapType={activeMap}
+            />
+          )}
         </motion.div>
       )}
     </AnimatePresence>,

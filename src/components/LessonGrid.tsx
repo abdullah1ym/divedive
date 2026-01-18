@@ -14,6 +14,7 @@ export interface Collection {
     options: string[];
     correctAnswer: number;
     explanation?: string;
+    skillTag?: string;
     variants?: Array<{
       id: string;
       prompt: string;
@@ -25,7 +26,7 @@ export interface Collection {
 }
 
 // التجميعات المثبتة
-const pinnedCollections: Record<string, Collection[]> = {
+export const pinnedCollections: Record<string, Collection[]> = {
   quantitative: [
     {
       id: "quant-collection-1446",
@@ -39,6 +40,7 @@ const pinnedCollections: Record<string, Collection[]> = {
           options: ["5", "7", "8", "12"],
           correctAnswer: 1,
           explanation: "س + 5 = 12 ← س = 12 - 5 = 7",
+          skillTag: "algebra",
           variants: [
             {
               id: "q1-v1",
@@ -62,6 +64,7 @@ const pinnedCollections: Record<string, Collection[]> = {
           options: ["45", "50", "60", "65"],
           correctAnswer: 2,
           explanation: "15 × 4 = 60",
+          skillTag: "arithmetic",
           variants: [
             {
               id: "q2-v1",
@@ -85,6 +88,7 @@ const pinnedCollections: Record<string, Collection[]> = {
           options: ["4 سم", "5 سم", "10 سم", "20 سم"],
           correctAnswer: 1,
           explanation: "محيط المربع = 4 × الضلع ← 20 = 4 × الضلع ← الضلع = 5 سم",
+          skillTag: "geometry",
           variants: [
             {
               id: "q3-v1",
@@ -108,6 +112,7 @@ const pinnedCollections: Record<string, Collection[]> = {
           options: ["25", "50", "75", "100"],
           correctAnswer: 1,
           explanation: "25% من 200 = (25/100) × 200 = 50",
+          skillTag: "ratios",
           variants: [
             {
               id: "q4-v1",
@@ -131,6 +136,7 @@ const pinnedCollections: Record<string, Collection[]> = {
           options: ["20 سنة", "25 سنة", "30 سنة", "35 سنة"],
           correctAnswer: 2,
           explanation: "عمر أحمد = 2 × عمر سالم = 2 × 15 = 30 سنة",
+          skillTag: "ratios",
           variants: [
             {
               id: "q5-v1",
@@ -154,6 +160,7 @@ const pinnedCollections: Record<string, Collection[]> = {
           options: ["10", "11", "12", "14"],
           correctAnswer: 2,
           explanation: "√144 = 12 لأن 12 × 12 = 144",
+          skillTag: "arithmetic",
         },
         {
           id: "q7",
@@ -161,6 +168,7 @@ const pinnedCollections: Record<string, Collection[]> = {
           options: ["100 ريال", "110 ريال", "120 ريال", "130 ريال"],
           correctAnswer: 2,
           explanation: "ثمن الكتاب الواحد = 75 ÷ 5 = 15 ريال ← ثمن 8 كتب = 8 × 15 = 120 ريال",
+          skillTag: "ratios",
         },
         {
           id: "q8",
@@ -168,6 +176,7 @@ const pinnedCollections: Record<string, Collection[]> = {
           options: ["108", "162", "216", "72"],
           correctAnswer: 1,
           explanation: "المتتابعة هندسية بأساس 3 ← العدد التالي = 54 × 3 = 162",
+          skillTag: "algebra",
         },
         {
           id: "q9",
@@ -175,6 +184,7 @@ const pinnedCollections: Record<string, Collection[]> = {
           options: ["13 سم²", "26 سم²", "40 سم²", "80 سم²"],
           correctAnswer: 2,
           explanation: "مساحة المستطيل = الطول × العرض = 8 × 5 = 40 سم²",
+          skillTag: "geometry",
         },
         {
           id: "q10",
@@ -182,6 +192,7 @@ const pinnedCollections: Record<string, Collection[]> = {
           options: ["5", "6", "7", "8"],
           correctAnswer: 2,
           explanation: "س² = 49 ← س = √49 = 7",
+          skillTag: "algebra",
         },
       ],
     },
@@ -199,6 +210,7 @@ const pinnedCollections: Record<string, Collection[]> = {
           options: ["باب", "مفتاح", "نافذة", "جدار"],
           correctAnswer: 1,
           explanation: "الكتاب مفتاح المعرفة - تعبير مجازي يدل على أن الكتاب يفتح أبواب العلم",
+          skillTag: "completion",
         },
         {
           id: "v2",
@@ -206,6 +218,7 @@ const pinnedCollections: Record<string, Collection[]> = {
           options: ["بطيء", "عاجل", "ثقيل", "خفيف"],
           correctAnswer: 1,
           explanation: "عاجل = سريع، كلاهما يدل على السرعة في الفعل أو الحركة",
+          skillTag: "vocabulary",
         },
         {
           id: "v3",
@@ -213,6 +226,7 @@ const pinnedCollections: Record<string, Collection[]> = {
           options: ["التفوق", "الفشل", "الصعود", "التقدم"],
           correctAnswer: 1,
           explanation: "الفشل هو عكس النجاح - عدم تحقيق الهدف المطلوب",
+          skillTag: "vocabulary",
         },
         {
           id: "v4",
@@ -220,6 +234,7 @@ const pinnedCollections: Record<string, Collection[]> = {
           options: ["قبل", "مفتاح", "بعد", "طريق"],
           correctAnswer: 1,
           explanation: "الصبر مفتاح الفرج - حكمة عربية تعني أن الصبر يؤدي إلى الفرج",
+          skillTag: "completion",
         },
         {
           id: "v5",
@@ -227,6 +242,7 @@ const pinnedCollections: Record<string, Collection[]> = {
           options: ["البخل", "الكرم", "الفقر", "الغنى"],
           correctAnswer: 1,
           explanation: "الجود = الكرم = السخاء في العطاء",
+          skillTag: "vocabulary",
         },
         {
           id: "v6",
@@ -234,6 +250,7 @@ const pinnedCollections: Record<string, Collection[]> = {
           options: ["طبخ", "قطع", "أكل", "مطبخ"],
           correctAnswer: 1,
           explanation: "القلم أداة للكتابة، والسكين أداة للقطع - علاقة أداة ووظيفتها",
+          skillTag: "analogy",
         },
         {
           id: "v7",
@@ -241,6 +258,7 @@ const pinnedCollections: Record<string, Collection[]> = {
           options: ["كتابات", "كتب", "مكتبات", "كاتبون"],
           correctAnswer: 1,
           explanation: "كتب هو جمع تكسير لكلمة كتاب",
+          skillTag: "grammar",
         },
         {
           id: "v8",
@@ -248,6 +266,7 @@ const pinnedCollections: Record<string, Collection[]> = {
           options: ["الليل", "النور", "الغروب", "السواد"],
           correctAnswer: 1,
           explanation: "النور هو عكس الظلام - الضياء مقابل العتمة",
+          skillTag: "vocabulary",
         },
         {
           id: "v9",
@@ -255,6 +274,7 @@ const pinnedCollections: Record<string, Collection[]> = {
           options: ["نجح", "وجد", "فاز", "تعلم"],
           correctAnswer: 1,
           explanation: "من جد وجد - مثل عربي يعني من اجتهد حصل على مراده",
+          skillTag: "completion",
         },
         {
           id: "v10",
@@ -262,6 +282,7 @@ const pinnedCollections: Record<string, Collection[]> = {
           options: ["تفاح", "برتقال", "جزر", "موز"],
           correctAnswer: 2,
           explanation: "جزر هو الشاذ لأنه من الخضروات، بينما الباقي فواكه",
+          skillTag: "vocabulary",
         },
       ],
     },

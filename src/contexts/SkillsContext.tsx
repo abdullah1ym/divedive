@@ -54,8 +54,8 @@ const defaultVerbalSkills: SkillNode[] = [
   { id: 10, title: "إتقان اللفظي", status: "locked", x: 50, y: 95, iconName: "Award", color: "jellyfish", size: "large", connections: [] },
 ];
 
-const MATH_STORAGE_KEY = "dd-math-v9";
-const VERBAL_STORAGE_KEY = "dd-verbal-v9";
+const MATH_STORAGE_KEY = "dd-math-v10";
+const VERBAL_STORAGE_KEY = "dd-verbal-v10";
 const ACTIVE_MAP_KEY = "divedive-active-map";
 
 // دمج البيانات المحفوظة مع الافتراضية لإضافة الحقول الجديدة
