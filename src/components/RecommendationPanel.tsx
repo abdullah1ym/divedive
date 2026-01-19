@@ -29,10 +29,10 @@ const RecommendationPanel = () => {
         {/* Content */}
         <div className="pl-12">
           <h3 className="text-lg font-bold mb-2">
-            بناءً على مستواك، ننصحك بالبدء بتمارين الأصوات الأساسية.
+            بناءً على مستواك، ننصحك بالبدء بتمارين الأساسيات.
           </h3>
           <p className="text-sm text-muted-foreground mb-6">
-            في هذه الوحدة ستتعلم <span className="text-coral font-semibold">تمييز النغمات</span> والأصوات الأساسية للتدريب السمعي.
+            في هذه الوحدة ستتعلم <span className="text-coral font-semibold">أساسيات الكمي واللفظي</span> والمهارات الأساسية لاختبار القدرات.
           </p>
         </div>
 
