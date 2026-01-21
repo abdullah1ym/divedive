@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronRight, CheckCircle, XCircle, Library, Zap, Lock, ChevronDown, ChevronUp, Layers, List, Unlock, Lightbulb, AlertCircle } from "lucide-react";
+import { ChevronRight, CheckCircle, XCircle, Library, Zap, Lock, ChevronDown, ChevronUp, Layers, List, Unlock, Lightbulb, AlertCircle, Flag, X } from "lucide-react";
 import { Collection } from "@/components/LessonGrid";
 import { useSkillProgress } from "@/contexts/SkillProgressContext";
 
@@ -34,7 +34,7 @@ const CollectionView = ({ collection, onBack }: CollectionViewProps) => {
       const selectedBank = collection.banks.find(b => b.id === selectedBankId);
       return selectedBank ? selectedBank.questions : [];
     }
-    return questions;
+    return collection.questions;
   })();
 
   // Progressive mode state
@@ -50,6 +50,11 @@ const CollectionView = ({ collection, onBack }: CollectionViewProps) => {
 
   // Notification for questions moved to "راجع أخطاءك"
   const [reviewNotification, setReviewNotification] = useState<{ show: boolean; questionPrompt: string }>({ show: false, questionPrompt: "" });
+
+  // Report modal state
+  const [reportModal, setReportModal] = useState<{ show: boolean; questionId: string; questionPrompt: string }>({ show: false, questionId: "", questionPrompt: "" });
+  const [reportReason, setReportReason] = useState<string>("");
+  const [reportSubmitted, setReportSubmitted] = useState(false);
 
   const questionRefs = useRef<(HTMLDivElement | null)[]>([]);
 
@@ -199,6 +204,30 @@ const CollectionView = ({ collection, onBack }: CollectionViewProps) => {
     setFailedAttempts({});
   };
 
+  // Handle report submission
+  const handleReportSubmit = () => {
+    if (!reportReason.trim()) return;
+
+    // Save report to localStorage
+    const reports = JSON.parse(localStorage.getItem("questionReports") || "[]");
+    reports.push({
+      questionId: reportModal.questionId,
+      questionPrompt: reportModal.questionPrompt,
+      collectionId: collection.id,
+      collectionName: collection.name,
+      reason: reportReason,
+      timestamp: new Date().toISOString(),
+    });
+    localStorage.setItem("questionReports", JSON.stringify(reports));
+
+    setReportSubmitted(true);
+    setTimeout(() => {
+      setReportModal({ show: false, questionId: "", questionPrompt: "" });
+      setReportReason("");
+      setReportSubmitted(false);
+    }, 1500);
+  };
+
   return (
     <div className="relative">
       {/* Bank Sidebar - fixed on the left side */}
@@ -242,6 +271,88 @@ const CollectionView = ({ collection, onBack }: CollectionViewProps) => {
               <p className="font-bold text-sm">انتقل السؤال لـ "راجع أخطاءك"</p>
               <p className="text-xs opacity-90 mt-1">يمكنك مراجعته لاحقاً من القائمة الرئيسية</p>
             </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Report Modal */}
+      <AnimatePresence>
+        {reportModal.show && (
+          <motion.div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => !reportSubmitted && setReportModal({ show: false, questionId: "", questionPrompt: "" })}
+          >
+            <motion.div
+              className="bg-card rounded-3xl p-6 m-4 max-w-md w-full shadow-xl border border-border"
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              {reportSubmitted ? (
+                <div className="text-center py-8">
+                  <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
+                  <p className="text-lg font-bold">تم إرسال البلاغ</p>
+                  <p className="text-sm text-muted-foreground mt-2">شكراً لمساعدتك في تحسين الأسئلة</p>
+                </div>
+              ) : (
+                <>
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-lg font-bold flex items-center gap-2">
+                      <Flag className="w-5 h-5 text-red-500" />
+                      الإبلاغ عن السؤال
+                    </h3>
+                    <button
+                      onClick={() => setReportModal({ show: false, questionId: "", questionPrompt: "" })}
+                      className="p-2 hover:bg-muted rounded-full transition-colors"
+                    >
+                      <X className="w-5 h-5" />
+                    </button>
+                  </div>
+
+                  <p className="text-sm text-muted-foreground mb-4 line-clamp-2" dangerouslySetInnerHTML={{ __html: reportModal.questionPrompt }} />
+
+                  <div className="space-y-2 mb-4">
+                    <p className="text-sm font-medium">سبب البلاغ:</p>
+                    <div className="space-y-2">
+                      {[
+                        { id: "wrong-answer", label: "الإجابة الصحيحة خاطئة" },
+                        { id: "unclear", label: "السؤال غير واضح" },
+                        { id: "typo", label: "خطأ إملائي أو كتابي" },
+                        { id: "technical", label: "مشكلة تقنية" },
+                      ].map((option) => (
+                        <button
+                          key={option.id}
+                          onClick={() => setReportReason(option.label)}
+                          className={`w-full text-right px-4 py-3 rounded-xl text-sm font-medium transition-all border ${
+                            reportReason === option.label
+                              ? 'bg-violet-500/20 border-violet-400 text-violet-400'
+                              : 'bg-muted/50 border-transparent hover:bg-muted'
+                          }`}
+                        >
+                          {option.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={handleReportSubmit}
+                    disabled={!reportReason}
+                    className={`w-full py-3 rounded-2xl font-bold transition-all ${
+                      reportReason
+                        ? 'bg-violet-500/90 text-white hover:bg-violet-500'
+                        : 'bg-muted text-muted-foreground cursor-not-allowed'
+                    }`}
+                  >
+                    إرسال البلاغ
+                  </button>
+                </>
+              )}
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -398,7 +509,16 @@ const CollectionView = ({ collection, onBack }: CollectionViewProps) => {
                       animate={{ opacity: 1, x: 0, y: 0, scale: 1 }}
                       transition={{ duration: 0.4, ease: "easeOut" }}
                     >
-                      <div className="p-8">
+                      <div className="p-8 relative">
+                        {/* Report Button */}
+                        <button
+                          onClick={() => setReportModal({ show: true, questionId: question.id, questionPrompt: question.prompt })}
+                          className="absolute top-3 left-3 p-2 rounded-full hover:bg-muted transition-colors text-muted-foreground hover:text-red-500"
+                          title="الإبلاغ عن السؤال"
+                        >
+                          <Flag className="w-4 h-4" />
+                        </button>
+
                         <div className="flex items-start gap-4 mb-6">
                           <span className={`flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center text-lg font-bold ${
                             isAnswered
@@ -552,7 +672,16 @@ const CollectionView = ({ collection, onBack }: CollectionViewProps) => {
                     y: 0
                   }}
                 >
-                  <div className="bg-card rounded-3xl p-8">
+                  <div className="bg-card rounded-3xl p-8 relative">
+                    {/* Report Button */}
+                    <button
+                      onClick={() => setReportModal({ show: true, questionId: question.id, questionPrompt: question.prompt })}
+                      className="absolute top-3 left-3 p-2 rounded-full hover:bg-muted transition-colors text-muted-foreground hover:text-red-500"
+                      title="الإبلاغ عن السؤال"
+                    >
+                      <Flag className="w-4 h-4" />
+                    </button>
+
                     <div className="flex items-start gap-4 mb-6">
                       <span className={`flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center text-lg font-bold ${
                         isAnswered
@@ -664,7 +793,7 @@ const CollectionView = ({ collection, onBack }: CollectionViewProps) => {
             return (
               <motion.div
                 key={`${originalQuestion.id}-${variantIndex[qIndex] || 0}`}
-                className="bg-card rounded-3xl p-8"
+                className="bg-card rounded-3xl p-8 relative"
                 initial={(variantIndex[qIndex] || 0) > 0 ? { opacity: 0, x: 300 } : { opacity: 0, y: 20 }}
                 animate={{
                   opacity: 1,
@@ -673,6 +802,15 @@ const CollectionView = ({ collection, onBack }: CollectionViewProps) => {
                 }}
                 transition={{ duration: 0.4, ease: "easeOut" }}
               >
+                {/* Report Button */}
+                <button
+                  onClick={() => setReportModal({ show: true, questionId: question.id, questionPrompt: question.prompt })}
+                  className="absolute top-3 left-3 p-2 rounded-full hover:bg-muted transition-colors text-muted-foreground hover:text-red-500"
+                  title="الإبلاغ عن السؤال"
+                >
+                  <Flag className="w-4 h-4" />
+                </button>
+
                 <div className="flex items-start gap-4 mb-6">
                   <span className={`flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center text-lg font-bold ${
                     isAnswered

@@ -58,6 +58,13 @@ const Index = () => {
     setSelectedMixedExercise(null);
   };
 
+  const handleSectionChange = (section: string) => {
+    setActiveSection(section);
+    // Clear any open views when changing sections
+    setSelectedMixedExercise(null);
+    setSelectedCollection(null);
+  };
+
   const handleExerciseClickWithFullPage = (exercise: Exercise) => {
     // If it's a mixed exercise, open full page view
     if (exercise.category === "mixed" || exercise.type === "mixed") {
@@ -76,7 +83,7 @@ const Index = () => {
       <div className="fixed inset-0 bg-gradient-to-b from-primary/5 via-transparent to-turquoise/5 pointer-events-none z-0" />
 
       {/* Sidebar */}
-      <Sidebar activeSection={activeSection} onSectionChange={setActiveSection} />
+      <Sidebar activeSection={activeSection} onSectionChange={handleSectionChange} />
 
       {/* Main Content */}
       <div className="mr-20 relative z-10">

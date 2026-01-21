@@ -104,6 +104,7 @@ const SimulationTestView = ({ exercise, onBack }: SimulationTestViewProps) => {
     1: false, 2: false, 3: false, 4: false, 5: false
   });
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [showExitModal, setShowExitModal] = useState(false);
   const [unansweredCount, setUnansweredCount] = useState(0);
 
   const questionRef = useRef<HTMLDivElement>(null);
@@ -331,6 +332,56 @@ const SimulationTestView = ({ exercise, onBack }: SimulationTestViewProps) => {
         )}
       </AnimatePresence>
 
+      {/* Exit Confirmation Modal */}
+      <AnimatePresence>
+        {showExitModal && (
+          <motion.div
+            className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setShowExitModal(false)}
+          >
+            <motion.div
+              className="bg-card rounded-3xl p-6 max-w-md mx-4 shadow-2xl"
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              onClick={e => e.stopPropagation()}
+            >
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-12 h-12 rounded-full bg-red-500/20 flex items-center justify-center">
+                  <AlertTriangle className="w-6 h-6 text-red-500" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold">الخروج من الاختبار؟</h3>
+                  <p className="text-sm text-muted-foreground">سيتم فقدان تقدمك الحالي</p>
+                </div>
+              </div>
+
+              <p className="text-sm text-muted-foreground mb-6">
+                أنت على وشك الخروج من الاختبار التجريبي. لن يتم حفظ إجاباتك.
+              </p>
+
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setShowExitModal(false)}
+                  className="flex-1 py-3 bg-muted hover:bg-muted/80 rounded-xl font-bold transition-colors"
+                >
+                  متابعة الاختبار
+                </button>
+                <button
+                  onClick={onBack}
+                  className="flex-1 py-3 bg-red-500 text-white hover:bg-red-600 rounded-xl font-bold transition-colors"
+                >
+                  خروج
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Header */}
       <motion.div
         className="flex items-center gap-3 mb-6 sticky top-4 bg-card/95 backdrop-blur-sm py-4 px-4 z-30 rounded-3xl shadow-sm border border-border/50"
@@ -338,7 +389,7 @@ const SimulationTestView = ({ exercise, onBack }: SimulationTestViewProps) => {
         animate={{ opacity: 1, y: 0 }}
       >
         <button
-          onClick={onBack}
+          onClick={() => submitted ? onBack() : setShowExitModal(true)}
           className="p-2 hover:bg-muted rounded-full transition-colors"
         >
           <ChevronRight className="w-6 h-6" />
