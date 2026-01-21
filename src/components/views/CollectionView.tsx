@@ -23,6 +23,20 @@ const CollectionView = ({ collection, onBack }: CollectionViewProps) => {
   const [viewMode, setViewMode] = useState<ViewMode>("progressive");
   const [showModeSelector, setShowModeSelector] = useState(false);
 
+  // Bank selection state for collections with banks
+  const [selectedBankId, setSelectedBankId] = useState<string | null>(
+    collection.banks && collection.banks.length > 0 ? collection.banks[0].id : null
+  );
+
+  // Get the questions array from selected bank or directly from collection
+  const questions = (() => {
+    if (collection.banks && selectedBankId) {
+      const selectedBank = collection.banks.find(b => b.id === selectedBankId);
+      return selectedBank ? selectedBank.questions : [];
+    }
+    return questions;
+  })();
+
   // Progressive mode state
   const [revealedCount, setRevealedCount] = useState(1);
 
@@ -32,7 +46,7 @@ const CollectionView = ({ collection, onBack }: CollectionViewProps) => {
   // Variant tracking - which variant index each question is showing
   const [variantIndex, setVariantIndex] = useState<Record<number, number>>({});
   // Track failed questions with their wrong answers (to show on left side)
-  const [failedAttempts, setFailedAttempts] = useState<Record<number, { question: typeof collection.questions[0], wrongAnswer: number }[]>>({});
+  const [failedAttempts, setFailedAttempts] = useState<Record<number, { question: typeof questions[0], wrongAnswer: number }[]>>({});
 
   // Notification for questions moved to "راجع أخطاءك"
   const [reviewNotification, setReviewNotification] = useState<{ show: boolean; questionPrompt: string }>({ show: false, questionPrompt: "" });
@@ -44,7 +58,7 @@ const CollectionView = ({ collection, onBack }: CollectionViewProps) => {
 
   // Get current question (original or variant)
   const getCurrentQuestion = (qIndex: number) => {
-    const originalQuestion = collection.questions[qIndex];
+    const originalQuestion = questions[qIndex];
     const vIndex = variantIndex[qIndex] || 0;
     if (vIndex === 0 || !originalQuestion.variants) {
       return originalQuestion;
@@ -55,10 +69,10 @@ const CollectionView = ({ collection, onBack }: CollectionViewProps) => {
   const answeredCount = Object.values(answers).filter(a => a !== null).length;
   const score = Object.entries(answers).reduce((acc, [questionId, answerIndex]) => {
     // Check in original questions
-    let question = collection.questions.find(q => q.id === questionId);
+    let question = questions.find(q => q.id === questionId);
     // Check in variants
     if (!question) {
-      for (const q of collection.questions) {
+      for (const q of questions) {
         if (q.variants) {
           const variant = q.variants.find(v => v.id === questionId);
           if (variant) {
@@ -79,7 +93,7 @@ const CollectionView = ({ collection, onBack }: CollectionViewProps) => {
 
     const currentQ = getCurrentQuestion(qIndex);
     const isCorrect = answerIndex === currentQ.correctAnswer;
-    const originalQuestion = collection.questions[qIndex];
+    const originalQuestion = questions[qIndex];
     const currentVIndex = variantIndex[qIndex] || 0;
     const hasMoreVariants = originalQuestion.variants && currentVIndex < originalQuestion.variants.length;
 
@@ -127,7 +141,7 @@ const CollectionView = ({ collection, onBack }: CollectionViewProps) => {
     }
 
     // Progressive mode: reveal next question
-    if (viewMode === "progressive" && qIndex + 1 < collection.questions.length && qIndex + 1 >= revealedCount) {
+    if (viewMode === "progressive" && qIndex + 1 < questions.length && qIndex + 1 >= revealedCount) {
       setTimeout(() => {
         setRevealedCount(prev => Math.max(prev, qIndex + 2));
         setTimeout(() => {
@@ -140,7 +154,7 @@ const CollectionView = ({ collection, onBack }: CollectionViewProps) => {
     }
 
     // Scroll mode: go to next question
-    if (viewMode === "scroll" && qIndex < collection.questions.length - 1) {
+    if (viewMode === "scroll" && qIndex < questions.length - 1) {
       setTimeout(() => {
         scrollToQuestion(qIndex + 1);
       }, 300);
@@ -172,8 +186,47 @@ const CollectionView = ({ collection, onBack }: CollectionViewProps) => {
     }
   };
 
+  // Handle bank selection
+  const handleBankSelect = (bankId: string) => {
+    if (bankId === selectedBankId) return;
+    // Reset all state when switching banks
+    setSelectedBankId(bankId);
+    setAnswers({});
+    setSubmitted(false);
+    setRevealedCount(1);
+    setCurrentIndex(0);
+    setVariantIndex({});
+    setFailedAttempts({});
+  };
+
   return (
-    <div className="max-w-4xl mx-auto pb-8">
+    <div className="relative">
+      {/* Bank Sidebar - fixed on the left side */}
+      {collection.banks && collection.banks.length > 0 && (
+        <div className="fixed left-4 top-24 w-44 z-10">
+          <div className="bg-card rounded-3xl p-4 border border-border/50 shadow-sm">
+            <h3 className="text-sm font-bold text-muted-foreground mb-3 px-2">الإصدارات</h3>
+            <div className="space-y-1 max-h-[70vh] overflow-y-auto">
+              {collection.banks.map((bank) => (
+                <button
+                  key={bank.id}
+                  onClick={() => handleBankSelect(bank.id)}
+                  className={`w-full text-right px-3 py-2.5 rounded-xl text-sm font-medium transition-all ${
+                    selectedBankId === bank.id
+                      ? 'bg-violet-500/90 text-white'
+                      : 'hover:bg-violet-500/10 text-foreground'
+                  }`}
+                >
+                  {bank.name}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Main Content - centered like before */}
+      <div className="max-w-4xl mx-auto pb-8">
       {/* Notification for "راجع أخطاءك" */}
       <AnimatePresence>
         {reviewNotification.show && (
@@ -255,7 +308,7 @@ const CollectionView = ({ collection, onBack }: CollectionViewProps) => {
 
         <div className="flex-shrink-0 text-center min-w-[60px]">
           <p className="text-xs text-muted-foreground">التقدم</p>
-          <p className="text-base font-bold">{answeredCount}/{collection.questions.length}</p>
+          <p className="text-base font-bold">{answeredCount}/{questions.length}</p>
         </div>
       </motion.div>
 
@@ -269,7 +322,7 @@ const CollectionView = ({ collection, onBack }: CollectionViewProps) => {
           <motion.div
             className="h-full bg-gradient-to-r from-blue-500 via-violet-500 to-purple-600 shadow-lg shadow-violet-500/50 rounded-full"
             initial={{ width: 0 }}
-            animate={{ width: `${(answeredCount / collection.questions.length) * 100}%` }}
+            animate={{ width: `${(answeredCount / questions.length) * 100}%` }}
             transition={{ duration: 0.5, ease: "easeOut" }}
           />
         </div>
@@ -277,7 +330,7 @@ const CollectionView = ({ collection, onBack }: CollectionViewProps) => {
 
       {/* Results Banner */}
       {submitted && (() => {
-        const percentage = (score / collection.questions.length) * 100;
+        const percentage = (score / questions.length) * 100;
         const gradeColor = percentage >= 80 ? 'green' : percentage >= 50 ? 'yellow' : 'red';
         const bgClass = gradeColor === 'green'
           ? 'from-green-500/20 to-primary/20'
@@ -299,11 +352,11 @@ const CollectionView = ({ collection, onBack }: CollectionViewProps) => {
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="text-xl font-bold mb-1">النتيجة</h2>
-                <p className={`text-4xl font-bold ${textClass}`}>{score}/{collection.questions.length}</p>
+                <p className={`text-4xl font-bold ${textClass}`}>{score}/{questions.length}</p>
                 <p className="text-sm text-muted-foreground mt-1">
-                  {score === collection.questions.length
+                  {score === questions.length
                     ? "ممتاز! إجابات صحيحة بالكامل"
-                    : score >= collection.questions.length / 2
+                    : score >= questions.length / 2
                     ? "جيد جداً! استمر في التدريب"
                     : "حاول مرة أخرى للتحسن"}
                 </p>
@@ -321,7 +374,7 @@ const CollectionView = ({ collection, onBack }: CollectionViewProps) => {
       {viewMode === "progressive" && (
         <div className="space-y-4">
           <AnimatePresence mode="popLayout">
-            {collection.questions.map((originalQuestion, qIndex) => {
+            {questions.map((originalQuestion, qIndex) => {
               const question = getCurrentQuestion(qIndex);
               const selectedAnswer = answers[question.id];
               const isRevealed = qIndex < revealedCount || submitted;
@@ -356,7 +409,7 @@ const CollectionView = ({ collection, onBack }: CollectionViewProps) => {
                               isCorrect ? <CheckCircle className="w-6 h-6" /> : <XCircle className="w-6 h-6" />
                             ) : qIndex + 1}
                           </span>
-                          <p className="text-xl font-medium pt-2">{question.prompt}</p>
+                          <p className="text-xl font-medium pt-2" dangerouslySetInnerHTML={{ __html: question.prompt }} />
                         </div>
                         <div className="grid grid-cols-2 gap-3 mr-16">
                           {question.options.map((option, optIndex) => {
@@ -465,10 +518,10 @@ const CollectionView = ({ collection, onBack }: CollectionViewProps) => {
             })}
           </AnimatePresence>
 
-          {!submitted && revealedCount < collection.questions.length && (
+          {!submitted && revealedCount < questions.length && (
             <motion.div className="flex items-center justify-center gap-3 py-8 text-muted-foreground">
               <Lock className="w-5 h-5" />
-              <span>{collection.questions.length - revealedCount} أسئلة متبقية</span>
+              <span>{questions.length - revealedCount} أسئلة متبقية</span>
             </motion.div>
           )}
         </div>
@@ -478,7 +531,7 @@ const CollectionView = ({ collection, onBack }: CollectionViewProps) => {
       {viewMode === "scroll" && (
         <>
           <div className="relative">
-            {collection.questions.map((originalQuestion, qIndex) => {
+            {questions.map((originalQuestion, qIndex) => {
               const question = getCurrentQuestion(qIndex);
               const selectedAnswer = answers[question.id];
               const isActive = qIndex === currentIndex;
@@ -510,7 +563,7 @@ const CollectionView = ({ collection, onBack }: CollectionViewProps) => {
                           isCorrect ? <CheckCircle className="w-6 h-6" /> : <XCircle className="w-6 h-6" />
                         ) : qIndex + 1}
                       </span>
-                      <p className="text-xl font-medium pt-2">{question.prompt}</p>
+                      <p className="text-xl font-medium pt-2" dangerouslySetInnerHTML={{ __html: question.prompt }} />
                     </div>
                     <div className="grid grid-cols-2 gap-3 mr-16">
                       {question.options.map((option, optIndex) => {
@@ -576,9 +629,9 @@ const CollectionView = ({ collection, onBack }: CollectionViewProps) => {
               <ChevronUp className="w-6 h-6" />
             </motion.button>
             <motion.button
-              onClick={() => scrollToQuestion(Math.min(collection.questions.length - 1, currentIndex + 1))}
-              disabled={currentIndex === collection.questions.length - 1}
-              className={`p-3 rounded-full bg-card shadow-lg ${currentIndex === collection.questions.length - 1 ? "opacity-30" : "hover:bg-muted"}`}
+              onClick={() => scrollToQuestion(Math.min(questions.length - 1, currentIndex + 1))}
+              disabled={currentIndex === questions.length - 1}
+              className={`p-3 rounded-full bg-card shadow-lg ${currentIndex === questions.length - 1 ? "opacity-30" : "hover:bg-muted"}`}
             >
               <ChevronDown className="w-6 h-6" />
             </motion.button>
@@ -586,7 +639,7 @@ const CollectionView = ({ collection, onBack }: CollectionViewProps) => {
 
           {/* Progress Dots */}
           <div className="fixed left-8 bottom-8 flex flex-col gap-1.5 z-20">
-            {collection.questions.map((q, idx) => (
+            {questions.map((q, idx) => (
               <button
                 key={q.id}
                 onClick={() => scrollToQuestion(idx)}
@@ -602,7 +655,7 @@ const CollectionView = ({ collection, onBack }: CollectionViewProps) => {
       {/* MODE 3: Normal (All questions visible) */}
       {viewMode === "normal" && (
         <div className="space-y-6">
-          {collection.questions.map((originalQuestion, qIndex) => {
+          {questions.map((originalQuestion, qIndex) => {
             const question = getCurrentQuestion(qIndex);
             const selectedAnswer = answers[question.id];
             const isAnswered = selectedAnswer !== undefined && selectedAnswer !== null;
@@ -630,7 +683,7 @@ const CollectionView = ({ collection, onBack }: CollectionViewProps) => {
                       isCorrect ? <CheckCircle className="w-6 h-6" /> : <XCircle className="w-6 h-6" />
                     ) : qIndex + 1}
                   </span>
-                  <p className="text-xl font-medium pt-2">{question.prompt}</p>
+                  <p className="text-xl font-medium pt-2" dangerouslySetInnerHTML={{ __html: question.prompt }} />
                 </div>
                 <div className="grid grid-cols-2 gap-3 mr-16">
                   {question.options.map((option, optIndex) => {
@@ -695,18 +748,18 @@ const CollectionView = ({ collection, onBack }: CollectionViewProps) => {
         >
           <motion.button
             onClick={handleSubmit}
-            disabled={answeredCount < collection.questions.length}
+            disabled={answeredCount < questions.length}
             className={`w-full py-4 rounded-3xl font-bold text-lg shadow-lg transition-all ${
-              answeredCount === collection.questions.length
+              answeredCount === questions.length
                 ? "bg-primary text-primary-foreground hover:bg-primary/90"
                 : "bg-muted text-muted-foreground cursor-not-allowed"
             }`}
-            whileHover={answeredCount === collection.questions.length ? { scale: 1.02 } : {}}
-            whileTap={answeredCount === collection.questions.length ? { scale: 0.98 } : {}}
+            whileHover={answeredCount === questions.length ? { scale: 1.02 } : {}}
+            whileTap={answeredCount === questions.length ? { scale: 0.98 } : {}}
           >
-            {answeredCount === collection.questions.length
+            {answeredCount === questions.length
               ? "تسليم الإجابات"
-              : `أجب على جميع الأسئلة (${answeredCount}/${collection.questions.length})`}
+              : `أجب على جميع الأسئلة (${answeredCount}/${questions.length})`}
           </motion.button>
         </motion.div>
       )}
@@ -724,6 +777,7 @@ const CollectionView = ({ collection, onBack }: CollectionViewProps) => {
           العودة للرئيسية
         </motion.button>
       )}
+      </div>
     </div>
   );
 };
