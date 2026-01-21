@@ -127,47 +127,57 @@ const defaultExercises: Exercise[] = [
   },
 ];
 
-const STORAGE_KEY = "divedive-exercises";
+const STORAGE_KEY = "divedive-custom-exercises";
 
 const ExercisesContext = createContext<ExercisesContextType | undefined>(undefined);
 
 export const ExercisesProvider = ({ children }: { children: ReactNode }) => {
-  const [exercises, setExercises] = useState<Exercise[]>(() => {
+  // Custom exercises added by user (stored in localStorage)
+  const [customExercises, setCustomExercises] = useState<Exercise[]>(() => {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored) {
       try {
         const parsed = JSON.parse(stored);
-        // If parsed is empty or invalid, use defaults
-        if (!Array.isArray(parsed) || parsed.length === 0) {
-          return defaultExercises;
+        if (Array.isArray(parsed)) {
+          return parsed;
         }
-        return parsed;
       } catch {
-        return defaultExercises;
+        // ignore parse errors
       }
     }
-    return defaultExercises;
+    return [];
   });
 
+  // Always merge default exercises with custom ones - defaults are permanent
+  const exercises = [...defaultExercises, ...customExercises];
+
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(exercises));
-  }, [exercises]);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(customExercises));
+  }, [customExercises]);
+
+  const isDefaultExercise = (id: string) => {
+    return defaultExercises.some(e => e.id === id);
+  };
 
   const addExercise = (exercise: Omit<Exercise, "id">) => {
     const categoryPrefix = exercise.category.substring(0, 3);
-    const categoryExercises = exercises.filter(e => e.category === exercise.category);
-    const newId = `${categoryPrefix}-${categoryExercises.length + 1}`;
-    setExercises(prev => [...prev, { ...exercise, id: newId }]);
+    const allCategoryExercises = exercises.filter(e => e.category === exercise.category);
+    const newId = `custom-${categoryPrefix}-${Date.now()}`;
+    setCustomExercises(prev => [...prev, { ...exercise, id: newId }]);
   };
 
   const updateExercise = (id: string, updates: Partial<Exercise>) => {
-    setExercises(prev => prev.map(exercise =>
+    // Don't allow editing default exercises
+    if (isDefaultExercise(id)) return;
+    setCustomExercises(prev => prev.map(exercise =>
       exercise.id === id ? { ...exercise, ...updates } : exercise
     ));
   };
 
   const deleteExercise = (id: string) => {
-    setExercises(prev => prev.filter(exercise => exercise.id !== id));
+    // Don't allow deleting default exercises
+    if (isDefaultExercise(id)) return;
+    setCustomExercises(prev => prev.filter(exercise => exercise.id !== id));
   };
 
   const getExercisesByCategory = (category: string) => {
@@ -186,7 +196,7 @@ export const ExercisesProvider = ({ children }: { children: ReactNode }) => {
 
   const resetToDefaults = () => {
     localStorage.removeItem(STORAGE_KEY);
-    setExercises(defaultExercises);
+    setCustomExercises([]);
   };
 
   return (

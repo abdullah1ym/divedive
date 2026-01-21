@@ -5,11 +5,11 @@ import { useExercises, Exercise, Question } from "@/contexts/ExercisesContext";
 import QuestionEditor from "./QuestionEditor";
 
 const categories = [
-  { id: "tones", label: "تمييز النغمات" },
-  { id: "words", label: "الكلمات والمقاطع" },
-  { id: "sentences", label: "الجمل والحوارات" },
-  { id: "environment", label: "الأصوات البيئية" },
-  { id: "advanced", label: "التدريب المتقدم" },
+  { id: "quantitative", label: "الكمي - حساب" },
+  { id: "algebra", label: "الكمي - جبر" },
+  { id: "verbal", label: "اللفظي - استيعاب" },
+  { id: "analogy", label: "اللفظي - تناظر" },
+  { id: "mixed", label: "اختبار محاكي" },
 ];
 
 const difficulties = [
@@ -19,25 +19,26 @@ const difficulties = [
 ];
 
 const types = [
-  { id: "tone", label: "نغمات" },
-  { id: "word", label: "كلمات" },
-  { id: "sentence", label: "جمل" },
-  { id: "environment", label: "بيئة" },
+  { id: "quantitative", label: "كمي" },
+  { id: "algebra", label: "جبر" },
+  { id: "verbal", label: "لفظي" },
+  { id: "analogy", label: "تناظر" },
+  { id: "mixed", label: "شامل" },
 ];
 
 const ExerciseManager = () => {
   const { exercises, addExercise, updateExercise, deleteExercise, resetToDefaults } = useExercises();
   const [editingId, setEditingId] = useState<string | null>(null);
   const [isAdding, setIsAdding] = useState(false);
-  const [expandedCategory, setExpandedCategory] = useState<string | null>("tones");
+  const [expandedCategory, setExpandedCategory] = useState<string | null>("quantitative");
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
 
   const [form, setForm] = useState<Omit<Exercise, "id">>({
     title: "",
     description: "",
-    category: "tones",
+    category: "quantitative",
     difficulty: "beginner",
-    type: "tone",
+    type: "quantitative",
     duration: "٥ دقائق",
     questions: [],
   });
@@ -62,9 +63,9 @@ const ExerciseManager = () => {
     setForm({
       title: "",
       description: "",
-      category: "tones",
+      category: "quantitative",
       difficulty: "beginner",
-      type: "tone",
+      type: "quantitative",
       duration: "٥ دقائق",
       questions: [],
     });

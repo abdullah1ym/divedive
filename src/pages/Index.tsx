@@ -21,6 +21,7 @@ import SkillMapView from "@/components/views/SkillMapView";
 import ReviewMistakesView from "@/components/views/ReviewMistakesView";
 import CollectionView from "@/components/views/CollectionView";
 import ProfileView from "@/components/views/ProfileView";
+import SimulationTestView from "@/components/views/SimulationTestView";
 
 const Index = () => {
   const [activeSection, setActiveSection] = useState("home");
@@ -29,6 +30,7 @@ const Index = () => {
   const [selectedExercise, setSelectedExercise] = useState<Exercise | null>(null);
   const [exerciseModalOpen, setExerciseModalOpen] = useState(false);
   const [selectedCollection, setSelectedCollection] = useState<Collection | null>(null);
+  const [selectedMixedExercise, setSelectedMixedExercise] = useState<Exercise | null>(null);
 
   const handleExerciseClick = (exercise: Exercise) => {
     setSelectedExercise(exercise);
@@ -46,6 +48,23 @@ const Index = () => {
 
   const handleCollectionBack = () => {
     setSelectedCollection(null);
+  };
+
+  const handleCategoryChange = (category: string) => {
+    setActiveCategory(category);
+  };
+
+  const handleMixedExerciseBack = () => {
+    setSelectedMixedExercise(null);
+  };
+
+  const handleExerciseClickWithFullPage = (exercise: Exercise) => {
+    // If it's a mixed exercise, open full page view
+    if (exercise.category === "mixed" || exercise.type === "mixed") {
+      setSelectedMixedExercise(exercise);
+    } else {
+      handleExerciseClick(exercise);
+    }
   };
 
   return (
@@ -66,7 +85,9 @@ const Index = () => {
         <main className="p-6">
           <div className="max-w-7xl mx-auto">
             {activeSection === "home" || activeSection === "exercises" ? (
-              selectedCollection ? (
+              selectedMixedExercise ? (
+                <SimulationTestView exercise={selectedMixedExercise} onBack={handleMixedExerciseBack} />
+              ) : selectedCollection ? (
                 <CollectionView
                   collection={selectedCollection}
                   onBack={handleCollectionBack}
@@ -87,14 +108,14 @@ const Index = () => {
                   <div className="mb-6">
                     <CategoryTabs
                       activeCategory={activeCategory}
-                      onCategoryChange={setActiveCategory}
+                      onCategoryChange={handleCategoryChange}
                     />
                   </div>
 
                   {/* Lesson Grid */}
                   <LessonGrid
                     category={activeCategory}
-                    onExerciseClick={handleExerciseClick}
+                    onExerciseClick={handleExerciseClickWithFullPage}
                     onCollectionClick={handleCollectionClick}
                   />
                 </>

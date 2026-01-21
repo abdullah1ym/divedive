@@ -53,8 +53,11 @@ const DataExport = () => {
           throw new Error("Invalid backup file structure");
         }
 
-        // Import to localStorage
-        localStorage.setItem("divedive-exercises", JSON.stringify(data.exercises));
+        // Import to localStorage (only custom exercises, defaults are permanent)
+        // Filter out default exercise IDs to avoid duplicates
+        const defaultIds = ["quant-1", "quant-2", "algebra-1", "algebra-2", "verbal-1", "analogy-1", "mixed-1"];
+        const customOnly = data.exercises.filter((e: any) => !defaultIds.includes(e.id));
+        localStorage.setItem("divedive-custom-exercises", JSON.stringify(customOnly));
         localStorage.setItem("divedive-lessons", JSON.stringify(data.lessons));
         localStorage.setItem("divedive-skills", JSON.stringify(data.skills));
 
@@ -73,10 +76,13 @@ const DataExport = () => {
   };
 
   const handleResetAll = () => {
+    // Clear both old and new keys for cleanup
     localStorage.removeItem("divedive-exercises");
+    localStorage.removeItem("divedive-custom-exercises");
     localStorage.removeItem("divedive-lessons");
     localStorage.removeItem("divedive-skills");
     window.location.reload();
+    // Note: Default exercises will still appear after reload (they're permanent in code)
   };
 
   return (

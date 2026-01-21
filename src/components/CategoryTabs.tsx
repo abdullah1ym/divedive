@@ -10,7 +10,7 @@ interface CategoryTabsProps {
 const sets = [
   { id: "math", label: "الكمي", icon: Calculator, color: "coral", hasSupersets: true },
   { id: "verbal", label: "اللفظي", icon: FileText, color: "turquoise", hasSupersets: true },
-  { id: "mixed", label: "اختبار شامل", icon: BarChart3, color: "jellyfish", hasSupersets: false },
+  { id: "mixed", label: "اختبار محاكي", icon: BarChart3, color: "jellyfish", hasSupersets: false },
 ];
 
 const supersets: Record<string, { id: string; label: string; icon: typeof Calculator; color: string }[]> = {

@@ -302,7 +302,7 @@ const categoryNames: Record<string, string> = {
   "all-verbal": "اللفظي - الكل",
   "verbal": "اللفظي - استيعاب",
   "analogy": "اللفظي - تناظر",
-  "mixed": "اختبار شامل",
+  "mixed": "اختبار محاكي",
 };
 
 const difficultyLabels: Record<string, string> = {
