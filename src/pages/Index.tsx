@@ -69,6 +69,38 @@ const Index = () => {
     // If it's a mixed exercise, open full page view
     if (exercise.category === "mixed" || exercise.type === "mixed") {
       setSelectedMixedExercise(exercise);
+    } else if (exercise.id === "quant-2") {
+      // النسب والتناسب - open with CollectionView for better features
+      const howToSolveGuides: Record<string, string> = {
+        "q1": "لإيجاد نسبة مئوية من عدد:\n\n١. حوّل النسبة المئوية إلى كسر عشري (اقسم على ١٠٠)\n٢. اضرب في العدد\n\nمثال: ٢٠٪ من ١٥٠\n= ٢٠ ÷ ١٠٠ × ١٥٠\n= ٠٫٢ × ١٥٠\n= ٣٠",
+        "q2": "لحل التناسب أ:ب = ج:د\n\nاستخدم الضرب التبادلي:\nأ × د = ب × ج\n\nمثال: ٣:٥ = س:٢٠\n٣ × ٢٠ = ٥ × س\n٦٠ = ٥س\nس = ١٢",
+        "q3": "لإيجاد قيمة مجهولة في نسبة:\n\n١. اكتب النسبة كتناسب\n٢. استخدم الضرب التبادلي\n\nمثال: ٤:٣ = ١٦:س\n٤ × س = ٣ × ١٦\n٤س = ٤٨\nس = ١٢",
+        "q4": "لتبسيط النسبة:\n\n١. أوجد القاسم المشترك الأكبر (ق.م.أ)\n٢. اقسم كلا الطرفين على ق.م.أ\n\nمثال: ١٨:٢٤\nق.م.أ = ٦\n١٨÷٦ : ٢٤÷٦ = ٣:٤",
+        "q5": "لتقسيم مبلغ بنسبة معينة:\n\n١. اجمع أجزاء النسبة\n٢. اقسم المبلغ على المجموع\n٣. اضرب في نصيب كل شخص\n\nمثال: ٢٠٠ بنسبة ٣:٢\nالمجموع = ٥\nنصيب الأول = ٣/٥ × ٢٠٠ = ١٢٠",
+        "q6": "لإيجاد نسبة مئوية من عدد:\n\n١. حوّل النسبة المئوية إلى كسر عشري\n٢. اضرب في العدد\n\nمثال: ١٥٪ من ٢٠٠\n= ٠٫١٥ × ٢٠٠ = ٣٠",
+        "q7": "إذا عُلمت النسبة وقيمة أحد الطرفين:\n\n١. اكتب النسبة ككسر\n٢. عوّض بالقيمة المعلومة\n٣. حل المعادلة\n\nمثال: أ:ب = ٢:٥، ب=٢٥\nأ/٢٥ = ٢/٥\nأ = ١٠",
+        "q8": "لحساب نسبة الزيادة المئوية:\n\n١. احسب الفرق (الزيادة)\n٢. اقسم على القيمة الأصلية\n٣. اضرب في ١٠٠\n\nمثال: من ٨٠ إلى ١٠٠\nالزيادة = ٢٠\nالنسبة = ٢٠/٨٠ × ١٠٠ = ٢٥٪",
+        "q9": "لحل نسبة ثلاثية:\n\n١. اجمع جميع الأجزاء\n٢. اقسم الكل على المجموع لإيجاد قيمة الجزء\n٣. اضرب في نصيب المطلوب\n\nمثال: ٢:٣:٥، المجموع=٥٠\nالأجزاء = ١٠، الجزء = ٥\nالأكبر = ٥×٥ = ٢٥",
+        "q10": "لإيجاد العدد الأصلي من نسبته المئوية:\n\n١. اكتب المعادلة\n٢. حوّل النسبة لكسر عشري\n٣. اقسم على الكسر العشري\n\nمثال: ٤٠٪ من س = ٢٠\n٠٫٤ × س = ٢٠\nس = ٢٠ ÷ ٠٫٤ = ٥٠",
+      };
+      const ratiosCollection: Collection = {
+        id: "quant-2-collection",
+        name: exercise.title,
+        description: exercise.description,
+        category: "quantitative",
+        hasFlipFeature: true,
+        questions: exercise.questions.map((q, idx) => ({
+          id: q.id,
+          prompt: q.prompt,
+          options: q.options,
+          correctAnswer: q.correctAnswer,
+          explanation: (q as any).explanation,
+          skillTag: "ratios",
+          howToSolve: howToSolveGuides[q.id],
+          variants: (q as any).variants,
+        })),
+      };
+      setSelectedCollection(ratiosCollection);
     } else {
       handleExerciseClick(exercise);
     }

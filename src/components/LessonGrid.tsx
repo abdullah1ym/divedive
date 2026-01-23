@@ -10,6 +10,7 @@ export interface Question {
   correctAnswer: number;
   explanation?: string;
   skillTag?: string;
+  howToSolve?: string; // شرح طريقة الحل - يظهر عند قلب البطاقة
   variants?: Array<{
     id: string;
     prompt: string;
@@ -34,6 +35,7 @@ export interface Collection {
   category: "quantitative" | "verbal";
   questions: Question[];
   banks?: Bank[]; // للتجميعات التي تحتوي على بنوك متعددة
+  hasFlipFeature?: boolean; // ميزة قلب البطاقة لعرض طريقة الحل
 }
 
 // التجميعات المثبتة

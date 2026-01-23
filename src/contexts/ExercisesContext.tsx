@@ -6,6 +6,14 @@ export interface Question {
   audioPlaceholder: string;
   options: string[];
   correctAnswer: number;
+  explanation?: string;
+  variants?: Array<{
+    id: string;
+    prompt: string;
+    options: string[];
+    correctAnswer: number;
+    explanation?: string;
+  }>;
 }
 
 export interface Exercise {
@@ -51,10 +59,118 @@ const defaultExercises: Exercise[] = [
     category: "quantitative",
     difficulty: "intermediate",
     type: "quantitative",
-    duration: "٧ دقائق",
+    duration: "١٥ دقيقة",
     questions: [
-      { id: "q1", prompt: "ما هي ٢٠٪ من ١٥٠ ؟", audioPlaceholder: "مسألة نسب", options: ["٢٥", "٣٠", "٣٥", "٤٠"], correctAnswer: 1 },
-      { id: "q2", prompt: "إذا كان ٣:٥ = س:٢٠، فما قيمة س؟", audioPlaceholder: "مسألة تناسب", options: ["١٠", "١٢", "١٥", "١٨"], correctAnswer: 1 },
+      {
+        id: "q1",
+        prompt: "ما هي ٢٠٪ من ١٥٠ ؟",
+        audioPlaceholder: "مسألة نسب",
+        options: ["٢٥", "٣٠", "٣٥", "٤٠"],
+        correctAnswer: 1,
+        explanation: "٢٠٪ من ١٥٠ = (٢٠/١٠٠) × ١٥٠ = ٠٫٢ × ١٥٠ = ٣٠",
+        variants: [
+          { id: "q1-v1", prompt: "ما هي ٢٥٪ من ٢٠٠ ؟", options: ["٤٠", "٥٠", "٦٠", "٧٥"], correctAnswer: 1, explanation: "٢٥٪ من ٢٠٠ = (٢٥/١٠٠) × ٢٠٠ = ٥٠" },
+          { id: "q1-v2", prompt: "ما هي ١٥٪ من ٢٠٠ ؟", options: ["٢٥", "٣٠", "٣٥", "٤٠"], correctAnswer: 1, explanation: "١٥٪ من ٢٠٠ = (١٥/١٠٠) × ٢٠٠ = ٣٠" },
+        ],
+      },
+      {
+        id: "q2",
+        prompt: "إذا كان ٣:٥ = س:٢٠، فما قيمة س؟",
+        audioPlaceholder: "مسألة تناسب",
+        options: ["١٠", "١٢", "١٥", "١٨"],
+        correctAnswer: 1,
+        explanation: "بالضرب التبادلي: ٣ × ٢٠ = ٥ × س ← ٦٠ = ٥س ← س = ١٢",
+        variants: [
+          { id: "q2-v1", prompt: "إذا كان ٢:٧ = س:٢١، فما قيمة س؟", options: ["٤", "٦", "٨", "١٠"], correctAnswer: 1, explanation: "بالضرب التبادلي: ٢ × ٢١ = ٧ × س ← ٤٢ = ٧س ← س = ٦" },
+          { id: "q2-v2", prompt: "إذا كان ٤:٩ = س:٢٧، فما قيمة س؟", options: ["٩", "١٢", "١٥", "١٨"], correctAnswer: 1, explanation: "بالضرب التبادلي: ٤ × ٢٧ = ٩ × س ← ١٠٨ = ٩س ← س = ١٢" },
+        ],
+      },
+      {
+        id: "q3",
+        prompt: "نسبة الأولاد إلى البنات ٤:٣، إذا كان عدد الأولاد ١٦، فما عدد البنات؟",
+        audioPlaceholder: "مسألة تناسب",
+        options: ["٩", "١٢", "١٥", "١٨"],
+        correctAnswer: 1,
+        explanation: "٤:٣ = ١٦:س ← بالضرب التبادلي: ٤س = ٤٨ ← س = ١٢",
+        variants: [
+          { id: "q3-v1", prompt: "نسبة الأولاد إلى البنات ٣:٢، إذا كان عدد الأولاد ١٥، فما عدد البنات؟", options: ["٨", "١٠", "١٢", "١٤"], correctAnswer: 1, explanation: "٣:٢ = ١٥:س ← بالضرب التبادلي: ٣س = ٣٠ ← س = ١٠" },
+          { id: "q3-v2", prompt: "نسبة الأولاد إلى البنات ٥:٣، إذا كان عدد الأولاد ٢٠، فما عدد البنات؟", options: ["١٠", "١٢", "١٤", "١٦"], correctAnswer: 1, explanation: "٥:٣ = ٢٠:س ← بالضرب التبادلي: ٥س = ٦٠ ← س = ١٢" },
+        ],
+      },
+      {
+        id: "q4",
+        prompt: "بسّط النسبة ١٨:٢٤",
+        audioPlaceholder: "مسألة نسب",
+        options: ["٢:٣", "٣:٤", "٤:٥", "٥:٦"],
+        correctAnswer: 1,
+        explanation: "القاسم المشترك الأكبر = ٦ ← ١٨÷٦ : ٢٤÷٦ = ٣:٤",
+        variants: [
+          { id: "q4-v1", prompt: "بسّط النسبة ٢٠:٣٥", options: ["٢:٥", "٣:٧", "٤:٧", "٥:٩"], correctAnswer: 2, explanation: "القاسم المشترك الأكبر = ٥ ← ٢٠÷٥ : ٣٥÷٥ = ٤:٧" },
+          { id: "q4-v2", prompt: "بسّط النسبة ٢٤:٣٦", options: ["١:٢", "٢:٣", "٣:٤", "٤:٥"], correctAnswer: 1, explanation: "القاسم المشترك الأكبر = ١٢ ← ٢٤÷١٢ : ٣٦÷١٢ = ٢:٣" },
+        ],
+      },
+      {
+        id: "q5",
+        prompt: "قُسم مبلغ ٢٠٠ ريال بين شخصين بنسبة ٣:٢، كم يحصل الأول؟",
+        audioPlaceholder: "مسألة تناسب",
+        options: ["٨٠", "١٠٠", "١٢٠", "١٤٠"],
+        correctAnswer: 2,
+        explanation: "مجموع الأجزاء = ٣+٢ = ٥ ← نصيب الأول = (٣/٥) × ٢٠٠ = ١٢٠ ريال",
+        variants: [
+          { id: "q5-v1", prompt: "قُسم مبلغ ١٥٠ ريال بين شخصين بنسبة ٢:٣، كم يحصل الثاني؟", options: ["٦٠", "٧٥", "٩٠", "١٠٥"], correctAnswer: 2, explanation: "مجموع الأجزاء = ٢+٣ = ٥ ← نصيب الثاني = (٣/٥) × ١٥٠ = ٩٠ ريال" },
+          { id: "q5-v2", prompt: "قُسم مبلغ ٣٠٠ ريال بين شخصين بنسبة ٤:١، كم يحصل الأول؟", options: ["١٨٠", "٢٠٠", "٢٤٠", "٢٦٠"], correctAnswer: 2, explanation: "مجموع الأجزاء = ٤+١ = ٥ ← نصيب الأول = (٤/٥) × ٣٠٠ = ٢٤٠ ريال" },
+        ],
+      },
+      {
+        id: "q6",
+        prompt: "ما هي ١٥٪ من ٢٠٠ ؟",
+        audioPlaceholder: "مسألة نسب",
+        options: ["٢٥", "٣٠", "٣٥", "٤٠"],
+        correctAnswer: 1,
+        explanation: "١٥٪ من ٢٠٠ = (١٥/١٠٠) × ٢٠٠ = ٣٠",
+      },
+      {
+        id: "q7",
+        prompt: "إذا كان أ:ب = ٢:٥ وَ ب = ٢٥، فما قيمة أ؟",
+        audioPlaceholder: "مسألة تناسب",
+        options: ["٨", "١٠", "١٢", "١٥"],
+        correctAnswer: 1,
+        explanation: "أ/ب = ٢/٥ ← أ/٢٥ = ٢/٥ ← أ = (٢×٢٥)/٥ = ١٠",
+      },
+      {
+        id: "q8",
+        prompt: "زاد سعر منتج من ٨٠ ريال إلى ١٠٠ ريال، ما نسبة الزيادة المئوية؟",
+        audioPlaceholder: "مسألة نسب",
+        options: ["٢٠٪", "٢٥٪", "٣٠٪", "٤٠٪"],
+        correctAnswer: 1,
+        explanation: "الزيادة = ١٠٠ - ٨٠ = ٢٠ ← نسبة الزيادة = (٢٠/٨٠) × ١٠٠ = ٢٥٪",
+        variants: [
+          { id: "q8-v1", prompt: "زاد سعر منتج من ٥٠ ريال إلى ٦٠ ريال، ما نسبة الزيادة المئوية؟", options: ["١٠٪", "١٥٪", "٢٠٪", "٢٥٪"], correctAnswer: 2, explanation: "الزيادة = ٦٠ - ٥٠ = ١٠ ← نسبة الزيادة = (١٠/٥٠) × ١٠٠ = ٢٠٪" },
+          { id: "q8-v2", prompt: "زاد سعر منتج من ٢٠٠ ريال إلى ٢٥٠ ريال، ما نسبة الزيادة المئوية؟", options: ["٢٠٪", "٢٥٪", "٣٠٪", "٥٠٪"], correctAnswer: 1, explanation: "الزيادة = ٢٥٠ - ٢٠٠ = ٥٠ ← نسبة الزيادة = (٥٠/٢٠٠) × ١٠٠ = ٢٥٪" },
+        ],
+      },
+      {
+        id: "q9",
+        prompt: "نسبة أعمار ثلاثة أشخاص ٢:٣:٥، مجموع أعمارهم ٥٠ سنة، ما عمر الأكبر؟",
+        audioPlaceholder: "مسألة تناسب",
+        options: ["١٥", "٢٠", "٢٥", "٣٠"],
+        correctAnswer: 2,
+        explanation: "مجموع الأجزاء = ٢+٣+٥ = ١٠ ← قيمة الجزء = ٥٠÷١٠ = ٥ ← عمر الأكبر = ٥×٥ = ٢٥",
+        variants: [
+          { id: "q9-v1", prompt: "نسبة أعمار ثلاثة أشخاص ١:٢:٣، مجموع أعمارهم ٦٠ سنة، ما عمر الأكبر؟", options: ["٢٠", "٢٥", "٣٠", "٣٥"], correctAnswer: 2, explanation: "مجموع الأجزاء = ١+٢+٣ = ٦ ← قيمة الجزء = ٦٠÷٦ = ١٠ ← عمر الأكبر = ٣×١٠ = ٣٠" },
+        ],
+      },
+      {
+        id: "q10",
+        prompt: "إذا كان ٤٠٪ من س = ٢٠، فما قيمة س؟",
+        audioPlaceholder: "مسألة نسب",
+        options: ["٤٠", "٥٠", "٦٠", "٨٠"],
+        correctAnswer: 1,
+        explanation: "(٤٠/١٠٠) × س = ٢٠ ← ٠٫٤ × س = ٢٠ ← س = ٢٠ ÷ ٠٫٤ = ٥٠",
+        variants: [
+          { id: "q10-v1", prompt: "إذا كان ٢٥٪ من س = ١٥، فما قيمة س؟", options: ["٤٥", "٥٠", "٦٠", "٧٥"], correctAnswer: 2, explanation: "(٢٥/١٠٠) × س = ١٥ ← ٠٫٢٥ × س = ١٥ ← س = ١٥ ÷ ٠٫٢٥ = ٦٠" },
+        ],
+      },
     ],
   },
   {

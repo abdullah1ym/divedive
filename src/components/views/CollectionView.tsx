@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronRight, CheckCircle, XCircle, Library, Zap, Lock, ChevronDown, ChevronUp, Layers, List, Unlock, Lightbulb, AlertCircle, Flag, X } from "lucide-react";
+import { ChevronRight, CheckCircle, XCircle, Library, Zap, Lock, ChevronDown, ChevronUp, Layers, List, Unlock, Lightbulb, AlertCircle, Flag, X, RotateCcw, HelpCircle } from "lucide-react";
 import { Collection } from "@/components/LessonGrid";
 import { useSkillProgress } from "@/contexts/SkillProgressContext";
 
@@ -55,6 +55,9 @@ const CollectionView = ({ collection, onBack }: CollectionViewProps) => {
   const [reportModal, setReportModal] = useState<{ show: boolean; questionId: string; questionPrompt: string }>({ show: false, questionId: "", questionPrompt: "" });
   const [reportReason, setReportReason] = useState<string>("");
   const [reportSubmitted, setReportSubmitted] = useState(false);
+
+  // Flip card state - tracks which questions are flipped to show "how to solve"
+  const [flippedCards, setFlippedCards] = useState<Record<number, boolean>>({});
 
   const questionRefs = useRef<(HTMLDivElement | null)[]>([]);
 
@@ -202,6 +205,11 @@ const CollectionView = ({ collection, onBack }: CollectionViewProps) => {
     setCurrentIndex(0);
     setVariantIndex({});
     setFailedAttempts({});
+  };
+
+  // Toggle flip card
+  const toggleFlipCard = (qIndex: number) => {
+    setFlippedCards(prev => ({ ...prev, [qIndex]: !prev[qIndex] }));
   };
 
   // Handle report submission
@@ -497,89 +505,187 @@ const CollectionView = ({ collection, onBack }: CollectionViewProps) => {
 
               if (!isRevealed) return null;
 
+              const isFlipped = flippedCards[qIndex] || false;
+
               return (
                 <div key={originalQuestion.id} ref={el => questionRefs.current[qIndex] = el}>
                   <div className={`flex gap-4 ${hasFailedAttempts ? 'items-stretch' : ''}`}>
-                    {/* Current question on the right */}
+                    {/* Current question on the right - with flip card support */}
                     <motion.div
-                      className={`flex-1 bg-card rounded-3xl overflow-hidden ${
-                        isLatest ? "ring-2 ring-primary/50 shadow-lg" : ""
-                      }`}
+                      className={`flex-1 ${isLatest ? "ring-2 ring-primary/50 shadow-lg rounded-3xl" : ""}`}
                       initial={hasFailedAttempts ? { opacity: 0, x: 100 } : { opacity: 0, y: 50, scale: 0.95 }}
                       animate={{ opacity: 1, x: 0, y: 0, scale: 1 }}
                       transition={{ duration: 0.4, ease: "easeOut" }}
+                      style={{ perspective: "1000px" }}
                     >
-                      <div className="p-8 relative">
-                        {/* Report Button */}
-                        <button
-                          onClick={() => setReportModal({ show: true, questionId: question.id, questionPrompt: question.prompt })}
-                          className="absolute top-3 left-3 p-2 rounded-full hover:bg-muted transition-colors text-muted-foreground hover:text-red-500"
-                          title="الإبلاغ عن السؤال"
-                        >
-                          <Flag className="w-4 h-4" />
-                        </button>
-
-                        <div className="flex items-start gap-4 mb-6">
-                          <span className={`flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center text-lg font-bold ${
-                            isAnswered
-                              ? isCorrect ? "bg-green-500/20 text-green-500" : "bg-red-500/20 text-red-400"
-                              : "bg-primary text-primary-foreground"
-                          }`}>
-                            {isAnswered ? (
-                              isCorrect ? <CheckCircle className="w-6 h-6" /> : <XCircle className="w-6 h-6" />
-                            ) : qIndex + 1}
-                          </span>
-                          <p className="text-xl font-medium pt-2" dangerouslySetInnerHTML={{ __html: question.prompt }} />
-                        </div>
-                        <div className="grid grid-cols-2 gap-3 mr-16">
-                          {question.options.map((option, optIndex) => {
-                            const isSelected = selectedAnswer === optIndex;
-                            const isCorrectOption = optIndex === question.correctAnswer;
-                            let buttonStyle = "bg-muted hover:bg-muted/80 border-transparent";
-                            if (isAnswered) {
-                              if (isCorrectOption) buttonStyle = "bg-green-500/20 border-green-500 text-green-500";
-                              else if (isSelected) buttonStyle = "bg-red-500/20 border-red-500 text-red-400";
-                              else buttonStyle = "bg-muted/50 border-transparent opacity-50";
-                            }
-
-                            return (
-                              <motion.button
-                                key={optIndex}
-                            onClick={() => handleSelectAnswer(question.id, optIndex, qIndex)}
-                            className={`p-4 rounded-2xl text-right font-medium border-2 transition-all min-h-[60px] flex items-center justify-end ${buttonStyle}`}
-                            whileHover={!isAnswered ? { scale: 1.02 } : {}}
-                            whileTap={!isAnswered ? { scale: 0.98 } : {}}
-                            disabled={isAnswered}
+                      <AnimatePresence mode="wait">
+                        {!isFlipped ? (
+                          <motion.div
+                            key="front"
+                            className="bg-card rounded-3xl overflow-hidden"
+                            initial={{ rotateY: -90, opacity: 0 }}
+                            animate={{ rotateY: 0, opacity: 1 }}
+                            exit={{ rotateY: 90, opacity: 0 }}
+                            transition={{ duration: 0.3, ease: "easeInOut" }}
                           >
-                            <span className="flex items-center gap-2">
-                              {isAnswered && isCorrectOption && <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />}
-                              {isAnswered && isSelected && !isCorrectOption && <XCircle className="w-5 h-5 text-red-400 flex-shrink-0" />}
-                              {option}
-                            </span>
-                          </motion.button>
-                        );
-                      })}
-                    </div>
+                          <div className="p-8 relative">
+                            {/* Report Button */}
+                            <button
+                              onClick={() => setReportModal({ show: true, questionId: question.id, questionPrompt: question.prompt })}
+                              className="absolute top-3 left-3 p-2 rounded-full hover:bg-muted transition-colors text-muted-foreground hover:text-red-500"
+                              title="الإبلاغ عن السؤال"
+                            >
+                              <Flag className="w-4 h-4" />
+                            </button>
 
-                    {/* Explanation - shows after answering */}
-                    <AnimatePresence>
-                      {isAnswered && question.explanation && (
-                        <motion.div
-                          className="mt-4 p-4 rounded-2xl flex items-start gap-3 bg-violet-500/10 border border-violet-500/30"
-                          initial={{ opacity: 0, y: -10, height: 0 }}
-                          animate={{ opacity: 1, y: 0, height: "auto" }}
-                          exit={{ opacity: 0, y: -10, height: 0 }}
-                          transition={{ duration: 0.3 }}
-                        >
-                          <Lightbulb className="w-5 h-5 flex-shrink-0 mt-0.5 text-violet-500" />
-                          <div>
-                            <p className="font-semibold text-sm mb-1">الشرح:</p>
-                            <p className="text-sm text-muted-foreground">{question.explanation}</p>
+                            {/* Flip Button - Only show if hasFlipFeature and howToSolve exists */}
+                            {collection.hasFlipFeature && question.howToSolve && !isAnswered && (
+                              <motion.button
+                                onClick={() => toggleFlipCard(qIndex)}
+                                className="absolute top-3 left-12 p-2 rounded-full hover:bg-amber-500/20 transition-colors text-amber-500 hover:text-amber-400"
+                                title="كيف أحل؟"
+                                whileHover={{ scale: 1.1 }}
+                                whileTap={{ scale: 0.95 }}
+                              >
+                                <HelpCircle className="w-5 h-5" />
+                              </motion.button>
+                            )}
+
+                            <div className="flex items-start gap-4 mb-6">
+                              <span className={`flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center text-lg font-bold ${
+                                isAnswered
+                                  ? isCorrect ? "bg-green-500/20 text-green-500" : "bg-red-500/20 text-red-400"
+                                  : "bg-primary text-primary-foreground"
+                              }`}>
+                                {isAnswered ? (
+                                  isCorrect ? <CheckCircle className="w-6 h-6" /> : <XCircle className="w-6 h-6" />
+                                ) : qIndex + 1}
+                              </span>
+                              <p className="text-xl font-medium pt-2" dangerouslySetInnerHTML={{ __html: question.prompt }} />
+                            </div>
+                            <div className="grid grid-cols-2 gap-3 mr-16">
+                              {question.options.map((option, optIndex) => {
+                                const isSelected = selectedAnswer === optIndex;
+                                const isCorrectOption = optIndex === question.correctAnswer;
+                                let buttonStyle = "bg-muted hover:bg-muted/80 border-transparent";
+                                if (isAnswered) {
+                                  if (isCorrectOption) buttonStyle = "bg-green-500/20 border-green-500 text-green-500";
+                                  else if (isSelected) buttonStyle = "bg-red-500/20 border-red-500 text-red-400";
+                                  else buttonStyle = "bg-muted/50 border-transparent opacity-50";
+                                }
+
+                                return (
+                                  <motion.button
+                                    key={optIndex}
+                                    onClick={() => handleSelectAnswer(question.id, optIndex, qIndex)}
+                                    className={`p-4 rounded-2xl text-right font-medium border-2 transition-all min-h-[60px] flex items-center justify-end ${buttonStyle}`}
+                                    whileHover={!isAnswered ? { scale: 1.02 } : {}}
+                                    whileTap={!isAnswered ? { scale: 0.98 } : {}}
+                                    disabled={isAnswered}
+                                  >
+                                    <span className="flex items-center gap-2">
+                                      {isAnswered && isCorrectOption && <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />}
+                                      {isAnswered && isSelected && !isCorrectOption && <XCircle className="w-5 h-5 text-red-400 flex-shrink-0" />}
+                                      {option}
+                                    </span>
+                                  </motion.button>
+                                );
+                              })}
+                            </div>
+
+                            {/* Explanation - shows after answering */}
+                            <AnimatePresence>
+                              {isAnswered && question.explanation && (
+                                <motion.div
+                                  className="mt-4 p-4 rounded-2xl flex items-start gap-3 bg-violet-500/10 border border-violet-500/30"
+                                  initial={{ opacity: 0, y: -10, height: 0 }}
+                                  animate={{ opacity: 1, y: 0, height: "auto" }}
+                                  exit={{ opacity: 0, y: -10, height: 0 }}
+                                  transition={{ duration: 0.3 }}
+                                >
+                                  <Lightbulb className="w-5 h-5 flex-shrink-0 mt-0.5 text-violet-500" />
+                                  <div>
+                                    <p className="font-semibold text-sm mb-1">الشرح:</p>
+                                    <p className="text-sm text-muted-foreground">{question.explanation}</p>
+                                  </div>
+                                </motion.div>
+                              )}
+                            </AnimatePresence>
                           </div>
                         </motion.div>
-                      )}
-                    </AnimatePresence>
-                      </div>
+                        ) : (
+                          <motion.div
+                            key="back"
+                            className="bg-gradient-to-br from-amber-500/10 to-orange-500/10 border-2 border-amber-500/30 rounded-3xl overflow-hidden"
+                            initial={{ rotateY: 90, opacity: 0 }}
+                            animate={{ rotateY: 0, opacity: 1 }}
+                            exit={{ rotateY: -90, opacity: 0 }}
+                            transition={{ duration: 0.3, ease: "easeInOut" }}
+                          >
+                            <div className="p-8 relative">
+                              {/* Report Button */}
+                              <button
+                                onClick={() => setReportModal({ show: true, questionId: question.id, questionPrompt: question.prompt })}
+                                className="absolute top-3 left-3 p-2 rounded-full hover:bg-red-500/20 transition-colors text-muted-foreground hover:text-red-500"
+                                title="الإبلاغ عن السؤال"
+                              >
+                                <Flag className="w-4 h-4" />
+                              </button>
+
+                              {/* Back to Question Button */}
+                              <motion.button
+                                onClick={() => toggleFlipCard(qIndex)}
+                                className="absolute top-3 left-12 p-2 rounded-full bg-amber-500/20 hover:bg-amber-500/30 transition-colors text-amber-500"
+                                title="العودة للسؤال"
+                                whileHover={{ scale: 1.1 }}
+                                whileTap={{ scale: 0.95 }}
+                              >
+                                <RotateCcw className="w-5 h-5" />
+                              </motion.button>
+
+                              <div className="flex items-center gap-3 mb-6 mt-6">
+                                <div className="w-12 h-12 rounded-full bg-amber-500/20 flex items-center justify-center flex-shrink-0">
+                                  <Lightbulb className="w-6 h-6 text-amber-500" />
+                                </div>
+                                <div>
+                                  <h3 className="text-xl font-bold text-amber-500">كيف أحل؟</h3>
+                                  <p className="text-sm text-muted-foreground">طريقة حل هذا النوع من الأسئلة</p>
+                                </div>
+                              </div>
+
+                              <div className="bg-card/50 rounded-2xl p-6">
+                                {question.howToSolve?.split('\n\n').map((paragraph, pIdx) => (
+                                  <div key={pIdx} className={pIdx > 0 ? "mt-5 pt-5 border-t border-amber-500/20" : ""}>
+                                    {paragraph.split('\n').map((line, lIdx) => (
+                                      <p
+                                        key={lIdx}
+                                        className={`text-base leading-relaxed mb-2 ${
+                                          line.startsWith('مثال') || (line.includes('=') && !line.startsWith('١') && !line.startsWith('٢') && !line.startsWith('٣'))
+                                            ? 'font-mono bg-amber-500/10 rounded-lg px-4 py-2 my-3 text-amber-600 dark:text-amber-400'
+                                            : 'text-foreground'
+                                        }`}
+                                        dir="rtl"
+                                      >
+                                        {line}
+                                      </p>
+                                    ))}
+                                  </div>
+                                ))}
+                              </div>
+
+                              <motion.button
+                                onClick={() => toggleFlipCard(qIndex)}
+                                className="w-full mt-6 py-4 bg-amber-500 text-white rounded-2xl font-bold text-lg flex items-center justify-center gap-2"
+                                whileHover={{ scale: 1.02 }}
+                                whileTap={{ scale: 0.98 }}
+                              >
+                                <RotateCcw className="w-5 h-5" />
+                                فهمت، أريد الإجابة
+                              </motion.button>
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
                     </motion.div>
 
                     {/* Failed attempts on the left (in RTL layout) */}

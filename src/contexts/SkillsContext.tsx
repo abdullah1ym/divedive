@@ -31,7 +31,7 @@ interface SkillsContextType {
 const defaultMathSkills: SkillNode[] = [
   { id: 1, title: "أساسيات الرياضيات", status: "available", x: 50, y: 15, iconName: "Calculator", color: "muted", size: "large", connections: [], skillTag: "basics", totalQuestions: 5 },
   { id: 2, title: "العمليات الحسابية", status: "available", x: 30, y: 35, iconName: "Plus", color: "muted", size: "medium", connections: [], skillTag: "arithmetic", totalQuestions: 5 },
-  { id: 3, title: "النسب والتناسب", status: "available", x: 70, y: 35, iconName: "Percent", color: "muted", size: "medium", connections: [], skillTag: "ratios", totalQuestions: 5 },
+  { id: 3, title: "النسب والتناسب", status: "available", x: 70, y: 35, iconName: "Percent", color: "muted", size: "medium", connections: [], skillTag: "ratios", totalQuestions: 10 },
   { id: 4, title: "الجبر والمعادلات", status: "available", x: 15, y: 55, iconName: "Sigma", color: "muted", size: "medium", connections: [], skillTag: "algebra", totalQuestions: 5 },
   { id: 5, title: "الهندسة", status: "available", x: 50, y: 55, iconName: "Shapes", color: "muted", size: "large", connections: [], skillTag: "geometry", totalQuestions: 5 },
   { id: 6, title: "الإحصاء والاحتمالات", status: "available", x: 85, y: 55, iconName: "BarChart", color: "muted", size: "medium", connections: [], skillTag: "statistics", totalQuestions: 5 },

@@ -6,6 +6,7 @@ import { algebraUnit } from "./quantitative/algebra";
 import { geometryUnit } from "./quantitative/geometry";
 import { statisticsUnit } from "./quantitative/statistics";
 import { comparisonUnit } from "./quantitative/comparison";
+import { ratiosProportionsUnit } from "./quantitative/ratios-proportions";
 
 // Verbal Units
 import { readingComprehensionUnit } from "./verbal/reading-comprehension";
@@ -22,6 +23,7 @@ export const allUnits: LearningUnit[] = [
   geometryUnit,
   statisticsUnit,
   comparisonUnit,
+  ratiosProportionsUnit,
   // Verbal
   readingComprehensionUnit,
   sentenceCompletionUnit,
@@ -46,6 +48,7 @@ export {
   geometryUnit,
   statisticsUnit,
   comparisonUnit,
+  ratiosProportionsUnit,
   // Verbal
   readingComprehensionUnit,
   sentenceCompletionUnit,
