@@ -18,7 +18,7 @@ const HeroSection = () => {
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.2 }}
           >
-            ابدأ من هنا
+            دليل المتدرب
           </motion.span>
 
           <motion.h1
@@ -60,13 +60,16 @@ const HeroSection = () => {
             transition={{ delay: 0.6 }}
           >
             <span className="px-3 py-1 bg-turquoise text-turquoise-foreground rounded-full text-xs font-semibold">
-              المستوى الأول
+              كيف تذاكر
             </span>
-            <span className="px-3 py-1 bg-coral text-coral-foreground rounded-full text-xs font-semibold">
-              أساسيات القدرات
+            <span className="px-3 py-1 bg-turquoise text-turquoise-foreground rounded-full text-xs font-semibold">
+              التمارين
+            </span>
+            <span className="px-3 py-1 bg-turquoise text-turquoise-foreground rounded-full text-xs font-semibold">
+              خريطة المهارات
             </span>
             <span className="px-3 py-1 bg-muted text-foreground rounded-full text-xs font-semibold">
-              ١ من ٤
+              مراجعة الأخطاء
             </span>
           </motion.div>
 
@@ -80,7 +83,7 @@ const HeroSection = () => {
             transition={{ delay: 0.7 }}
           >
             <Play className="w-5 h-5 fill-current" />
-            ابدأ التدريب
+            ابدأ الدليل
           </motion.button>
         </div>
 
