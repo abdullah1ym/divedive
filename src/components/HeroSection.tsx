@@ -71,15 +71,58 @@ const HeroSection = () => {
 
   return (
     <>
+      {/* Mobile Version */}
       <motion.div
-        className="relative rounded-2xl overflow-hidden bg-gradient-to-br from-primary/20 to-secondary h-full"
+        className="md:hidden relative rounded-2xl overflow-hidden bg-gradient-to-br from-primary/20 to-secondary"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <div className="flex flex-col-reverse md:flex-row-reverse">
+        <div className="p-4">
+          <div className="flex items-start gap-3">
+            {/* Icon */}
+            <motion.div
+              className="w-12 h-12 rounded-xl gradient-turquoise flex items-center justify-center flex-shrink-0"
+              animate={{ scale: [1, 1.05, 1] }}
+              transition={{ duration: 2, repeat: Infinity }}
+            >
+              <Brain className="w-6 h-6 text-turquoise-foreground" />
+            </motion.div>
+
+            {/* Content */}
+            <div className="flex-1 min-w-0">
+              <span className="inline-block px-2 py-0.5 bg-yellow text-yellow-foreground rounded-full text-[10px] font-semibold mb-1">
+                دليل المتدرب
+              </span>
+              <h1 className="text-base font-bold mb-1">مقدمة في اختبار القدرات</h1>
+              <p className="text-xs text-muted-foreground line-clamp-2">
+                تعرف على أقسام الاختبار: الكمي واللفظي
+              </p>
+            </div>
+          </div>
+
+          {/* Button */}
+          <motion.button
+            className="w-full mt-3 flex items-center justify-center gap-2 px-4 py-2.5 bg-yellow text-yellow-foreground rounded-xl font-semibold text-sm"
+            whileTap={{ scale: 0.98 }}
+            onClick={() => setGuideOpen(true)}
+          >
+            <Play className="w-4 h-4 fill-current" />
+            ابدأ الدليل
+          </motion.button>
+        </div>
+      </motion.div>
+
+      {/* Desktop Version */}
+      <motion.div
+        className="hidden md:block relative rounded-2xl overflow-hidden bg-gradient-to-br from-primary/20 to-secondary h-full"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        <div className="flex flex-row-reverse">
           {/* Content */}
-          <div className="flex-1 p-4 md:p-8 z-10">
+          <div className="flex-1 p-8 z-10">
             <motion.span
               className="inline-block px-3 py-1 bg-yellow text-yellow-foreground rounded-full text-xs font-semibold mb-4"
               initial={{ opacity: 0, x: 20 }}
@@ -90,7 +133,7 @@ const HeroSection = () => {
             </motion.span>
 
             <motion.h1
-              className="text-xl md:text-3xl font-bold mb-3 md:mb-4"
+              className="text-3xl font-bold mb-4"
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.3 }}
@@ -122,7 +165,7 @@ const HeroSection = () => {
 
             {/* Tags */}
             <motion.div
-              className="flex flex-wrap items-center gap-2 mb-4 md:mb-6"
+              className="flex flex-wrap items-center gap-2 mb-6"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.6 }}
@@ -156,9 +199,9 @@ const HeroSection = () => {
             </motion.button>
           </div>
 
-          {/* Preview - Hidden on mobile */}
+          {/* Preview */}
           <motion.div
-            className="hidden md:block relative w-[400px] h-[320px]"
+            className="relative w-[400px] h-[320px]"
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.3, duration: 0.6 }}

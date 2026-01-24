@@ -9,8 +9,35 @@ const RecommendationPanel = () => {
 
   return (
     <>
+      {/* Mobile Version */}
       <motion.div
-        className="bg-card rounded-2xl p-6 relative overflow-hidden h-full"
+        className="md:hidden bg-card rounded-2xl p-4 relative overflow-hidden"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
+      >
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-yellow rounded-xl flex items-center justify-center flex-shrink-0">
+            <Sparkles className="w-5 h-5 text-yellow-foreground" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <h3 className="text-sm font-bold">ننصحك بتمارين الأساسيات</h3>
+            <p className="text-xs text-muted-foreground">أساسيات الكمي واللفظي</p>
+          </div>
+          <motion.button
+            className="flex-shrink-0 flex items-center gap-1.5 px-3 py-2 bg-muted rounded-xl text-xs font-semibold"
+            whileTap={{ scale: 0.95 }}
+            onClick={() => setMapOpen(true)}
+          >
+            <Map className="w-4 h-4" />
+            الخريطة
+          </motion.button>
+        </div>
+      </motion.div>
+
+      {/* Desktop Version */}
+      <motion.div
+        className="hidden md:block bg-card rounded-2xl p-6 relative overflow-hidden h-full"
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.5, delay: 0.2 }}
