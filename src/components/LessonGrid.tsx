@@ -735,6 +735,14 @@ const categoryNames: Record<string, string> = {
   "all-verbal": "اللفظي - الكل",
   "verbal": "اللفظي - استيعاب",
   "analogy": "اللفظي - تناظر",
+  "verbal-bank-1": "البنك الأول",
+  "verbal-bank-2": "البنك الثاني",
+  "verbal-bank-3": "البنك الثالث",
+  "verbal-bank-4": "البنك الرابع",
+  "verbal-bank-5": "البنك الخامس",
+  "verbal-bank-6": "البنك السادس",
+  "verbal-bank-7": "البنك السابع",
+  "verbal-bank-8": "البنك الثامن",
   "mixed": "اختبار محاكي",
 };
 
@@ -775,14 +783,17 @@ const LessonGrid = ({ category, onExerciseClick, onCollectionClick }: LessonGrid
   const isInitialState = category === "quantitative";
   const exercises = isInitialState ? [] : getExercisesByCategory(category);
 
-  const isVerbalCategory = category === "verbal" || category === "analogy";
+  const isVerbalCategory = category === "verbal" || category === "analogy" || category.startsWith("verbal-bank-");
   const isMathCategory = category === "all-math" || category === "quantitative" || category === "algebra";
   const showProgress = isVerbalCategory || isMathCategory;
 
-  // Get pinned collections only when user explicitly selects a math subcategory
+  // Get pinned collections based on category
   const getCollectionsForCategory = () => {
     if (category === "all-math" || category === "algebra") {
       return pinnedCollections.quantitative;
+    }
+    if (category.startsWith("verbal-bank-")) {
+      return pinnedCollections.verbal;
     }
     return [];
   };
