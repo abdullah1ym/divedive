@@ -733,9 +733,8 @@ const categoryNames: Record<string, string> = {
   "quantitative": "الكمي - حساب",
   "algebra": "الكمي - جبر",
   "all-verbal": "اللفظي - الكل",
-  "verbal": "اللفظي - استيعاب",
+  "verbal": "البنك الأول",
   "analogy": "اللفظي - تناظر",
-  "verbal-bank-1": "البنك الأول",
   "verbal-bank-2": "البنك الثاني",
   "verbal-bank-3": "البنك الثالث",
   "verbal-bank-4": "البنك الرابع",
@@ -792,7 +791,7 @@ const LessonGrid = ({ category, onExerciseClick, onCollectionClick }: LessonGrid
     if (category === "all-math" || category === "algebra") {
       return pinnedCollections.quantitative;
     }
-    if (category.startsWith("verbal-bank-")) {
+    if (category === "verbal" || category.startsWith("verbal-bank-")) {
       return pinnedCollections.verbal;
     }
     return [];

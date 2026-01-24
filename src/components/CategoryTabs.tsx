@@ -20,7 +20,7 @@ const supersets: Record<string, { id: string; label: string; icon: typeof Calcul
     { id: "algebra", label: "جبر", icon: Shapes, color: "primary" },
   ],
   verbal: [
-    { id: "verbal-bank-1", label: "البنك الأول", icon: FileText, color: "turquoise" },
+    { id: "verbal", label: "البنك الأول", icon: FileText, color: "turquoise" },
     { id: "verbal-bank-2", label: "البنك الثاني", icon: FileText, color: "mint" },
     { id: "verbal-bank-3", label: "البنك الثالث", icon: FileText, color: "coral" },
     { id: "verbal-bank-4", label: "البنك الرابع", icon: FileText, color: "primary" },
