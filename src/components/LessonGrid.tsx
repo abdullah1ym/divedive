@@ -1,7 +1,10 @@
 import { motion } from "framer-motion";
-import { Play, Info, Brain, Clock, Library, Pin } from "lucide-react";
+import { Play, Info, Brain, Clock, Library, Pin, Lock } from "lucide-react";
 import { useExercises, Exercise } from "@/contexts/ExercisesContext";
 import { useState, useEffect } from "react";
+
+// Locked banks (3-8) for non-pro users
+const lockedBanks = ["verbal-bank-3", "verbal-bank-4", "verbal-bank-5", "verbal-bank-6", "verbal-bank-7", "verbal-bank-8"];
 
 // Progress tracking for exercises
 const PROGRESS_KEY = "divedive-exercise-progress";
@@ -791,13 +794,41 @@ const LessonGrid = ({ category, onExerciseClick, onCollectionClick }: LessonGrid
     if (category === "all-math" || category === "algebra") {
       return pinnedCollections.quantitative;
     }
-    if (category === "verbal" || category.startsWith("verbal-bank-")) {
-      return pinnedCollections.verbal;
-    }
     return [];
   };
 
   const collections = isInitialState ? [] : getCollectionsForCategory();
+
+  // Check if this is a locked bank
+  const isLockedBank = lockedBanks.includes(category);
+
+  if (isLockedBank) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <motion.div
+          className="bg-card/95 backdrop-blur-sm rounded-3xl p-8 md:p-12 text-center shadow-lg max-w-md mx-auto"
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.3 }}
+        >
+          <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-yellow/20 flex items-center justify-center">
+            <Lock className="w-10 h-10 text-yellow" />
+          </div>
+          <h3 className="text-2xl font-bold mb-3">محتوى مقفل</h3>
+          <p className="text-muted-foreground mb-6">
+            هذا البنك متاح فقط لمشتركي النسخة الاحترافية (Pro)
+          </p>
+          <motion.button
+            className="px-6 py-3 bg-yellow text-yellow-foreground rounded-xl font-semibold"
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+          >
+            الترقية لـ Pro
+          </motion.button>
+        </motion.div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">

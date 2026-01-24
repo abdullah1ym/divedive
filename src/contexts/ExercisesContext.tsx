@@ -275,17 +275,529 @@ const defaultExercises: Exercise[] = [
       { id: "q3", prompt: "الهدف من النص هو:", audioPlaceholder: "نص قرائي", options: ["الإقناع", "الترفيه", "التوعية", "السرد"], correctAnswer: 2 },
     ],
   },
-  // البنك الثاني (analogy) - placeholder
+  // البنك الثاني - التناظر اللفظي
   {
-    id: "analogy-1",
-    title: "تمارين البنك الثاني",
-    description: "تمارين لفظية متنوعة",
-    category: "analogy",
+    id: "verbal-b2-1",
+    title: "التناظر اللفظي",
+    description: "إيجاد العلاقة بين الكلمات",
+    category: "verbal-bank-2",
     difficulty: "beginner",
-    type: "analogy",
+    type: "verbal",
     duration: "٦ دقائق",
     questions: [
-      { id: "q1", prompt: "سيتم إضافة الأسئلة قريباً", audioPlaceholder: "سؤال", options: ["--", "--", "--", "--"], correctAnswer: 0 },
+      { id: "q1", prompt: "كاتب : رواية :: رسام : ؟", audioPlaceholder: "تناظر لفظي", options: ["ألوان", "لوحة", "فرشاة", "معرض"], correctAnswer: 1 },
+      { id: "q2", prompt: "نحلة : عسل :: بقرة : ؟", audioPlaceholder: "تناظر لفظي", options: ["مزرعة", "حليب", "عشب", "لحم"], correctAnswer: 1 },
+      { id: "q3", prompt: "طائرة : مطار :: قطار : ؟", audioPlaceholder: "تناظر لفظي", options: ["سكة", "محطة", "عجلات", "سفر"], correctAnswer: 1 },
+    ],
+  },
+  // البنك الثاني - إكمال الجمل
+  {
+    id: "verbal-b2-2",
+    title: "إكمال الجمل",
+    description: "اختيار الكلمة المناسبة لإكمال الجملة",
+    category: "verbal-bank-2",
+    difficulty: "beginner",
+    type: "verbal",
+    duration: "٥ دقائق",
+    questions: [
+      { id: "q1", prompt: "الوقت كالسيف إن لم تقطعه _____", audioPlaceholder: "إكمال جملة", options: ["ضاع", "قطعك", "مضى", "انتهى"], correctAnswer: 1 },
+      { id: "q2", prompt: "القراءة غذاء _____", audioPlaceholder: "إكمال جملة", options: ["الجسم", "العقل", "الروح", "القلب"], correctAnswer: 1 },
+      { id: "q3", prompt: "الصديق وقت _____", audioPlaceholder: "إكمال جملة", options: ["الفرح", "الضيق", "اللعب", "العمل"], correctAnswer: 1 },
+    ],
+  },
+  // البنك الثاني - الخطأ السياقي
+  {
+    id: "verbal-b2-3",
+    title: "الخطأ السياقي",
+    description: "تحديد الكلمة الخاطئة في السياق",
+    category: "verbal-bank-2",
+    difficulty: "intermediate",
+    type: "verbal",
+    duration: "٧ دقائق",
+    questions: [
+      { id: "q1", prompt: "حدد الكلمة الخاطئة: الطيور تسبح في السماء بحرية", audioPlaceholder: "خطأ سياقي", options: ["الطيور", "تسبح", "السماء", "بحرية"], correctAnswer: 1 },
+      { id: "q2", prompt: "حدد الكلمة الخاطئة: المهندس يصمم الأدوية في المختبر", audioPlaceholder: "خطأ سياقي", options: ["المهندس", "يصمم", "الأدوية", "المختبر"], correctAnswer: 0 },
+      { id: "q3", prompt: "حدد الكلمة الخاطئة: الفلاح يحصد القمح في المحيط", audioPlaceholder: "خطأ سياقي", options: ["الفلاح", "يحصد", "القمح", "المحيط"], correctAnswer: 3 },
+    ],
+  },
+  // البنك الثاني - المفردة الشاذة
+  {
+    id: "verbal-b2-4",
+    title: "المفردة الشاذة",
+    description: "تحديد الكلمة التي لا تنتمي للمجموعة",
+    category: "verbal-bank-2",
+    difficulty: "beginner",
+    type: "verbal",
+    duration: "٥ دقائق",
+    questions: [
+      { id: "q1", prompt: "حدد المفردة الشاذة:", audioPlaceholder: "مفردة شاذة", options: ["كرسي", "طاولة", "سرير", "تلفاز"], correctAnswer: 3 },
+      { id: "q2", prompt: "حدد المفردة الشاذة:", audioPlaceholder: "مفردة شاذة", options: ["أسد", "نمر", "حصان", "فهد"], correctAnswer: 2 },
+      { id: "q3", prompt: "حدد المفردة الشاذة:", audioPlaceholder: "مفردة شاذة", options: ["الرياض", "جدة", "مصر", "الدمام"], correctAnswer: 2 },
+    ],
+  },
+  // البنك الثاني - استيعاب المقروء
+  {
+    id: "verbal-b2-5",
+    title: "استيعاب المقروء",
+    description: "قراءة النصوص والإجابة على الأسئلة",
+    category: "verbal-bank-2",
+    difficulty: "intermediate",
+    type: "verbal",
+    duration: "١٠ دقائق",
+    questions: [
+      { id: "q1", prompt: "ما العنوان المناسب للنص؟", audioPlaceholder: "نص قرائي", options: ["أهمية التعليم", "مشاكل البيئة", "تاريخ العرب", "الصحة العامة"], correctAnswer: 0 },
+      { id: "q2", prompt: "موقف الكاتب من الموضوع:", audioPlaceholder: "نص قرائي", options: ["محايد", "مؤيد", "معارض", "ساخر"], correctAnswer: 1 },
+      { id: "q3", prompt: "كلمة 'ذلك' في السطر الثالث تعود على:", audioPlaceholder: "نص قرائي", options: ["التعليم", "المجتمع", "الطالب", "المعلم"], correctAnswer: 0 },
+    ],
+  },
+  // البنك الثالث - التناظر اللفظي
+  {
+    id: "verbal-b3-1",
+    title: "التناظر اللفظي",
+    description: "إيجاد العلاقة بين الكلمات",
+    category: "verbal-bank-3",
+    difficulty: "beginner",
+    type: "verbal",
+    duration: "٦ دقائق",
+    questions: [
+      { id: "q1", prompt: "عين : رؤية :: أذن : ؟", audioPlaceholder: "تناظر لفظي", options: ["صوت", "سمع", "كلام", "موسيقى"], correctAnswer: 1 },
+      { id: "q2", prompt: "ورقة : شجرة :: ريشة : ؟", audioPlaceholder: "تناظر لفظي", options: ["قلم", "طائر", "هواء", "عش"], correctAnswer: 1 },
+      { id: "q3", prompt: "ملك : قصر :: راعي : ؟", audioPlaceholder: "تناظر لفظي", options: ["غنم", "مرعى", "كلب", "عصا"], correctAnswer: 1 },
+    ],
+  },
+  // البنك الثالث - إكمال الجمل
+  {
+    id: "verbal-b3-2",
+    title: "إكمال الجمل",
+    description: "اختيار الكلمة المناسبة لإكمال الجملة",
+    category: "verbal-bank-3",
+    difficulty: "beginner",
+    type: "verbal",
+    duration: "٥ دقائق",
+    questions: [
+      { id: "q1", prompt: "رب أخ لم _____ أمك", audioPlaceholder: "إكمال جملة", options: ["تعرفه", "تلده", "تراه", "تحبه"], correctAnswer: 1 },
+      { id: "q2", prompt: "في التأني _____ وفي العجلة الندامة", audioPlaceholder: "إكمال جملة", options: ["الحكمة", "السلامة", "الراحة", "الفائدة"], correctAnswer: 1 },
+      { id: "q3", prompt: "العقل السليم في الجسم _____", audioPlaceholder: "إكمال جملة", options: ["القوي", "السليم", "الكبير", "النشيط"], correctAnswer: 1 },
+    ],
+  },
+  // البنك الثالث - الخطأ السياقي
+  {
+    id: "verbal-b3-3",
+    title: "الخطأ السياقي",
+    description: "تحديد الكلمة الخاطئة في السياق",
+    category: "verbal-bank-3",
+    difficulty: "intermediate",
+    type: "verbal",
+    duration: "٧ دقائق",
+    questions: [
+      { id: "q1", prompt: "حدد الكلمة الخاطئة: الممرضة تطبخ الدواء للمريض", audioPlaceholder: "خطأ سياقي", options: ["الممرضة", "تطبخ", "الدواء", "للمريض"], correctAnswer: 1 },
+      { id: "q2", prompt: "حدد الكلمة الخاطئة: السباح يجري في الماء بسرعة", audioPlaceholder: "خطأ سياقي", options: ["السباح", "يجري", "الماء", "بسرعة"], correctAnswer: 1 },
+      { id: "q3", prompt: "حدد الكلمة الخاطئة: الشمس تشرق من الغرب كل صباح", audioPlaceholder: "خطأ سياقي", options: ["الشمس", "تشرق", "الغرب", "صباح"], correctAnswer: 2 },
+    ],
+  },
+  // البنك الثالث - المفردة الشاذة
+  {
+    id: "verbal-b3-4",
+    title: "المفردة الشاذة",
+    description: "تحديد الكلمة التي لا تنتمي للمجموعة",
+    category: "verbal-bank-3",
+    difficulty: "beginner",
+    type: "verbal",
+    duration: "٥ دقائق",
+    questions: [
+      { id: "q1", prompt: "حدد المفردة الشاذة:", audioPlaceholder: "مفردة شاذة", options: ["سعيد", "فرحان", "مسرور", "غاضب"], correctAnswer: 3 },
+      { id: "q2", prompt: "حدد المفردة الشاذة:", audioPlaceholder: "مفردة شاذة", options: ["يد", "قدم", "رأس", "حذاء"], correctAnswer: 3 },
+      { id: "q3", prompt: "حدد المفردة الشاذة:", audioPlaceholder: "مفردة شاذة", options: ["ذهب", "فضة", "حديد", "خشب"], correctAnswer: 3 },
+    ],
+  },
+  // البنك الثالث - استيعاب المقروء
+  {
+    id: "verbal-b3-5",
+    title: "استيعاب المقروء",
+    description: "قراءة النصوص والإجابة على الأسئلة",
+    category: "verbal-bank-3",
+    difficulty: "intermediate",
+    type: "verbal",
+    duration: "١٠ دقائق",
+    questions: [
+      { id: "q1", prompt: "الغرض من النص هو:", audioPlaceholder: "نص قرائي", options: ["الوصف", "الإقناع", "السرد", "التفسير"], correctAnswer: 1 },
+      { id: "q2", prompt: "نوع النص هو:", audioPlaceholder: "نص قرائي", options: ["قصة", "مقال", "شعر", "رسالة"], correctAnswer: 1 },
+      { id: "q3", prompt: "الفكرة الفرعية في الفقرة الثانية:", audioPlaceholder: "نص قرائي", options: ["أسباب المشكلة", "حلول المشكلة", "نتائج المشكلة", "تعريف المشكلة"], correctAnswer: 0 },
+    ],
+  },
+  // البنك الرابع - التناظر اللفظي
+  {
+    id: "verbal-b4-1",
+    title: "التناظر اللفظي",
+    description: "إيجاد العلاقة بين الكلمات",
+    category: "verbal-bank-4",
+    difficulty: "beginner",
+    type: "verbal",
+    duration: "٦ دقائق",
+    questions: [
+      { id: "q1", prompt: "نار : حرارة :: ثلج : ؟", audioPlaceholder: "تناظر لفظي", options: ["ماء", "برودة", "شتاء", "أبيض"], correctAnswer: 1 },
+      { id: "q2", prompt: "سيف : محارب :: مشرط : ؟", audioPlaceholder: "تناظر لفظي", options: ["مستشفى", "جراح", "عملية", "مريض"], correctAnswer: 1 },
+      { id: "q3", prompt: "صحراء : جمل :: بحر : ؟", audioPlaceholder: "تناظر لفظي", options: ["ماء", "سفينة", "سمك", "موج"], correctAnswer: 1 },
+    ],
+  },
+  // البنك الرابع - إكمال الجمل
+  {
+    id: "verbal-b4-2",
+    title: "إكمال الجمل",
+    description: "اختيار الكلمة المناسبة لإكمال الجملة",
+    category: "verbal-bank-4",
+    difficulty: "beginner",
+    type: "verbal",
+    duration: "٥ دقائق",
+    questions: [
+      { id: "q1", prompt: "إذا كثرت _____ قل الإتقان", audioPlaceholder: "إكمال جملة", options: ["الأعمال", "المهام", "الصنائع", "الواجبات"], correctAnswer: 2 },
+      { id: "q2", prompt: "لا تؤجل عمل اليوم إلى _____", audioPlaceholder: "إكمال جملة", options: ["الليل", "غداً", "الغد", "لاحقاً"], correctAnswer: 2 },
+      { id: "q3", prompt: "خير الكلام ما قل و_____", audioPlaceholder: "إكمال جملة", options: ["أفاد", "دل", "نفع", "وضح"], correctAnswer: 1 },
+    ],
+  },
+  // البنك الرابع - الخطأ السياقي
+  {
+    id: "verbal-b4-3",
+    title: "الخطأ السياقي",
+    description: "تحديد الكلمة الخاطئة في السياق",
+    category: "verbal-bank-4",
+    difficulty: "intermediate",
+    type: "verbal",
+    duration: "٧ دقائق",
+    questions: [
+      { id: "q1", prompt: "حدد الكلمة الخاطئة: القمر يضيء السماء في النهار", audioPlaceholder: "خطأ سياقي", options: ["القمر", "يضيء", "السماء", "النهار"], correctAnswer: 3 },
+      { id: "q2", prompt: "حدد الكلمة الخاطئة: الطالب يقرأ الكتاب بأذنيه", audioPlaceholder: "خطأ سياقي", options: ["الطالب", "يقرأ", "الكتاب", "بأذنيه"], correctAnswer: 3 },
+      { id: "q3", prompt: "حدد الكلمة الخاطئة: الطباخ يخيط الطعام في المطبخ", audioPlaceholder: "خطأ سياقي", options: ["الطباخ", "يخيط", "الطعام", "المطبخ"], correctAnswer: 1 },
+    ],
+  },
+  // البنك الرابع - المفردة الشاذة
+  {
+    id: "verbal-b4-4",
+    title: "المفردة الشاذة",
+    description: "تحديد الكلمة التي لا تنتمي للمجموعة",
+    category: "verbal-bank-4",
+    difficulty: "beginner",
+    type: "verbal",
+    duration: "٥ دقائق",
+    questions: [
+      { id: "q1", prompt: "حدد المفردة الشاذة:", audioPlaceholder: "مفردة شاذة", options: ["قطة", "كلب", "أسد", "حمامة"], correctAnswer: 3 },
+      { id: "q2", prompt: "حدد المفردة الشاذة:", audioPlaceholder: "مفردة شاذة", options: ["طبيب", "مهندس", "معلم", "مريض"], correctAnswer: 3 },
+      { id: "q3", prompt: "حدد المفردة الشاذة:", audioPlaceholder: "مفردة شاذة", options: ["ثانية", "دقيقة", "ساعة", "متر"], correctAnswer: 3 },
+    ],
+  },
+  // البنك الرابع - استيعاب المقروء
+  {
+    id: "verbal-b4-5",
+    title: "استيعاب المقروء",
+    description: "قراءة النصوص والإجابة على الأسئلة",
+    category: "verbal-bank-4",
+    difficulty: "intermediate",
+    type: "verbal",
+    duration: "١٠ دقائق",
+    questions: [
+      { id: "q1", prompt: "معنى كلمة 'يتسم' في النص:", audioPlaceholder: "نص قرائي", options: ["يتصف", "يتغير", "يتحرك", "يتكلم"], correctAnswer: 0 },
+      { id: "q2", prompt: "العلاقة بين الفقرتين الأولى والثانية:", audioPlaceholder: "نص قرائي", options: ["سبب ونتيجة", "تضاد", "إجمال وتفصيل", "مقارنة"], correctAnswer: 2 },
+      { id: "q3", prompt: "يمكن استنتاج من النص أن:", audioPlaceholder: "نص قرائي", options: ["العلم مهم", "الجهل خطر", "القراءة ممتعة", "الكتابة صعبة"], correctAnswer: 0 },
+    ],
+  },
+  // البنك الخامس - التناظر اللفظي
+  {
+    id: "verbal-b5-1",
+    title: "التناظر اللفظي",
+    description: "إيجاد العلاقة بين الكلمات",
+    category: "verbal-bank-5",
+    difficulty: "beginner",
+    type: "verbal",
+    duration: "٦ دقائق",
+    questions: [
+      { id: "q1", prompt: "مفتاح : قفل :: كلمة سر : ؟", audioPlaceholder: "تناظر لفظي", options: ["هاتف", "حساب", "رقم", "بريد"], correctAnswer: 1 },
+      { id: "q2", prompt: "جناح : طائر :: زعنفة : ؟", audioPlaceholder: "تناظر لفظي", options: ["بحر", "سمكة", "ماء", "سباحة"], correctAnswer: 1 },
+      { id: "q3", prompt: "غلاف : كتاب :: قشرة : ؟", audioPlaceholder: "تناظر لفظي", options: ["شجرة", "فاكهة", "طعام", "لون"], correctAnswer: 1 },
+    ],
+  },
+  // البنك الخامس - إكمال الجمل
+  {
+    id: "verbal-b5-2",
+    title: "إكمال الجمل",
+    description: "اختيار الكلمة المناسبة لإكمال الجملة",
+    category: "verbal-bank-5",
+    difficulty: "beginner",
+    type: "verbal",
+    duration: "٥ دقائق",
+    questions: [
+      { id: "q1", prompt: "الجار قبل _____", audioPlaceholder: "إكمال جملة", options: ["البيت", "الدار", "المنزل", "السكن"], correctAnswer: 1 },
+      { id: "q2", prompt: "من سار على الدرب _____", audioPlaceholder: "إكمال جملة", options: ["تعب", "وصل", "سقط", "رجع"], correctAnswer: 1 },
+      { id: "q3", prompt: "اليد الواحدة لا _____", audioPlaceholder: "إكمال جملة", options: ["تعمل", "تصفق", "تكتب", "تمسك"], correctAnswer: 1 },
+    ],
+  },
+  // البنك الخامس - الخطأ السياقي
+  {
+    id: "verbal-b5-3",
+    title: "الخطأ السياقي",
+    description: "تحديد الكلمة الخاطئة في السياق",
+    category: "verbal-bank-5",
+    difficulty: "intermediate",
+    type: "verbal",
+    duration: "٧ دقائق",
+    questions: [
+      { id: "q1", prompt: "حدد الكلمة الخاطئة: الحداد يصنع الخبز في الفرن", audioPlaceholder: "خطأ سياقي", options: ["الحداد", "يصنع", "الخبز", "الفرن"], correctAnswer: 0 },
+      { id: "q2", prompt: "حدد الكلمة الخاطئة: الأسماك تعيش على اليابسة", audioPlaceholder: "خطأ سياقي", options: ["الأسماك", "تعيش", "على", "اليابسة"], correctAnswer: 3 },
+      { id: "q3", prompt: "حدد الكلمة الخاطئة: الجمل سفينة الجبال", audioPlaceholder: "خطأ سياقي", options: ["الجمل", "سفينة", "الجبال", "---"], correctAnswer: 2 },
+    ],
+  },
+  // البنك الخامس - المفردة الشاذة
+  {
+    id: "verbal-b5-4",
+    title: "المفردة الشاذة",
+    description: "تحديد الكلمة التي لا تنتمي للمجموعة",
+    category: "verbal-bank-5",
+    difficulty: "beginner",
+    type: "verbal",
+    duration: "٥ دقائق",
+    questions: [
+      { id: "q1", prompt: "حدد المفردة الشاذة:", audioPlaceholder: "مفردة شاذة", options: ["قهوة", "شاي", "عصير", "خبز"], correctAnswer: 3 },
+      { id: "q2", prompt: "حدد المفردة الشاذة:", audioPlaceholder: "مفردة شاذة", options: ["السبت", "الأحد", "يناير", "الاثنين"], correctAnswer: 2 },
+      { id: "q3", prompt: "حدد المفردة الشاذة:", audioPlaceholder: "مفردة شاذة", options: ["مثلث", "مربع", "دائرة", "أحمر"], correctAnswer: 3 },
+    ],
+  },
+  // البنك الخامس - استيعاب المقروء
+  {
+    id: "verbal-b5-5",
+    title: "استيعاب المقروء",
+    description: "قراءة النصوص والإجابة على الأسئلة",
+    category: "verbal-bank-5",
+    difficulty: "intermediate",
+    type: "verbal",
+    duration: "١٠ دقائق",
+    questions: [
+      { id: "q1", prompt: "الضمير 'هم' يعود على:", audioPlaceholder: "نص قرائي", options: ["العلماء", "الطلاب", "الناس", "الكتاب"], correctAnswer: 0 },
+      { id: "q2", prompt: "أسلوب الكاتب في النص:", audioPlaceholder: "نص قرائي", options: ["وصفي", "سردي", "حجاجي", "تفسيري"], correctAnswer: 2 },
+      { id: "q3", prompt: "الفكرة التي لم يذكرها النص:", audioPlaceholder: "نص قرائي", options: ["أهمية العلم", "قيمة العمل", "فضل الصدق", "ضرر الكسل"], correctAnswer: 2 },
+    ],
+  },
+  // البنك السادس - التناظر اللفظي
+  {
+    id: "verbal-b6-1",
+    title: "التناظر اللفظي",
+    description: "إيجاد العلاقة بين الكلمات",
+    category: "verbal-bank-6",
+    difficulty: "beginner",
+    type: "verbal",
+    duration: "٦ دقائق",
+    questions: [
+      { id: "q1", prompt: "ماء : عطش :: طعام : ؟", audioPlaceholder: "تناظر لفظي", options: ["أكل", "جوع", "شرب", "مطبخ"], correctAnswer: 1 },
+      { id: "q2", prompt: "شاعر : قصيدة :: موسيقي : ؟", audioPlaceholder: "تناظر لفظي", options: ["آلة", "لحن", "حفلة", "مسرح"], correctAnswer: 1 },
+      { id: "q3", prompt: "ربيع : زهور :: خريف : ؟", audioPlaceholder: "تناظر لفظي", options: ["برد", "أوراق", "مطر", "رياح"], correctAnswer: 1 },
+    ],
+  },
+  // البنك السادس - إكمال الجمل
+  {
+    id: "verbal-b6-2",
+    title: "إكمال الجمل",
+    description: "اختيار الكلمة المناسبة لإكمال الجملة",
+    category: "verbal-bank-6",
+    difficulty: "beginner",
+    type: "verbal",
+    duration: "٥ دقائق",
+    questions: [
+      { id: "q1", prompt: "الحاجة أم _____", audioPlaceholder: "إكمال جملة", options: ["العمل", "الاختراع", "النجاح", "الإبداع"], correctAnswer: 1 },
+      { id: "q2", prompt: "درهم وقاية خير من قنطار _____", audioPlaceholder: "إكمال جملة", options: ["دواء", "علاج", "مرض", "صحة"], correctAnswer: 1 },
+      { id: "q3", prompt: "ليس الفتى من يقول كان أبي ولكن الفتى من يقول ها أنا _____", audioPlaceholder: "إكمال جملة", options: ["هنا", "ذا", "موجود", "قادم"], correctAnswer: 1 },
+    ],
+  },
+  // البنك السادس - الخطأ السياقي
+  {
+    id: "verbal-b6-3",
+    title: "الخطأ السياقي",
+    description: "تحديد الكلمة الخاطئة في السياق",
+    category: "verbal-bank-6",
+    difficulty: "intermediate",
+    type: "verbal",
+    duration: "٧ دقائق",
+    questions: [
+      { id: "q1", prompt: "حدد الكلمة الخاطئة: النجار يبني الأثاث من الخشب", audioPlaceholder: "خطأ سياقي", options: ["النجار", "يبني", "الأثاث", "الخشب"], correctAnswer: 1 },
+      { id: "q2", prompt: "حدد الكلمة الخاطئة: الثلج يسقط في فصل الصيف", audioPlaceholder: "خطأ سياقي", options: ["الثلج", "يسقط", "فصل", "الصيف"], correctAnswer: 3 },
+      { id: "q3", prompt: "حدد الكلمة الخاطئة: البحار يقود السيارة في المحيط", audioPlaceholder: "خطأ سياقي", options: ["البحار", "يقود", "السيارة", "المحيط"], correctAnswer: 2 },
+    ],
+  },
+  // البنك السادس - المفردة الشاذة
+  {
+    id: "verbal-b6-4",
+    title: "المفردة الشاذة",
+    description: "تحديد الكلمة التي لا تنتمي للمجموعة",
+    category: "verbal-bank-6",
+    difficulty: "beginner",
+    type: "verbal",
+    duration: "٥ دقائق",
+    questions: [
+      { id: "q1", prompt: "حدد المفردة الشاذة:", audioPlaceholder: "مفردة شاذة", options: ["عين", "أنف", "فم", "يد"], correctAnswer: 3 },
+      { id: "q2", prompt: "حدد المفردة الشاذة:", audioPlaceholder: "مفردة شاذة", options: ["سعودية", "مصر", "باريس", "الأردن"], correctAnswer: 2 },
+      { id: "q3", prompt: "حدد المفردة الشاذة:", audioPlaceholder: "مفردة شاذة", options: ["جمع", "طرح", "ضرب", "كتابة"], correctAnswer: 3 },
+    ],
+  },
+  // البنك السادس - استيعاب المقروء
+  {
+    id: "verbal-b6-5",
+    title: "استيعاب المقروء",
+    description: "قراءة النصوص والإجابة على الأسئلة",
+    category: "verbal-bank-6",
+    difficulty: "intermediate",
+    type: "verbal",
+    duration: "١٠ دقائق",
+    questions: [
+      { id: "q1", prompt: "مضاد كلمة 'النفع' في النص:", audioPlaceholder: "نص قرائي", options: ["الفائدة", "الضرر", "الخير", "المصلحة"], correctAnswer: 1 },
+      { id: "q2", prompt: "نستنتج من الفقرة الأخيرة:", audioPlaceholder: "نص قرائي", options: ["تفاؤل الكاتب", "تشاؤم الكاتب", "حياد الكاتب", "غضب الكاتب"], correctAnswer: 0 },
+      { id: "q3", prompt: "الجملة التي تلخص النص:", audioPlaceholder: "نص قرائي", options: ["العلم نور", "الصبر مفتاح", "العمل عبادة", "الوقت ذهب"], correctAnswer: 0 },
+    ],
+  },
+  // البنك السابع - التناظر اللفظي
+  {
+    id: "verbal-b7-1",
+    title: "التناظر اللفظي",
+    description: "إيجاد العلاقة بين الكلمات",
+    category: "verbal-bank-7",
+    difficulty: "beginner",
+    type: "verbal",
+    duration: "٦ دقائق",
+    questions: [
+      { id: "q1", prompt: "قاضي : محكمة :: إمام : ؟", audioPlaceholder: "تناظر لفظي", options: ["صلاة", "مسجد", "قرآن", "خطبة"], correctAnswer: 1 },
+      { id: "q2", prompt: "قراءة : عين :: استماع : ؟", audioPlaceholder: "تناظر لفظي", options: ["صوت", "أذن", "موسيقى", "كلام"], correctAnswer: 1 },
+      { id: "q3", prompt: "فأس : حطب :: منشار : ؟", audioPlaceholder: "تناظر لفظي", options: ["نجار", "خشب", "شجرة", "أداة"], correctAnswer: 1 },
+    ],
+  },
+  // البنك السابع - إكمال الجمل
+  {
+    id: "verbal-b7-2",
+    title: "إكمال الجمل",
+    description: "اختيار الكلمة المناسبة لإكمال الجملة",
+    category: "verbal-bank-7",
+    difficulty: "beginner",
+    type: "verbal",
+    duration: "٥ دقائق",
+    questions: [
+      { id: "q1", prompt: "الطيور على أشكالها _____", audioPlaceholder: "إكمال جملة", options: ["تطير", "تقع", "تجتمع", "تعيش"], correctAnswer: 1 },
+      { id: "q2", prompt: "رحلة الألف ميل تبدأ بـ _____", audioPlaceholder: "إكمال جملة", options: ["خطوة", "عزيمة", "إرادة", "أمل"], correctAnswer: 0 },
+      { id: "q3", prompt: "لكل داء دواء إلا _____", audioPlaceholder: "إكمال جملة", options: ["المرض", "الموت", "الهرم", "الألم"], correctAnswer: 2 },
+    ],
+  },
+  // البنك السابع - الخطأ السياقي
+  {
+    id: "verbal-b7-3",
+    title: "الخطأ السياقي",
+    description: "تحديد الكلمة الخاطئة في السياق",
+    category: "verbal-bank-7",
+    difficulty: "intermediate",
+    type: "verbal",
+    duration: "٧ دقائق",
+    questions: [
+      { id: "q1", prompt: "حدد الكلمة الخاطئة: المزارع يحلب الدجاج كل صباح", audioPlaceholder: "خطأ سياقي", options: ["المزارع", "يحلب", "الدجاج", "صباح"], correctAnswer: 2 },
+      { id: "q2", prompt: "حدد الكلمة الخاطئة: الكتاب يُقرأ بالأقدام", audioPlaceholder: "خطأ سياقي", options: ["الكتاب", "يُقرأ", "بالأقدام", "---"], correctAnswer: 2 },
+      { id: "q3", prompt: "حدد الكلمة الخاطئة: النار باردة جداً في الشتاء", audioPlaceholder: "خطأ سياقي", options: ["النار", "باردة", "جداً", "الشتاء"], correctAnswer: 1 },
+    ],
+  },
+  // البنك السابع - المفردة الشاذة
+  {
+    id: "verbal-b7-4",
+    title: "المفردة الشاذة",
+    description: "تحديد الكلمة التي لا تنتمي للمجموعة",
+    category: "verbal-bank-7",
+    difficulty: "beginner",
+    type: "verbal",
+    duration: "٥ دقائق",
+    questions: [
+      { id: "q1", prompt: "حدد المفردة الشاذة:", audioPlaceholder: "مفردة شاذة", options: ["واحد", "اثنان", "كبير", "ثلاثة"], correctAnswer: 2 },
+      { id: "q2", prompt: "حدد المفردة الشاذة:", audioPlaceholder: "مفردة شاذة", options: ["سيارة", "طائرة", "قطار", "تلفون"], correctAnswer: 3 },
+      { id: "q3", prompt: "حدد المفردة الشاذة:", audioPlaceholder: "مفردة شاذة", options: ["أب", "أم", "أخ", "صديق"], correctAnswer: 3 },
+    ],
+  },
+  // البنك السابع - استيعاب المقروء
+  {
+    id: "verbal-b7-5",
+    title: "استيعاب المقروء",
+    description: "قراءة النصوص والإجابة على الأسئلة",
+    category: "verbal-bank-7",
+    difficulty: "intermediate",
+    type: "verbal",
+    duration: "١٠ دقائق",
+    questions: [
+      { id: "q1", prompt: "عنوان مناسب للنص:", audioPlaceholder: "نص قرائي", options: ["البيئة والإنسان", "الصحة والغذاء", "التعليم والعمل", "الرياضة والشباب"], correctAnswer: 0 },
+      { id: "q2", prompt: "الهدف من ذكر الأرقام في النص:", audioPlaceholder: "نص قرائي", options: ["التأكيد", "التشويق", "التوضيح", "المقارنة"], correctAnswer: 0 },
+      { id: "q3", prompt: "رأي الكاتب في المشكلة:", audioPlaceholder: "نص قرائي", options: ["سهلة الحل", "صعبة الحل", "مستحيلة", "غير مهمة"], correctAnswer: 1 },
+    ],
+  },
+  // البنك الثامن - التناظر اللفظي
+  {
+    id: "verbal-b8-1",
+    title: "التناظر اللفظي",
+    description: "إيجاد العلاقة بين الكلمات",
+    category: "verbal-bank-8",
+    difficulty: "beginner",
+    type: "verbal",
+    duration: "٦ دقائق",
+    questions: [
+      { id: "q1", prompt: "ليل : نهار :: شتاء : ؟", audioPlaceholder: "تناظر لفظي", options: ["برد", "صيف", "ربيع", "خريف"], correctAnswer: 1 },
+      { id: "q2", prompt: "كلمة : جملة :: جملة : ؟", audioPlaceholder: "تناظر لفظي", options: ["كتاب", "فقرة", "نص", "حرف"], correctAnswer: 1 },
+      { id: "q3", prompt: "بذرة : شجرة :: بيضة : ؟", audioPlaceholder: "تناظر لفظي", options: ["عش", "طائر", "دجاجة", "فرخ"], correctAnswer: 1 },
+    ],
+  },
+  // البنك الثامن - إكمال الجمل
+  {
+    id: "verbal-b8-2",
+    title: "إكمال الجمل",
+    description: "اختيار الكلمة المناسبة لإكمال الجملة",
+    category: "verbal-bank-8",
+    difficulty: "beginner",
+    type: "verbal",
+    duration: "٥ دقائق",
+    questions: [
+      { id: "q1", prompt: "من راقب الناس مات _____", audioPlaceholder: "إكمال جملة", options: ["حزيناً", "همّاً", "غمّاً", "وحيداً"], correctAnswer: 2 },
+      { id: "q2", prompt: "الغني من استغنى بما _____ لا بما جمع", audioPlaceholder: "إكمال جملة", options: ["أخذ", "وجد", "ملك", "قنع"], correctAnswer: 1 },
+      { id: "q3", prompt: "إنما الأمم الأخلاق ما _____ فإن هم ذهبت أخلاقهم ذهبوا", audioPlaceholder: "إكمال جملة", options: ["دامت", "بقيت", "استمرت", "وجدت"], correctAnswer: 1 },
+    ],
+  },
+  // البنك الثامن - الخطأ السياقي
+  {
+    id: "verbal-b8-3",
+    title: "الخطأ السياقي",
+    description: "تحديد الكلمة الخاطئة في السياق",
+    category: "verbal-bank-8",
+    difficulty: "intermediate",
+    type: "verbal",
+    duration: "٧ دقائق",
+    questions: [
+      { id: "q1", prompt: "حدد الكلمة الخاطئة: الرسام يؤلف اللوحات الجميلة", audioPlaceholder: "خطأ سياقي", options: ["الرسام", "يؤلف", "اللوحات", "الجميلة"], correctAnswer: 1 },
+      { id: "q2", prompt: "حدد الكلمة الخاطئة: السمك يطير في الماء بسرعة", audioPlaceholder: "خطأ سياقي", options: ["السمك", "يطير", "الماء", "بسرعة"], correctAnswer: 1 },
+      { id: "q3", prompt: "حدد الكلمة الخاطئة: الطبيب يعلم الطلاب في الفصل", audioPlaceholder: "خطأ سياقي", options: ["الطبيب", "يعلم", "الطلاب", "الفصل"], correctAnswer: 0 },
+    ],
+  },
+  // البنك الثامن - المفردة الشاذة
+  {
+    id: "verbal-b8-4",
+    title: "المفردة الشاذة",
+    description: "تحديد الكلمة التي لا تنتمي للمجموعة",
+    category: "verbal-bank-8",
+    difficulty: "beginner",
+    type: "verbal",
+    duration: "٥ دقائق",
+    questions: [
+      { id: "q1", prompt: "حدد المفردة الشاذة:", audioPlaceholder: "مفردة شاذة", options: ["فراولة", "تفاح", "بطاطس", "عنب"], correctAnswer: 2 },
+      { id: "q2", prompt: "حدد المفردة الشاذة:", audioPlaceholder: "مفردة شاذة", options: ["نهر", "بحر", "جبل", "محيط"], correctAnswer: 2 },
+      { id: "q3", prompt: "حدد المفردة الشاذة:", audioPlaceholder: "مفردة شاذة", options: ["قراءة", "كتابة", "سباحة", "حساب"], correctAnswer: 2 },
+    ],
+  },
+  // البنك الثامن - استيعاب المقروء
+  {
+    id: "verbal-b8-5",
+    title: "استيعاب المقروء",
+    description: "قراءة النصوص والإجابة على الأسئلة",
+    category: "verbal-bank-8",
+    difficulty: "intermediate",
+    type: "verbal",
+    duration: "١٠ دقائق",
+    questions: [
+      { id: "q1", prompt: "الفكرة الرئيسية للفقرة الأولى:", audioPlaceholder: "نص قرائي", options: ["تعريف المشكلة", "حل المشكلة", "نتائج المشكلة", "أسباب المشكلة"], correctAnswer: 0 },
+      { id: "q2", prompt: "كلمة 'ذلك' في السطر الخامس تشير إلى:", audioPlaceholder: "نص قرائي", options: ["الحل", "السبب", "المشكلة", "النتيجة"], correctAnswer: 2 },
+      { id: "q3", prompt: "موقف الكاتب من القضية:", audioPlaceholder: "نص قرائي", options: ["إيجابي", "سلبي", "محايد", "متردد"], correctAnswer: 0 },
     ],
   },
   {
@@ -363,6 +875,10 @@ export const ExercisesProvider = ({ children }: { children: ReactNode }) => {
     }
     if (category === "all-verbal") {
       return exercises.filter(e => e.category === "verbal" || e.category === "analogy");
+    }
+    // Each verbal bank has its own exercises
+    if (category.startsWith("verbal-bank-")) {
+      return exercises.filter(e => e.category === category);
     }
     return exercises.filter(e => e.category === category);
   };
