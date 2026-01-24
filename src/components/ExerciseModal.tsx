@@ -1,7 +1,31 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Volume2, Play, CheckCircle, XCircle, RotateCcw, ChevronLeft } from "lucide-react";
 import { Exercise, Question } from "@/contexts/ExercisesContext";
+
+// Progress tracking
+const PROGRESS_KEY = "divedive-exercise-progress";
+
+const saveExerciseProgress = (exerciseId: string, answeredQuestions: number, totalQuestions: number) => {
+  try {
+    const stored = localStorage.getItem(PROGRESS_KEY);
+    const progress = stored ? JSON.parse(stored) : {};
+    progress[exerciseId] = { answeredQuestions, totalQuestions };
+    localStorage.setItem(PROGRESS_KEY, JSON.stringify(progress));
+  } catch {
+    // ignore
+  }
+};
+
+const getExerciseProgress = (exerciseId: string): { answeredQuestions: number; totalQuestions: number } | null => {
+  try {
+    const stored = localStorage.getItem(PROGRESS_KEY);
+    const progress = stored ? JSON.parse(stored) : {};
+    return progress[exerciseId] || null;
+  } catch {
+    return null;
+  }
+};
 
 interface ExerciseModalProps {
   exercise: Exercise | null;
@@ -16,6 +40,19 @@ const ExerciseModal = ({ exercise, open, onClose }: ExerciseModalProps) => {
   const [score, setScore] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [completed, setCompleted] = useState(false);
+
+  // Track progress for all exercise types
+  const shouldTrackProgress = true;
+
+  // Load saved progress for verbal exercises
+  useEffect(() => {
+    if (exercise && shouldTrackProgress && open) {
+      const savedProgress = getExerciseProgress(exercise.id);
+      if (savedProgress && savedProgress.answeredQuestions > 0 && savedProgress.answeredQuestions < savedProgress.totalQuestions) {
+        setCurrentQuestion(savedProgress.answeredQuestions);
+      }
+    }
+  }, [exercise?.id, open, shouldTrackProgress]);
 
   if (!exercise) return null;
 
@@ -36,11 +73,20 @@ const ExerciseModal = ({ exercise, open, onClose }: ExerciseModalProps) => {
     if (index === question.correctAnswer) {
       setScore(score + 1);
     }
+
+    // Save progress for verbal exercises
+    if (shouldTrackProgress) {
+      saveExerciseProgress(exercise.id, currentQuestion + 1, exercise.questions.length);
+    }
   };
 
   const handleNext = () => {
     if (isLastQuestion) {
       setCompleted(true);
+      // Mark as completed in progress
+      if (shouldTrackProgress) {
+        saveExerciseProgress(exercise.id, exercise.questions.length, exercise.questions.length);
+      }
     } else {
       setCurrentQuestion(currentQuestion + 1);
       setSelectedAnswer(null);
@@ -54,10 +100,19 @@ const ExerciseModal = ({ exercise, open, onClose }: ExerciseModalProps) => {
     setShowResult(false);
     setScore(0);
     setCompleted(false);
+    // Reset progress for verbal exercises
+    if (shouldTrackProgress) {
+      saveExerciseProgress(exercise.id, 0, exercise.questions.length);
+    }
   };
 
   const handleClose = () => {
-    handleRestart();
+    // Reset UI state but don't reset progress for verbal exercises
+    setCurrentQuestion(0);
+    setSelectedAnswer(null);
+    setShowResult(false);
+    setScore(0);
+    setCompleted(false);
     onClose();
   };
 

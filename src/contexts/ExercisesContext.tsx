@@ -200,8 +200,69 @@ const defaultExercises: Exercise[] = [
       { id: "q2", prompt: "ما العدد التالي: ٣، ٦، ١٢، ٢٤، ...؟", audioPlaceholder: "متتابعة عددية", options: ["٣٦", "٤٨", "٥٠", "٥٢"], correctAnswer: 1 },
     ],
   },
+  // البنك الأول - التناظر اللفظي
   {
     id: "verbal-1",
+    title: "التناظر اللفظي",
+    description: "إيجاد العلاقة بين الكلمات",
+    category: "verbal",
+    difficulty: "beginner",
+    type: "verbal",
+    duration: "٦ دقائق",
+    questions: [
+      { id: "q1", prompt: "طبيب : مستشفى :: معلم : ؟", audioPlaceholder: "تناظر لفظي", options: ["كتاب", "مدرسة", "طالب", "قلم"], correctAnswer: 1 },
+      { id: "q2", prompt: "قلم : كتابة :: سكين : ؟", audioPlaceholder: "تناظر لفظي", options: ["طعام", "قطع", "مطبخ", "حاد"], correctAnswer: 1 },
+      { id: "q3", prompt: "شمس : نهار :: قمر : ؟", audioPlaceholder: "تناظر لفظي", options: ["نجوم", "سماء", "ليل", "ضوء"], correctAnswer: 2 },
+    ],
+  },
+  // البنك الأول - إكمال الجمل
+  {
+    id: "verbal-2",
+    title: "إكمال الجمل",
+    description: "اختيار الكلمة المناسبة لإكمال الجملة",
+    category: "verbal",
+    difficulty: "beginner",
+    type: "verbal",
+    duration: "٥ دقائق",
+    questions: [
+      { id: "q1", prompt: "الصبر _____ الفرج", audioPlaceholder: "إكمال جملة", options: ["قبل", "مفتاح", "بعد", "طريق"], correctAnswer: 1 },
+      { id: "q2", prompt: "العلم _____ والجهل ظلام", audioPlaceholder: "إكمال جملة", options: ["ظلمة", "نور", "صعب", "سهل"], correctAnswer: 1 },
+      { id: "q3", prompt: "من جدّ _____", audioPlaceholder: "إكمال جملة", options: ["نجح", "وجد", "فاز", "تعلم"], correctAnswer: 1 },
+    ],
+  },
+  // البنك الأول - الخطأ السياقي
+  {
+    id: "verbal-3",
+    title: "الخطأ السياقي",
+    description: "تحديد الكلمة الخاطئة في السياق",
+    category: "verbal",
+    difficulty: "intermediate",
+    type: "verbal",
+    duration: "٧ دقائق",
+    questions: [
+      { id: "q1", prompt: "حدد الكلمة الخاطئة: ذهبت إلى المكتبة لأشتري الخضروات", audioPlaceholder: "خطأ سياقي", options: ["ذهبت", "المكتبة", "لأشتري", "الخضروات"], correctAnswer: 1 },
+      { id: "q2", prompt: "حدد الكلمة الخاطئة: الطبيب يعالج المرضى في المدرسة", audioPlaceholder: "خطأ سياقي", options: ["الطبيب", "يعالج", "المرضى", "المدرسة"], correctAnswer: 3 },
+      { id: "q3", prompt: "حدد الكلمة الخاطئة: السيارة تطير في الشارع بسرعة", audioPlaceholder: "خطأ سياقي", options: ["السيارة", "تطير", "الشارع", "بسرعة"], correctAnswer: 1 },
+    ],
+  },
+  // البنك الأول - المفردة الشاذة
+  {
+    id: "verbal-4",
+    title: "المفردة الشاذة",
+    description: "تحديد الكلمة التي لا تنتمي للمجموعة",
+    category: "verbal",
+    difficulty: "beginner",
+    type: "verbal",
+    duration: "٥ دقائق",
+    questions: [
+      { id: "q1", prompt: "حدد المفردة الشاذة:", audioPlaceholder: "مفردة شاذة", options: ["تفاح", "برتقال", "جزر", "موز"], correctAnswer: 2 },
+      { id: "q2", prompt: "حدد المفردة الشاذة:", audioPlaceholder: "مفردة شاذة", options: ["قلم", "كتاب", "سيارة", "دفتر"], correctAnswer: 2 },
+      { id: "q3", prompt: "حدد المفردة الشاذة:", audioPlaceholder: "مفردة شاذة", options: ["أحمر", "أخضر", "سريع", "أزرق"], correctAnswer: 2 },
+    ],
+  },
+  // البنك الأول - استيعاب المقروء
+  {
+    id: "verbal-5",
     title: "استيعاب المقروء",
     description: "قراءة النصوص والإجابة على الأسئلة",
     category: "verbal",
@@ -211,20 +272,20 @@ const defaultExercises: Exercise[] = [
     questions: [
       { id: "q1", prompt: "الفكرة الرئيسية للنص هي:", audioPlaceholder: "نص قرائي", options: ["أهمية القراءة", "فوائد الرياضة", "أضرار التلوث", "قيمة الوقت"], correctAnswer: 0 },
       { id: "q2", prompt: "يمكن وصف أسلوب الكاتب بأنه:", audioPlaceholder: "نص قرائي", options: ["علمي", "أدبي", "صحفي", "قصصي"], correctAnswer: 0 },
+      { id: "q3", prompt: "الهدف من النص هو:", audioPlaceholder: "نص قرائي", options: ["الإقناع", "الترفيه", "التوعية", "السرد"], correctAnswer: 2 },
     ],
   },
+  // البنك الثاني (analogy) - placeholder
   {
     id: "analogy-1",
-    title: "التناظر اللفظي",
-    description: "إيجاد العلاقة بين الكلمات",
+    title: "تمارين البنك الثاني",
+    description: "تمارين لفظية متنوعة",
     category: "analogy",
     difficulty: "beginner",
     type: "analogy",
     duration: "٦ دقائق",
     questions: [
-      { id: "q1", prompt: "طبيب : مستشفى :: معلم : ؟", audioPlaceholder: "تناظر لفظي", options: ["كتاب", "مدرسة", "طالب", "قلم"], correctAnswer: 1 },
-      { id: "q2", prompt: "قلم : كتابة :: سكين : ؟", audioPlaceholder: "تناظر لفظي", options: ["طعام", "قطع", "مطبخ", "حاد"], correctAnswer: 1 },
-      { id: "q3", prompt: "شمس : نهار :: قمر : ؟", audioPlaceholder: "تناظر لفظي", options: ["نجوم", "سماء", "ليل", "ضوء"], correctAnswer: 2 },
+      { id: "q1", prompt: "سيتم إضافة الأسئلة قريباً", audioPlaceholder: "سؤال", options: ["--", "--", "--", "--"], correctAnswer: 0 },
     ],
   },
   {

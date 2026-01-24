@@ -1,8 +1,62 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronRight, CheckCircle, XCircle, Library, Zap, Lock, ChevronDown, ChevronUp, Layers, List, Unlock, Lightbulb, AlertCircle, Flag, X, RotateCcw, HelpCircle } from "lucide-react";
 import { Collection } from "@/components/LessonGrid";
 import { useSkillProgress } from "@/contexts/SkillProgressContext";
+
+// Progress persistence system
+const COLLECTION_PROGRESS_KEY = "divedive-collection-progress";
+
+interface CollectionProgress {
+  answers: Record<string, number | null>;
+  revealedCount: number;
+  currentIndex: number;
+  viewMode: "progressive" | "scroll" | "normal";
+  selectedBankId: string | null;
+  variantIndex: Record<number, number>;
+  submitted: boolean;
+  score: number;
+  lastUpdated: string;
+}
+
+const saveCollectionProgress = (collectionId: string, bankId: string | null, progress: Partial<CollectionProgress>) => {
+  try {
+    const stored = localStorage.getItem(COLLECTION_PROGRESS_KEY);
+    const allProgress = stored ? JSON.parse(stored) : {};
+    const key = bankId ? `${collectionId}-${bankId}` : collectionId;
+    allProgress[key] = {
+      ...allProgress[key],
+      ...progress,
+      lastUpdated: new Date().toISOString(),
+    };
+    localStorage.setItem(COLLECTION_PROGRESS_KEY, JSON.stringify(allProgress));
+  } catch {
+    // ignore
+  }
+};
+
+const getCollectionProgress = (collectionId: string, bankId: string | null): CollectionProgress | null => {
+  try {
+    const stored = localStorage.getItem(COLLECTION_PROGRESS_KEY);
+    const allProgress = stored ? JSON.parse(stored) : {};
+    const key = bankId ? `${collectionId}-${bankId}` : collectionId;
+    return allProgress[key] || null;
+  } catch {
+    return null;
+  }
+};
+
+const clearCollectionProgress = (collectionId: string, bankId: string | null) => {
+  try {
+    const stored = localStorage.getItem(COLLECTION_PROGRESS_KEY);
+    const allProgress = stored ? JSON.parse(stored) : {};
+    const key = bankId ? `${collectionId}-${bankId}` : collectionId;
+    delete allProgress[key];
+    localStorage.setItem(COLLECTION_PROGRESS_KEY, JSON.stringify(allProgress));
+  } catch {
+    // ignore
+  }
+};
 
 interface CollectionViewProps {
   collection: Collection;
@@ -18,15 +72,17 @@ const modeLabels: Record<ViewMode, { label: string; icon: React.ReactNode }> = {
 };
 
 const CollectionView = ({ collection, onBack }: CollectionViewProps) => {
-  const [answers, setAnswers] = useState<Record<string, number | null>>({});
-  const [submitted, setSubmitted] = useState(false);
-  const [viewMode, setViewMode] = useState<ViewMode>("progressive");
-  const [showModeSelector, setShowModeSelector] = useState(false);
-
   // Bank selection state for collections with banks
-  const [selectedBankId, setSelectedBankId] = useState<string | null>(
-    collection.banks && collection.banks.length > 0 ? collection.banks[0].id : null
-  );
+  const initialBankId = collection.banks && collection.banks.length > 0 ? collection.banks[0].id : null;
+  const [selectedBankId, setSelectedBankId] = useState<string | null>(initialBankId);
+
+  // Load saved progress
+  const savedProgress = getCollectionProgress(collection.id, selectedBankId);
+
+  const [answers, setAnswers] = useState<Record<string, number | null>>(savedProgress?.answers || {});
+  const [submitted, setSubmitted] = useState(savedProgress?.submitted || false);
+  const [viewMode, setViewMode] = useState<ViewMode>(savedProgress?.viewMode || "progressive");
+  const [showModeSelector, setShowModeSelector] = useState(false);
 
   // Get the questions array from selected bank or directly from collection
   const questions = (() => {
@@ -37,14 +93,14 @@ const CollectionView = ({ collection, onBack }: CollectionViewProps) => {
     return collection.questions;
   })();
 
-  // Progressive mode state
-  const [revealedCount, setRevealedCount] = useState(1);
+  // Progressive mode state - restore from saved progress
+  const [revealedCount, setRevealedCount] = useState(savedProgress?.revealedCount || 1);
 
-  // Scroll mode state
-  const [currentIndex, setCurrentIndex] = useState(0);
+  // Scroll mode state - restore from saved progress
+  const [currentIndex, setCurrentIndex] = useState(savedProgress?.currentIndex || 0);
 
   // Variant tracking - which variant index each question is showing
-  const [variantIndex, setVariantIndex] = useState<Record<number, number>>({});
+  const [variantIndex, setVariantIndex] = useState<Record<number, number>>(savedProgress?.variantIndex || {});
   // Track failed questions with their wrong answers (to show on left side)
   const [failedAttempts, setFailedAttempts] = useState<Record<number, { question: typeof questions[0], wrongAnswer: number }[]>>({});
 
@@ -60,9 +116,58 @@ const CollectionView = ({ collection, onBack }: CollectionViewProps) => {
   const [flippedCards, setFlippedCards] = useState<Record<number, boolean>>({});
 
   const questionRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const hasScrolledOnMount = useRef(false);
 
   // Skill progress tracking
   const { recordCorrectAnswer } = useSkillProgress();
+
+  // Save progress whenever state changes
+  useEffect(() => {
+    saveCollectionProgress(collection.id, selectedBankId, {
+      answers,
+      revealedCount,
+      currentIndex,
+      viewMode,
+      variantIndex,
+      submitted,
+      selectedBankId,
+    });
+  }, [answers, revealedCount, currentIndex, viewMode, variantIndex, submitted, collection.id, selectedBankId]);
+
+  // Auto-scroll to current question on mount if there's saved progress
+  useEffect(() => {
+    if (hasScrolledOnMount.current) return;
+
+    // Read progress directly from localStorage for initial scroll
+    const initialProgress = getCollectionProgress(collection.id, selectedBankId);
+    if (initialProgress && !initialProgress.submitted && Object.keys(initialProgress.answers || {}).length > 0) {
+      hasScrolledOnMount.current = true;
+      const targetIndex = (initialProgress.viewMode === "scroll")
+        ? (initialProgress.currentIndex || 0)
+        : Math.max(0, (initialProgress.revealedCount || 1) - 1);
+
+      // Wait for refs to be populated
+      setTimeout(() => {
+        questionRefs.current[targetIndex]?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center'
+        });
+      }, 500);
+    }
+  }, [collection.id, selectedBankId]);
+
+  // Load progress when bank changes
+  useEffect(() => {
+    const progress = getCollectionProgress(collection.id, selectedBankId);
+    if (progress) {
+      setAnswers(progress.answers || {});
+      setRevealedCount(progress.revealedCount || 1);
+      setCurrentIndex(progress.currentIndex || 0);
+      setViewMode(progress.viewMode || "progressive");
+      setVariantIndex(progress.variantIndex || {});
+      setSubmitted(progress.submitted || false);
+    }
+  }, [selectedBankId, collection.id]);
 
   // Get current question (original or variant)
   const getCurrentQuestion = (qIndex: number) => {
@@ -197,19 +302,44 @@ const CollectionView = ({ collection, onBack }: CollectionViewProps) => {
   // Handle bank selection
   const handleBankSelect = (bankId: string) => {
     if (bankId === selectedBankId) return;
-    // Reset all state when switching banks
+    // Switch bank - useEffect will load saved progress for this bank
     setSelectedBankId(bankId);
+    setFailedAttempts({});
+    // Load progress for new bank (or reset if no saved progress)
+    const progress = getCollectionProgress(collection.id, bankId);
+    if (progress) {
+      setAnswers(progress.answers || {});
+      setRevealedCount(progress.revealedCount || 1);
+      setCurrentIndex(progress.currentIndex || 0);
+      setViewMode(progress.viewMode || "progressive");
+      setVariantIndex(progress.variantIndex || {});
+      setSubmitted(progress.submitted || false);
+    } else {
+      // No saved progress, reset to defaults
+      setAnswers({});
+      setSubmitted(false);
+      setRevealedCount(1);
+      setCurrentIndex(0);
+      setVariantIndex({});
+    }
+  };
+
+  // Toggle flip card
+  const toggleFlipCard = (qIndex: number) => {
+    setFlippedCards(prev => ({ ...prev, [qIndex]: !prev[qIndex] }));
+  };
+
+  // Restart exercise - clear progress and reset state
+  const handleRestart = () => {
+    clearCollectionProgress(collection.id, selectedBankId);
     setAnswers({});
     setSubmitted(false);
     setRevealedCount(1);
     setCurrentIndex(0);
     setVariantIndex({});
     setFailedAttempts({});
-  };
-
-  // Toggle flip card
-  const toggleFlipCard = (qIndex: number) => {
-    setFlippedCards(prev => ({ ...prev, [qIndex]: !prev[qIndex] }));
+    setFlippedCards({});
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   // Handle report submission
@@ -386,6 +516,18 @@ const CollectionView = ({ collection, onBack }: CollectionViewProps) => {
             <p className="text-xs text-muted-foreground truncate">{collection.description}</p>
           </div>
         </div>
+
+        {/* Restart Button */}
+        {(Object.keys(answers).length > 0 || submitted) && (
+          <button
+            onClick={handleRestart}
+            className="flex items-center gap-2 px-3 py-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-full transition-colors"
+            title="إعادة البدء"
+          >
+            <RotateCcw className="w-4 h-4" />
+            <span className="text-sm font-medium hidden sm:inline">إعادة</span>
+          </button>
+        )}
 
         {/* Mode Selector */}
         {!submitted && (
@@ -1008,18 +1150,31 @@ const CollectionView = ({ collection, onBack }: CollectionViewProps) => {
         </motion.div>
       )}
 
-      {/* Back Button */}
+      {/* Action Buttons after submission */}
       {submitted && (
-        <motion.button
-          onClick={onBack}
-          className="w-full mt-6 py-4 bg-primary text-primary-foreground rounded-3xl font-bold text-lg"
+        <motion.div
+          className="flex gap-3 mt-6"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
         >
-          العودة للرئيسية
-        </motion.button>
+          <motion.button
+            onClick={handleRestart}
+            className="flex-1 py-4 bg-muted hover:bg-muted/80 rounded-3xl font-bold text-lg flex items-center justify-center gap-2"
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+          >
+            <RotateCcw className="w-5 h-5" />
+            إعادة التمرين
+          </motion.button>
+          <motion.button
+            onClick={onBack}
+            className="flex-1 py-4 bg-primary text-primary-foreground rounded-3xl font-bold text-lg"
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+          >
+            العودة للرئيسية
+          </motion.button>
+        </motion.div>
       )}
       </div>
     </div>

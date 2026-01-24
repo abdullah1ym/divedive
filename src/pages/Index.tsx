@@ -103,6 +103,23 @@ const Index = () => {
         })),
       };
       setSelectedCollection(ratiosCollection);
+    } else if (exercise.category === "verbal" || exercise.category === "analogy") {
+      // Verbal exercises - open in CollectionView like تجميعات
+      const verbalCollection: Collection = {
+        id: `${exercise.id}-collection`,
+        name: exercise.title,
+        description: exercise.description,
+        category: "verbal",
+        questions: exercise.questions.map((q) => ({
+          id: q.id,
+          prompt: q.prompt,
+          options: q.options,
+          correctAnswer: q.correctAnswer,
+          explanation: (q as any).explanation,
+          skillTag: exercise.category,
+        })),
+      };
+      setSelectedCollection(verbalCollection);
     } else {
       handleExerciseClick(exercise);
     }

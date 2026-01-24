@@ -1,6 +1,60 @@
 import { motion } from "framer-motion";
 import { Play, Info, Brain, Clock, Library, Pin } from "lucide-react";
 import { useExercises, Exercise } from "@/contexts/ExercisesContext";
+import { useState, useEffect } from "react";
+
+// Progress tracking for exercises
+const PROGRESS_KEY = "divedive-exercise-progress";
+const COLLECTION_PROGRESS_KEY = "divedive-collection-progress";
+
+interface ExerciseProgress {
+  [exerciseId: string]: {
+    answeredQuestions: number;
+    totalQuestions: number;
+  };
+}
+
+const getExerciseProgress = (): ExerciseProgress => {
+  try {
+    const stored = localStorage.getItem(PROGRESS_KEY);
+    return stored ? JSON.parse(stored) : {};
+  } catch {
+    return {};
+  }
+};
+
+// Get progress from CollectionView format
+const getCollectionProgress = (): ExerciseProgress => {
+  try {
+    const stored = localStorage.getItem(COLLECTION_PROGRESS_KEY);
+    const collectionProgress = stored ? JSON.parse(stored) : {};
+    const result: ExerciseProgress = {};
+
+    // Convert collection progress format to exercise progress format
+    for (const [key, value] of Object.entries(collectionProgress)) {
+      const progress = value as { answers?: Record<string, number | null>; submitted?: boolean };
+      if (progress.answers) {
+        const answeredQuestions = Object.values(progress.answers).filter(a => a !== null).length;
+        // Extract exercise id from the key (remove -collection suffix if present)
+        const exerciseId = key.replace(/-collection$/, '');
+        result[exerciseId] = {
+          answeredQuestions,
+          totalQuestions: Object.keys(progress.answers).length || answeredQuestions,
+        };
+      }
+    }
+    return result;
+  } catch {
+    return {};
+  }
+};
+
+// Merge both progress sources
+const getAllProgress = (): ExerciseProgress => {
+  const exerciseProgress = getExerciseProgress();
+  const collectionProgress = getCollectionProgress();
+  return { ...exerciseProgress, ...collectionProgress };
+};
 
 // نوع السؤال
 export interface Question {
@@ -698,20 +752,42 @@ const difficultyColors: Record<string, string> = {
 
 const LessonGrid = ({ category, onExerciseClick, onCollectionClick }: LessonGridProps) => {
   const { getExercisesByCategory } = useExercises();
-  const exercises = getExercisesByCategory(category);
+  const [progress, setProgress] = useState<ExerciseProgress>({});
 
-  // Get pinned collections for quantitative or verbal main categories
+  // Load progress from localStorage
+  useEffect(() => {
+    setProgress(getAllProgress());
+
+    // Listen for storage changes
+    const handleStorage = () => setProgress(getAllProgress());
+    window.addEventListener("storage", handleStorage);
+
+    // Also poll for changes (for same-tab updates)
+    const interval = setInterval(() => setProgress(getAllProgress()), 1000);
+
+    return () => {
+      window.removeEventListener("storage", handleStorage);
+      clearInterval(interval);
+    };
+  }, []);
+
+  // Don't show anything on initial load (default "quantitative" state)
+  const isInitialState = category === "quantitative";
+  const exercises = isInitialState ? [] : getExercisesByCategory(category);
+
+  const isVerbalCategory = category === "verbal" || category === "analogy";
+  const isMathCategory = category === "all-math" || category === "quantitative" || category === "algebra";
+  const showProgress = isVerbalCategory || isMathCategory;
+
+  // Get pinned collections only when user explicitly selects a math subcategory
   const getCollectionsForCategory = () => {
-    if (category === "all-math" || category === "quantitative" || category === "algebra") {
+    if (category === "all-math" || category === "algebra") {
       return pinnedCollections.quantitative;
-    }
-    if (category === "all-verbal" || category === "verbal" || category === "analogy") {
-      return pinnedCollections.verbal;
     }
     return [];
   };
 
-  const collections = getCollectionsForCategory();
+  const collections = isInitialState ? [] : getCollectionsForCategory();
 
   return (
     <div className="space-y-6">
@@ -763,41 +839,43 @@ const LessonGrid = ({ category, onExerciseClick, onCollectionClick }: LessonGrid
         </motion.div>
       )}
 
-      {/* Category Header */}
-      <motion.div
-        className="flex items-center justify-between"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.5 }}
-      >
-        <div>
-          <h2 className="text-2xl font-bold">{categoryNames[category] || category}</h2>
-          <p className="text-sm text-muted-foreground">{exercises.length} تمارين متاحة</p>
-        </div>
+      {/* Category Header - hidden on initial state */}
+      {!isInitialState && (
+        <motion.div
+          className="flex items-center justify-between"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.5 }}
+        >
+          <div>
+            <h2 className="text-2xl font-bold">{categoryNames[category] || category}</h2>
+            <p className="text-sm text-muted-foreground">{exercises.length} تمارين متاحة</p>
+          </div>
 
-        <div className="flex items-center gap-3">
-          <motion.button
-            className="flex items-center gap-2 px-4 py-2.5 bg-card rounded-xl text-sm font-semibold hover:bg-muted transition-colors"
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-          >
-            <Info className="w-4 h-4" />
-            معلومات الوحدة
-          </motion.button>
-
-          {exercises.length > 0 && (
+          <div className="flex items-center gap-3">
             <motion.button
-              onClick={() => onExerciseClick(exercises[0])}
-              className="flex items-center gap-2 px-5 py-2.5 bg-foreground text-background rounded-xl text-sm font-semibold hover:opacity-90 transition-opacity"
+              className="flex items-center gap-2 px-4 py-2.5 bg-card rounded-xl text-sm font-semibold hover:bg-muted transition-colors"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >
-              <Play className="w-4 h-4 fill-current" />
-              ابدأ التمارين
+              <Info className="w-4 h-4" />
+              معلومات الوحدة
             </motion.button>
-          )}
-        </div>
-      </motion.div>
+
+            {exercises.length > 0 && (
+              <motion.button
+                onClick={() => onExerciseClick(exercises[0])}
+                className="flex items-center gap-2 px-5 py-2.5 bg-foreground text-background rounded-xl text-sm font-semibold hover:opacity-90 transition-opacity"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <Play className="w-4 h-4 fill-current" />
+                ابدأ التمارين
+              </motion.button>
+            )}
+          </div>
+        </motion.div>
+      )}
 
       {/* Exercise Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -839,11 +917,34 @@ const LessonGrid = ({ category, onExerciseClick, onCollectionClick }: LessonGrid
               </div>
             </div>
 
+            {/* Progress Bar - for all exercises */}
+            {showProgress && (() => {
+              const totalQuestions = exercise.questions.length;
+              const answeredQuestions = progress[exercise.id]?.answeredQuestions || 0;
+              const percentage = totalQuestions > 0 ? Math.round((answeredQuestions / totalQuestions) * 100) : 0;
+              return (
+                <div className="mt-4">
+                  <div className="flex items-center justify-between text-xs text-muted-foreground mb-1">
+                    <span>التقدم</span>
+                    <span>{percentage}%</span>
+                  </div>
+                  <div className="h-2 bg-muted rounded-full overflow-hidden">
+                    <motion.div
+                      className="h-full bg-turquoise rounded-full"
+                      initial={{ width: 0 }}
+                      animate={{ width: `${percentage}%` }}
+                      transition={{ duration: 0.5 }}
+                    />
+                  </div>
+                </div>
+              );
+            })()}
+
             {/* Play Overlay */}
             <div className="mt-4 pt-4 border-t border-border">
               <div className="flex items-center justify-center gap-2 text-primary font-semibold">
                 <Play className="w-4 h-4 fill-current" />
-                <span>ابدأ التمرين</span>
+                <span>{showProgress && progress[exercise.id]?.answeredQuestions > 0 ? "تابع التمرين" : "ابدأ التمرين"}</span>
               </div>
             </div>
           </motion.div>
@@ -852,8 +953,17 @@ const LessonGrid = ({ category, onExerciseClick, onCollectionClick }: LessonGrid
         {exercises.length === 0 && (
           <div className="col-span-full text-center py-12 text-muted-foreground">
             <Brain className="w-12 h-12 mx-auto mb-4 opacity-50" />
-            <p>لا توجد تمارين في هذا القسم حالياً</p>
-            <p className="text-sm">سيتم إضافة تمارين جديدة قريباً</p>
+            {isInitialState ? (
+              <>
+                <p>اختر قسماً للبدء</p>
+                <p className="text-sm">الكمي أو اللفظي أو اختبار محاكي</p>
+              </>
+            ) : (
+              <>
+                <p>لا توجد تمارين في هذا القسم حالياً</p>
+                <p className="text-sm">سيتم إضافة تمارين جديدة قريباً</p>
+              </>
+            )}
           </div>
         )}
       </div>
