@@ -90,8 +90,8 @@ const QuantitativeView = () => {
             >
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center group-hover:bg-primary/30 transition-colors">
-                    <Calculator className="w-6 h-6 text-primary" />
+                  <div className="w-12 h-12 rounded-xl bg-turquoise/20 flex items-center justify-center group-hover:bg-turquoise/30 transition-colors">
+                    <Calculator className="w-6 h-6 text-turquoise" />
                   </div>
                   <div>
                     <h3 className="font-bold text-lg">{unit.title}</h3>
@@ -99,7 +99,7 @@ const QuantitativeView = () => {
                   </div>
                 </div>
                 <motion.button
-                  className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-xl font-medium text-sm"
+                  className="flex items-center gap-2 px-4 py-2 bg-turquoise text-turquoise-foreground rounded-xl font-medium text-sm"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={(e) => {
@@ -127,18 +127,18 @@ const QuantitativeView = () => {
 
       {/* Quick Practice */}
       <motion.div
-        className="bg-gradient-to-br from-primary/20 to-turquoise/20 rounded-2xl p-8 text-center"
+        className="bg-gradient-to-br from-turquoise/20 to-turquoise/20 rounded-2xl p-8 text-center"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.7 }}
       >
-        <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-primary/20 flex items-center justify-center">
-          <Calculator className="w-8 h-8 text-primary" />
+        <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-turquoise/20 flex items-center justify-center">
+          <Calculator className="w-8 h-8 text-turquoise" />
         </div>
         <h3 className="text-xl font-bold mb-2">تدريب سريع</h3>
         <p className="text-muted-foreground mb-6">٢٠ سؤال عشوائي من جميع المواضيع</p>
         <motion.button
-          className="px-8 py-3 bg-primary text-primary-foreground rounded-xl font-semibold"
+          className="px-8 py-3 bg-turquoise text-turquoise-foreground rounded-xl font-semibold"
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
         >

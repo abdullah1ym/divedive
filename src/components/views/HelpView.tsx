@@ -4,24 +4,28 @@ import { useState } from "react";
 
 const faqs = [
   {
-    question: "كيف أبدأ التدريب السمعي؟",
-    answer: "ابدأ من قسم التمارين واختر الفئة المناسبة لمستواك. ننصح بالبدء من تمارين تمييز النغمات ثم الانتقال للكلمات والجمل."
+    question: "كيف أبدأ التدريب على القدرات؟",
+    answer: "اختر القسم الكمي أو اللفظي من القائمة الجانبية، ثم اختر المهارة التي تريد التدرب عليها. يمكنك أيضاً استخدام خريطة المهارات للتدرب بشكل منظم."
   },
   {
-    question: "كم مرة يجب أن أتدرب؟",
-    answer: "ننصح بالتدريب لمدة ١٥-٣٠ دقيقة يومياً للحصول على أفضل النتائج. الاستمرارية أهم من مدة الجلسة الواحدة."
+    question: "ما الفرق بين القسم الكمي واللفظي؟",
+    answer: "القسم الكمي يشمل: الحساب، الجبر، الهندسة، والإحصاء. القسم اللفظي يشمل: التناظر اللفظي، إكمال الجمل، الخطأ السياقي، واستيعاب المقروء."
   },
   {
-    question: "ماذا أفعل إذا كان التمرين صعباً؟",
-    answer: "يمكنك إعادة الاستماع للصوت عدة مرات. إذا استمرت الصعوبة، جرب تمريناً أسهل وارجع لاحقاً."
+    question: "كيف يعمل نظام المحاولات؟",
+    answer: "لكل سؤال ٣ محاولات بصيغ مختلفة. إذا أخطأت في المحاولات الثلاث، ينتقل السؤال تلقائياً لقسم 'راجع أخطاءك' للمراجعة لاحقاً."
   },
   {
-    question: "هل يمكنني استخدام التطبيق بدون سماعات؟",
-    answer: "نعم، لكن ننصح باستخدام سماعات أو مكبرات صوت جيدة للحصول على أفضل تجربة تدريبية."
+    question: "كيف أحفظ سؤال للمراجعة؟",
+    answer: "اضغط على أيقونة الحفظ بجانب أي سؤال لإضافته للأسئلة المحفوظة. يمكنك مراجعتها لاحقاً من القائمة الجانبية."
   },
   {
     question: "كيف أتابع تقدمي؟",
-    answer: "اذهب لقسم التقدم من القائمة الجانبية لرؤية إحصائياتك ونسب نجاحك في التمارين المختلفة."
+    answer: "اذهب لقسم التقدم من القائمة الجانبية لرؤية أهدافك اليومية، أدائك في كل مهارة، ومقارنة أسبوعية لتقدمك."
+  },
+  {
+    question: "ما هو هدف اليوم؟",
+    answer: "هدف اليوم هو عدد التمارين التي تريد إكمالها يومياً. يمكنك تعديله من صفحة التقدم بالضغط على أيقونة الإعدادات."
   },
 ];
 
@@ -41,9 +45,9 @@ const HelpView = () => {
       {/* Quick Links */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {[
-          { icon: BookOpen, label: "دليل الاستخدام", color: "text-primary" },
+          { icon: BookOpen, label: "دليل الاستخدام", color: "text-turquoise" },
           { icon: MessageCircle, label: "تواصل معنا", color: "text-turquoise" },
-          { icon: Mail, label: "الدعم الفني", color: "text-yellow" },
+          { icon: Mail, label: "الدعم الفني", color: "text-turquoise" },
         ].map((item, index) => (
           <motion.button
             key={item.label}
@@ -68,7 +72,7 @@ const HelpView = () => {
         transition={{ delay: 0.3 }}
       >
         <div className="flex items-center gap-3 mb-6">
-          <HelpCircle className="w-5 h-5 text-primary" />
+          <HelpCircle className="w-5 h-5 text-turquoise" />
           <h2 className="text-xl font-bold">الأسئلة الشائعة</h2>
         </div>
 
@@ -109,14 +113,14 @@ const HelpView = () => {
 
       {/* Contact */}
       <motion.div
-        className="bg-gradient-to-br from-primary/20 to-turquoise/20 rounded-2xl p-6 text-center"
+        className="bg-gradient-to-br from-turquoise/20 to-turquoise/10 rounded-2xl p-6 text-center"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.8 }}
       >
         <h3 className="text-xl font-bold mb-2">لم تجد إجابة لسؤالك؟</h3>
         <p className="text-muted-foreground mb-4">تواصل معنا وسنرد عليك في أقرب وقت</p>
-        <button className="px-6 py-3 bg-primary text-primary-foreground rounded-xl font-semibold hover:bg-primary/90 transition-colors">
+        <button className="px-6 py-3 bg-turquoise text-turquoise-foreground rounded-xl font-semibold hover:bg-turquoise/90 transition-colors">
           تواصل معنا
         </button>
       </motion.div>

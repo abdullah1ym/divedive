@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { BookOpen, Clock, Star, ChevronLeft } from "lucide-react";
+import { BookOpen, Clock, Star, ChevronLeft, Sparkles } from "lucide-react";
 import { useLessons } from "@/contexts/LessonsContext";
 
 const LessonsView = () => {
@@ -8,7 +8,26 @@ const LessonsView = () => {
   const progressPercent = Math.round((completedCount / lessons.length) * 100);
 
   return (
-    <div className="space-y-6 max-w-3xl mx-auto">
+    <div className="space-y-6 max-w-3xl mx-auto relative">
+      {/* Coming Soon Overlay */}
+      <motion.div
+        className="fixed inset-0 z-10 flex items-center justify-center pointer-events-none mr-20"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+      >
+        <div className="bg-card/95 backdrop-blur-sm rounded-2xl p-8 text-center shadow-lg pointer-events-auto">
+          <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-turquoise/20 flex items-center justify-center">
+            <Sparkles className="w-8 h-8 text-turquoise" />
+          </div>
+          <h3 className="text-2xl font-bold mb-2">قريباً</h3>
+          <p className="text-muted-foreground max-w-xs">
+            نعمل على إضافة دروس تفاعلية لمساعدتك في فهم أساسيات اختبار القدرات
+          </p>
+        </div>
+      </motion.div>
+
+      {/* Blurred Content Preview */}
+      <div className="opacity-40 blur-[2px] pointer-events-none select-none">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -19,7 +38,7 @@ const LessonsView = () => {
 
       {/* Progress Summary */}
       <motion.div
-        className="bg-gradient-to-br from-primary/20 to-turquoise/20 rounded-2xl p-6"
+        className="bg-gradient-to-br from-turquoise/20 to-turquoise/20 rounded-2xl p-6"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
@@ -29,12 +48,12 @@ const LessonsView = () => {
             <p className="text-sm text-muted-foreground mb-1">تقدمك في الدروس</p>
             <p className="text-2xl font-bold">{completedCount} من {lessons.length} مكتمل</p>
           </div>
-          <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center">
-            <span className="text-2xl font-bold text-primary">{progressPercent}٪</span>
+          <div className="w-16 h-16 rounded-full bg-turquoise/20 flex items-center justify-center">
+            <span className="text-2xl font-bold text-turquoise">{progressPercent}٪</span>
           </div>
         </div>
         <div className="mt-4 h-2 bg-muted rounded-full overflow-hidden">
-          <div className="h-full bg-primary rounded-full" style={{ width: `${progressPercent}%` }} />
+          <div className="h-full bg-turquoise rounded-full" style={{ width: `${progressPercent}%` }} />
         </div>
       </motion.div>
 
@@ -97,6 +116,7 @@ const LessonsView = () => {
             </div>
           </motion.div>
         ))}
+      </div>
       </div>
     </div>
   );

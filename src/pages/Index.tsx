@@ -63,6 +63,8 @@ const Index = () => {
     // Clear any open views when changing sections
     setSelectedMixedExercise(null);
     setSelectedCollection(null);
+    // Scroll to top on section change
+    window.scrollTo(0, 0);
   };
 
   const handleExerciseClickWithFullPage = (exercise: Exercise) => {

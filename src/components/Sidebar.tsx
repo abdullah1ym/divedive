@@ -1,13 +1,12 @@
 import { motion } from "framer-motion";
 import {
   Home,
-  Brain,
   BarChart3,
   Settings,
   HelpCircle,
   BookOpen,
   Award,
-  Heart,
+  Bookmark,
   Calculator,
   FileText,
   Map
@@ -21,14 +20,13 @@ interface SidebarProps {
 
 const menuItems = [
   { id: "home", icon: Home, label: "الرئيسية", group: "الرئيسية" },
-  { id: "exercises", icon: Brain, label: "التمارين", group: "الرئيسية" },
   { id: "lessons", icon: BookOpen, label: "الدروس", group: "الرئيسية" },
 ];
 
 const guideItems = [
   { id: "skillmap", icon: Map, label: "خريطة المهارات", group: "التعلم" },
   { id: "achievements", icon: Award, label: "الإنجازات", group: "التعلم" },
-  { id: "favorites", icon: Heart, label: "المفضلة", group: "التعلم" },
+  { id: "favorites", icon: Bookmark, label: "المحفوظة", group: "التعلم" },
 ];
 
 const resourceItems = [

@@ -15,6 +15,10 @@ export interface DailyGoal {
   exercisesCompleted: number;
   xpTarget: number;
   xpEarned: number;
+  mathTarget: number;
+  mathCompleted: number;
+  languageTarget: number;
+  languageCompleted: number;
 }
 
 export interface Flashcard {
@@ -62,10 +66,11 @@ interface UserProfileContextType {
   flashcards: Flashcard[];
   addXp: (amount: number) => void;
   recordAnswer: (isCorrect: boolean, timeSpent: number, questionData?: QuestionData, selectedAnswer?: number) => void;
-  completeExercise: () => void;
+  completeExercise: (category?: "math" | "language") => void;
   resetStats: () => void;
   removeFlashcard: (id: string) => void;
   markFlashcardReviewed: (id: string) => void;
+  setDailyGoalTargets: (mathTarget: number, languageTarget: number) => void;
 }
 
 const calculateLevel = (xp: number): { level: number; xpToNext: number; totalForNext: number } => {
@@ -110,10 +115,14 @@ const defaultStats: UserStats = {
   longestStreak: 0,
   lastActiveDate: "",
   dailyGoal: {
-    exercisesTarget: 3,
+    exercisesTarget: 5,
     exercisesCompleted: 0,
     xpTarget: 100,
     xpEarned: 0,
+    mathTarget: 3,
+    mathCompleted: 0,
+    languageTarget: 2,
+    languageCompleted: 0,
   },
   username: "متدرب",
   title: "مبتدئ",
@@ -326,7 +335,7 @@ export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
     });
   };
 
-  const completeExercise = () => {
+  const completeExercise = (category?: "math" | "language") => {
     setStats(prev => {
       const newStats = {
         ...prev,
@@ -334,6 +343,8 @@ export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
         dailyGoal: {
           ...prev.dailyGoal,
           exercisesCompleted: prev.dailyGoal.exercisesCompleted + 1,
+          mathCompleted: category === "math" ? prev.dailyGoal.mathCompleted + 1 : prev.dailyGoal.mathCompleted,
+          languageCompleted: category === "language" ? prev.dailyGoal.languageCompleted + 1 : prev.dailyGoal.languageCompleted,
         },
         ...updateStreak(prev),
       };
@@ -341,6 +352,18 @@ export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
       return newStats;
     });
     addXp(25);
+  };
+
+  const setDailyGoalTargets = (mathTarget: number, languageTarget: number) => {
+    setStats(prev => ({
+      ...prev,
+      dailyGoal: {
+        ...prev.dailyGoal,
+        mathTarget,
+        languageTarget,
+        exercisesTarget: mathTarget + languageTarget,
+      },
+    }));
   };
 
   const resetStats = () => {
@@ -375,6 +398,7 @@ export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
       resetStats,
       removeFlashcard,
       markFlashcardReviewed,
+      setDailyGoalTargets,
     }}>
       {children}
     </UserProfileContext.Provider>

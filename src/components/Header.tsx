@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
-import { Search, Star, MoreVertical, Brain, Flame } from "lucide-react";
+import { Search, MoreVertical, Brain, Flame, Sun, Moon } from "lucide-react";
 import { motion } from "framer-motion";
+import { useTheme } from "next-themes";
 import { useUserProfile } from "@/contexts/UserProfileContext";
+import { Switch } from "@/components/ui/switch";
 import ProfileModal from "./ProfileModal";
 
 interface HeaderProps {
@@ -13,6 +15,12 @@ const Header = ({ onManageGuide, onProfileClick }: HeaderProps) => {
   const [profileOpen, setProfileOpen] = useState(false);
   const { stats } = useUserProfile();
   const [hasReviewQuestions, setHasReviewQuestions] = useState(false);
+  const { resolvedTheme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Check if there are questions to review
   useEffect(() => {
@@ -75,10 +83,17 @@ const Header = ({ onManageGuide, onProfileClick }: HeaderProps) => {
 
       {/* Left - Actions (RTL) */}
       <div className="flex items-center gap-4">
-        <button className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
-          <Star className="w-4 h-4" />
-          <span>المفضلة</span>
-        </button>
+        {/* Theme Toggle */}
+        <div className="flex items-center gap-2">
+          <div className="text-left">
+            <p className="font-semibold text-sm">الوضع الداكن</p>
+          </div>
+          <Switch
+            checked={mounted && resolvedTheme === "dark"}
+            onCheckedChange={(checked) => setTheme(checked ? "dark" : "light")}
+            className="data-[state=checked]:bg-turquoise"
+          />
+        </div>
 
         <button
           onClick={onManageGuide}

@@ -23,7 +23,7 @@ const SettingsView = () => {
         transition={{ delay: 0.1 }}
       >
         <div className="flex items-center gap-3 mb-6">
-          <Volume2 className="w-5 h-5 text-primary" />
+          <Volume2 className="w-5 h-5 text-turquoise" />
           <h2 className="text-xl font-bold">إعدادات الصوت</h2>
         </div>
 
@@ -38,7 +38,7 @@ const SettingsView = () => {
               min="0"
               max="100"
               defaultValue="80"
-              className="w-32 accent-primary"
+              className="w-32 accent-turquoise"
             />
           </div>
 
