@@ -3,9 +3,74 @@ import { motion } from "framer-motion";
 import { Switch } from "@/components/ui/switch";
 import { useState } from "react";
 import ProgressMap from "./ProgressMap";
+import { useUserProfile } from "@/contexts/UserProfileContext";
+
+interface Recommendation {
+  title: string;
+  description: string;
+}
 
 const RecommendationPanel = () => {
   const [mapOpen, setMapOpen] = useState(false);
+  const { stats, flashcards } = useUserProfile();
+
+  const getRecommendation = (): Recommendation => {
+    // Priority 1: Review mistakes if any
+    if (flashcards.length > 0) {
+      return {
+        title: "لديك أسئلة تحتاج مراجعة",
+        description: `${flashcards.length} سؤال في قائمة المراجعة`,
+      };
+    }
+
+    // Priority 2: New user - start with basics
+    if (stats.exercisesCompleted < 3) {
+      return {
+        title: "ننصحك بتمارين الأساسيات",
+        description: "أساسيات الكمي واللفظي",
+      };
+    }
+
+    // Priority 3: Low accuracy - needs practice
+    if (stats.accuracy < 60 && stats.totalQuestionsAnswered >= 10) {
+      return {
+        title: "ركز على تحسين دقتك",
+        description: `دقتك الحالية ${stats.accuracy}% - راجع الأساسيات`,
+      };
+    }
+
+    // Priority 4: Daily goal reminder
+    const { mathCompleted, mathTarget, languageCompleted, languageTarget } = stats.dailyGoal;
+    const mathRemaining = mathTarget - mathCompleted;
+    const languageRemaining = languageTarget - languageCompleted;
+
+    if (mathRemaining > 0 || languageRemaining > 0) {
+      const parts = [];
+      if (mathRemaining > 0) parts.push(`${mathRemaining} كمي`);
+      if (languageRemaining > 0) parts.push(`${languageRemaining} لفظي`);
+
+      return {
+        title: "أكمل هدفك اليومي",
+        description: `متبقي ${parts.join(" و ")}`,
+      };
+    }
+
+    // Priority 5: High performer - encourage advanced
+    if (stats.accuracy >= 80) {
+      return {
+        title: "أنت تتقدم بشكل ممتاز!",
+        description: "جرب الاختبار التجريبي الشامل",
+      };
+    }
+
+    // Default: Keep practicing
+    return {
+      title: "استمر في التدريب",
+      description: `أكملت ${stats.exercisesCompleted} تمرين - واصل التقدم!`,
+    };
+  };
+
+  const recommendation = getRecommendation();
 
   return (
     <>
@@ -21,8 +86,8 @@ const RecommendationPanel = () => {
             <Sparkles className="w-5 h-5 text-yellow-foreground" />
           </div>
           <div className="flex-1 min-w-0">
-            <h3 className="text-sm font-bold">ننصحك بتمارين الأساسيات</h3>
-            <p className="text-xs text-muted-foreground">أساسيات الكمي واللفظي</p>
+            <h3 className="text-sm font-bold">{recommendation.title}</h3>
+            <p className="text-xs text-muted-foreground">{recommendation.description}</p>
           </div>
           <motion.button
             className="flex-shrink-0 flex items-center gap-1.5 px-3 py-2 bg-muted rounded-xl text-xs font-semibold"
@@ -56,10 +121,10 @@ const RecommendationPanel = () => {
         {/* Content */}
         <div className="pl-12">
           <h3 className="text-lg font-bold mb-2">
-            بناءً على مستواك، ننصحك بالبدء بتمارين الأساسيات.
+            بناءً على مستواك، {recommendation.title}
           </h3>
           <p className="text-sm text-muted-foreground mb-6">
-            في هذه الوحدة ستتعلم <span className="text-coral font-semibold">أساسيات الكمي واللفظي</span> والمهارات الأساسية لاختبار القدرات.
+            في هذه الوحدة ستتعلم <span className="text-coral font-semibold">{recommendation.description}</span> والمهارات الأساسية لاختبار القدرات.
           </p>
         </div>
 
