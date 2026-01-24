@@ -55,18 +55,26 @@ const Header = ({ onManageGuide, onProfileClick }: HeaderProps) => {
   };
 
   return (
-    <header className="h-16 bg-card/50 backdrop-blur-md border-b border-border flex items-center justify-between px-6">
-      {/* Right - Breadcrumb (RTL) */}
-      <div className="flex items-center gap-2 text-sm">
+    <header className="h-14 md:h-16 bg-card/50 backdrop-blur-md border-b border-border flex items-center justify-between px-3 md:px-6">
+      {/* Right - Breadcrumb (RTL) - Hidden on mobile */}
+      <div className="hidden md:flex items-center gap-2 text-sm">
         <Brain className="w-4 h-4 text-turquoise" />
         <span className="text-muted-foreground">القدرات</span>
         <span className="text-muted-foreground">/</span>
         <span className="font-semibold">التمارين</span>
       </div>
 
-      {/* Center - Search */}
+      {/* Mobile - Logo/Title */}
+      <div className="md:hidden flex items-center gap-2">
+        <div className="w-8 h-8 rounded-lg bg-yellow flex items-center justify-center">
+          <Brain className="w-5 h-5 text-yellow-foreground" />
+        </div>
+        <span className="font-bold text-lg">دايف دايف</span>
+      </div>
+
+      {/* Center - Search - Hidden on mobile */}
       <motion.div
-        className="flex-1 max-w-md mx-8"
+        className="hidden md:block flex-1 max-w-md mx-8"
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
@@ -82,9 +90,9 @@ const Header = ({ onManageGuide, onProfileClick }: HeaderProps) => {
       </motion.div>
 
       {/* Left - Actions (RTL) */}
-      <div className="flex items-center gap-4">
-        {/* Theme Toggle */}
-        <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 md:gap-4">
+        {/* Theme Toggle - Simplified on mobile */}
+        <div className="hidden md:flex items-center gap-2">
           <div className="text-left">
             <p className="font-semibold text-sm">الوضع الداكن</p>
           </div>
@@ -95,20 +103,28 @@ const Header = ({ onManageGuide, onProfileClick }: HeaderProps) => {
           />
         </div>
 
+        {/* Mobile theme toggle */}
+        <button
+          onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
+          className="md:hidden p-2 text-muted-foreground hover:text-foreground transition-colors"
+        >
+          {mounted && resolvedTheme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+        </button>
+
         <button
           onClick={onManageGuide}
-          className="px-4 py-2 bg-turquoise text-turquoise-foreground rounded-xl text-sm font-semibold hover:opacity-90 transition-opacity"
+          className="hidden md:block px-4 py-2 bg-turquoise text-turquoise-foreground rounded-xl text-sm font-semibold hover:opacity-90 transition-opacity"
         >
           راجع أخطاءك
         </button>
 
-        <button className="p-2 text-muted-foreground hover:text-foreground transition-colors">
+        <button className="hidden md:block p-2 text-muted-foreground hover:text-foreground transition-colors">
           <MoreVertical className="w-5 h-5" />
         </button>
 
         {/* Profile Section */}
         <motion.div
-          className="flex items-center gap-3 cursor-pointer bg-muted/50 hover:bg-muted rounded-full pr-1 pl-4 py-1 transition-colors"
+          className="flex items-center gap-2 md:gap-3 cursor-pointer bg-muted/50 hover:bg-muted rounded-full pr-1 pl-2 md:pl-4 py-1 transition-colors"
           onClick={handleProfileClick}
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
@@ -121,15 +137,15 @@ const Header = ({ onManageGuide, onProfileClick }: HeaderProps) => {
             </div>
           )}
 
-          {/* Level & XP */}
-          <div className="text-left">
+          {/* Level & XP - Hidden on mobile */}
+          <div className="hidden md:block text-left">
             <p className="text-xs font-semibold">مستوى {stats.level}</p>
             <p className="text-[10px] text-muted-foreground">{stats.xp} XP</p>
           </div>
 
           {/* Avatar */}
           <div className="relative">
-            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-sm font-bold text-white">
+            <div className="w-8 h-8 md:w-9 md:h-9 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-sm font-bold text-white">
               {stats.username.charAt(0)}
             </div>
             <div className="absolute -bottom-0.5 -right-0.5 bg-yellow text-yellow-foreground rounded-full w-4 h-4 flex items-center justify-center text-[10px] font-bold">

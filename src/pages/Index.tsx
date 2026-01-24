@@ -137,10 +137,10 @@ const Index = () => {
       <Sidebar activeSection={activeSection} onSectionChange={handleSectionChange} />
 
       {/* Main Content */}
-      <div className="mr-20 relative z-10">
+      <div className="mr-0 md:mr-20 relative z-10 pb-20 md:pb-0">
         <Header onManageGuide={() => setActiveSection("reviewMistakes")} onProfileClick={() => setActiveSection("profile")} />
 
-        <main className="p-6">
+        <main className="p-3 md:p-6">
           <div className="max-w-7xl mx-auto">
             {activeSection === "home" || activeSection === "exercises" ? (
               selectedMixedExercise ? (
@@ -153,11 +153,11 @@ const Index = () => {
               ) : (
                 <>
                   {/* Hero + Recommendation Grid */}
-                  <div className="grid grid-cols-3 gap-6 mb-8 items-stretch">
-                    <div className="col-span-2 h-full">
+                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6 mb-6 md:mb-8 items-stretch">
+                    <div className="lg:col-span-2 h-full">
                       <HeroSection />
                     </div>
-                    <div className="col-span-1 h-full">
+                    <div className="lg:col-span-1 h-full">
                       <RecommendationPanel />
                     </div>
                   </div>

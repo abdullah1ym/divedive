@@ -368,9 +368,9 @@ const CollectionView = ({ collection, onBack }: CollectionViewProps) => {
 
   return (
     <div className="relative">
-      {/* Bank Sidebar - fixed on the left side */}
+      {/* Bank Sidebar - fixed on the left side (desktop only) */}
       {collection.banks && collection.banks.length > 0 && (
-        <div className="fixed left-4 top-24 w-44 z-10">
+        <div className="hidden lg:block fixed left-4 top-24 w-44 z-10">
           <div className="bg-card rounded-3xl p-4 border border-border/50 shadow-sm">
             <h3 className="text-sm font-bold text-muted-foreground mb-3 px-2">الإصدارات</h3>
             <div className="space-y-1 max-h-[70vh] overflow-y-auto">
@@ -392,8 +392,29 @@ const CollectionView = ({ collection, onBack }: CollectionViewProps) => {
         </div>
       )}
 
+      {/* Bank Selector - Mobile horizontal scroll */}
+      {collection.banks && collection.banks.length > 0 && (
+        <div className="lg:hidden mb-4 -mx-3 px-3">
+          <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+            {collection.banks.map((bank) => (
+              <button
+                key={bank.id}
+                onClick={() => handleBankSelect(bank.id)}
+                className={`flex-shrink-0 px-4 py-2 rounded-xl text-sm font-medium transition-all ${
+                  selectedBankId === bank.id
+                    ? 'bg-violet-500/90 text-white'
+                    : 'bg-card hover:bg-muted text-foreground'
+                }`}
+              >
+                {bank.name}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Main Content - centered like before */}
-      <div className="max-w-4xl mx-auto pb-8">
+      <div className="max-w-4xl mx-auto pb-24 md:pb-8">
       {/* Notification for "راجع أخطاءك" */}
       <AnimatePresence>
         {reviewNotification.show && (
@@ -497,23 +518,23 @@ const CollectionView = ({ collection, onBack }: CollectionViewProps) => {
 
       {/* Header */}
       <motion.div
-        className="flex items-center gap-3 mb-6 sticky top-4 bg-card/95 backdrop-blur-sm py-4 px-4 z-20 rounded-3xl shadow-sm border border-border/50"
+        className="flex items-center gap-2 md:gap-3 mb-4 md:mb-6 sticky top-2 md:top-4 bg-card/95 backdrop-blur-sm py-3 md:py-4 px-3 md:px-4 z-20 rounded-2xl md:rounded-3xl shadow-sm border border-border/50"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
       >
         <button
           onClick={onBack}
-          className="p-2 hover:bg-muted rounded-full transition-colors"
+          className="p-1.5 md:p-2 hover:bg-muted rounded-full transition-colors"
         >
-          <ChevronRight className="w-6 h-6" />
+          <ChevronRight className="w-5 h-5 md:w-6 md:h-6" />
         </button>
-        <div className="flex items-center gap-3 flex-1 min-w-0">
-          <div className="w-10 h-10 rounded-2xl bg-primary/20 flex items-center justify-center flex-shrink-0">
+        <div className="flex items-center gap-2 md:gap-3 flex-1 min-w-0">
+          <div className="hidden sm:flex w-10 h-10 rounded-2xl bg-primary/20 items-center justify-center flex-shrink-0">
             <Library className="w-5 h-5 text-primary" />
           </div>
           <div className="min-w-0">
-            <h1 className="text-xl font-bold truncate">{collection.name}</h1>
-            <p className="text-xs text-muted-foreground truncate">{collection.description}</p>
+            <h1 className="text-base md:text-xl font-bold truncate">{collection.name}</h1>
+            <p className="text-xs text-muted-foreground truncate hidden sm:block">{collection.description}</p>
           </div>
         </div>
 
@@ -567,9 +588,9 @@ const CollectionView = ({ collection, onBack }: CollectionViewProps) => {
           </div>
         )}
 
-        <div className="flex-shrink-0 text-center min-w-[60px]">
-          <p className="text-xs text-muted-foreground">التقدم</p>
-          <p className="text-base font-bold">{answeredCount}/{questions.length}</p>
+        <div className="flex-shrink-0 text-center min-w-[50px] md:min-w-[60px]">
+          <p className="text-[10px] md:text-xs text-muted-foreground">التقدم</p>
+          <p className="text-sm md:text-base font-bold">{answeredCount}/{questions.length}</p>
         </div>
       </motion.div>
 
@@ -705,7 +726,7 @@ const CollectionView = ({ collection, onBack }: CollectionViewProps) => {
                               </span>
                               <p className="text-xl font-medium pt-2" dangerouslySetInnerHTML={{ __html: question.prompt }} />
                             </div>
-                            <div className="grid grid-cols-2 gap-3 mr-16">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 mr-0 sm:mr-16">
                               {question.options.map((option, optIndex) => {
                                 const isSelected = selectedAnswer === optIndex;
                                 const isCorrectOption = optIndex === question.correctAnswer;
@@ -942,7 +963,7 @@ const CollectionView = ({ collection, onBack }: CollectionViewProps) => {
                       </span>
                       <p className="text-xl font-medium pt-2" dangerouslySetInnerHTML={{ __html: question.prompt }} />
                     </div>
-                    <div className="grid grid-cols-2 gap-3 mr-16">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 mr-0 sm:mr-16">
                       {question.options.map((option, optIndex) => {
                         const isSelected = selectedAnswer === optIndex;
                         const isCorrectOption = optIndex === question.correctAnswer;

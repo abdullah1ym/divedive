@@ -77,9 +77,9 @@ const HeroSection = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <div className="flex flex-row-reverse">
+        <div className="flex flex-col-reverse md:flex-row-reverse">
           {/* Content */}
-          <div className="flex-1 p-8 z-10">
+          <div className="flex-1 p-4 md:p-8 z-10">
             <motion.span
               className="inline-block px-3 py-1 bg-yellow text-yellow-foreground rounded-full text-xs font-semibold mb-4"
               initial={{ opacity: 0, x: 20 }}
@@ -90,7 +90,7 @@ const HeroSection = () => {
             </motion.span>
 
             <motion.h1
-              className="text-3xl font-bold mb-4"
+              className="text-xl md:text-3xl font-bold mb-3 md:mb-4"
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.3 }}
@@ -122,7 +122,7 @@ const HeroSection = () => {
 
             {/* Tags */}
             <motion.div
-              className="flex items-center gap-2 mb-6"
+              className="flex flex-wrap items-center gap-2 mb-4 md:mb-6"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.6 }}
@@ -156,9 +156,9 @@ const HeroSection = () => {
             </motion.button>
           </div>
 
-          {/* Preview */}
+          {/* Preview - Hidden on mobile */}
           <motion.div
-            className="relative w-[400px] h-[320px]"
+            className="hidden md:block relative w-[400px] h-[320px]"
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.3, duration: 0.6 }}

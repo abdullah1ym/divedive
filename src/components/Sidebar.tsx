@@ -42,7 +42,9 @@ const systemItems = [
 
 const Sidebar = ({ activeSection, onSectionChange }: SidebarProps) => {
   return (
-    <aside className="fixed right-0 top-0 h-screen w-20 bg-sidebar border-l border-sidebar-border flex flex-col items-center py-6 z-50">
+    <>
+    {/* Desktop Sidebar */}
+    <aside className="hidden md:flex fixed right-0 top-0 h-screen w-20 bg-sidebar border-l border-sidebar-border flex-col items-center py-6 z-50">
       {/* Logo */}
       <motion.div
         className="mb-8"
@@ -113,6 +115,38 @@ const Sidebar = ({ activeSection, onSectionChange }: SidebarProps) => {
         ))}
       </div>
     </aside>
+
+    {/* Mobile Bottom Navigation */}
+    <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-sidebar border-t border-sidebar-border z-50 safe-area-bottom">
+      <div className="flex items-center justify-around py-2 px-2">
+        {[
+          { id: "home", icon: Home, label: "الرئيسية" },
+          { id: "skillmap", icon: Map, label: "المهارات" },
+          { id: "lessons", icon: BookOpen, label: "الدروس" },
+          { id: "progress", icon: BarChart3, label: "التقدم" },
+          { id: "settings", icon: Settings, label: "الإعدادات" },
+        ].map((item) => {
+          const Icon = item.icon;
+          const isActive = activeSection === item.id;
+          return (
+            <motion.button
+              key={item.id}
+              onClick={() => onSectionChange(item.id)}
+              className={`flex flex-col items-center gap-1 px-3 py-2 rounded-xl transition-all ${
+                isActive
+                  ? "text-primary"
+                  : "text-muted-foreground"
+              }`}
+              whileTap={{ scale: 0.95 }}
+            >
+              <Icon className={`w-5 h-5 ${isActive ? "text-primary" : ""}`} />
+              <span className="text-[10px] font-medium">{item.label}</span>
+            </motion.button>
+          );
+        })}
+      </div>
+    </nav>
+    </>
   );
 };
 

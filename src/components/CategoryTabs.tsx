@@ -69,7 +69,7 @@ const CategoryTabs = ({ activeCategory, onCategoryChange }: CategoryTabsProps) =
 
     return (
       <motion.div
-        className="flex items-center gap-3 overflow-x-auto pb-2"
+        className="flex items-center gap-2 md:gap-3 overflow-x-auto pb-2 scrollbar-hide -mx-3 px-3 md:mx-0 md:px-0"
         initial={{ opacity: 0, x: -15 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.25, ease: "easeOut" }}
@@ -97,7 +97,7 @@ const CategoryTabs = ({ activeCategory, onCategoryChange }: CategoryTabsProps) =
             <motion.button
               key={superset.id}
               onClick={() => onCategoryChange(superset.id)}
-              className={`flex items-center gap-3 px-5 py-3 rounded-xl font-semibold text-sm transition-all whitespace-nowrap ${
+              className={`flex items-center gap-2 md:gap-3 px-3 md:px-5 py-2 md:py-3 rounded-xl font-semibold text-xs md:text-sm transition-all whitespace-nowrap ${
                 isActive
                   ? `${gradientClasses[superset.color]} shadow-lg`
                   : "bg-card text-muted-foreground hover:text-foreground hover:bg-muted"
@@ -108,7 +108,7 @@ const CategoryTabs = ({ activeCategory, onCategoryChange }: CategoryTabsProps) =
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >
-              <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
+              <div className={`w-6 h-6 md:w-8 md:h-8 rounded-lg flex items-center justify-center ${
                 isActive ? "bg-foreground/20" : iconBgClasses[superset.color]
               }`}>
                 <Icon className="w-4 h-4" />
@@ -124,7 +124,7 @@ const CategoryTabs = ({ activeCategory, onCategoryChange }: CategoryTabsProps) =
   // Show main sets
   return (
     <motion.div
-      className="flex items-center gap-3 overflow-x-auto pb-2"
+      className="flex items-center gap-2 md:gap-3 overflow-x-auto pb-2 scrollbar-hide -mx-3 px-3 md:mx-0 md:px-0"
       initial={{ opacity: 0, x: 15 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.25, ease: "easeOut" }}
@@ -137,7 +137,7 @@ const CategoryTabs = ({ activeCategory, onCategoryChange }: CategoryTabsProps) =
           <motion.button
             key={set.id}
             onClick={() => handleSetClick(set)}
-            className={`flex items-center gap-3 px-5 py-3 rounded-xl font-semibold text-sm transition-all whitespace-nowrap ${
+            className={`flex items-center gap-2 md:gap-3 px-3 md:px-5 py-2 md:py-3 rounded-xl font-semibold text-xs md:text-sm transition-all whitespace-nowrap ${
               isActive
                 ? `${gradientClasses[set.color]} shadow-lg`
                 : "bg-card text-muted-foreground hover:text-foreground hover:bg-muted"
@@ -148,7 +148,7 @@ const CategoryTabs = ({ activeCategory, onCategoryChange }: CategoryTabsProps) =
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
           >
-            <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
+            <div className={`w-6 h-6 md:w-8 md:h-8 rounded-lg flex items-center justify-center ${
               isActive ? "bg-foreground/20" : iconBgClasses[set.color]
             }`}>
               <Icon className="w-4 h-4" />

@@ -842,19 +842,19 @@ const LessonGrid = ({ category, onExerciseClick, onCollectionClick }: LessonGrid
       {/* Category Header - hidden on initial state */}
       {!isInitialState && (
         <motion.div
-          className="flex items-center justify-between"
+          className="flex flex-col sm:flex-row sm:items-center justify-between gap-3"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5 }}
         >
           <div>
-            <h2 className="text-2xl font-bold">{categoryNames[category] || category}</h2>
+            <h2 className="text-xl md:text-2xl font-bold">{categoryNames[category] || category}</h2>
             <p className="text-sm text-muted-foreground">{exercises.length} تمارين متاحة</p>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 md:gap-3">
             <motion.button
-              className="flex items-center gap-2 px-4 py-2.5 bg-card rounded-xl text-sm font-semibold hover:bg-muted transition-colors"
+              className="hidden sm:flex items-center gap-2 px-4 py-2.5 bg-card rounded-xl text-sm font-semibold hover:bg-muted transition-colors"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >
@@ -865,7 +865,7 @@ const LessonGrid = ({ category, onExerciseClick, onCollectionClick }: LessonGrid
             {exercises.length > 0 && (
               <motion.button
                 onClick={() => onExerciseClick(exercises[0])}
-                className="flex items-center gap-2 px-5 py-2.5 bg-foreground text-background rounded-xl text-sm font-semibold hover:opacity-90 transition-opacity"
+                className="flex items-center gap-2 px-4 md:px-5 py-2 md:py-2.5 bg-foreground text-background rounded-xl text-sm font-semibold hover:opacity-90 transition-opacity"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
               >
