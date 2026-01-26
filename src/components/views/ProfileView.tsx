@@ -106,6 +106,14 @@ const ProfileView = () => {
     { name: "استيعاب المقروء", score: 82, color: "bg-turquoise" },
   ];
 
+  // Calculate total percentages
+  const mathTotalPercentage = Math.round(
+    mathPerformance.reduce((sum, item) => sum + item.score, 0) / mathPerformance.length
+  );
+  const languageTotalPercentage = Math.round(
+    languagePerformance.reduce((sum, item) => sum + item.score, 0) / languagePerformance.length
+  );
+
   // Week comparison data
   const weekComparison = [
     { label: "التمارين", thisWeek: 12, lastWeek: 8, unit: "" },
@@ -491,7 +499,13 @@ const ProfileView = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6 }}
         >
-          <h2 className="text-xl font-bold mb-4">الأداء في الكمي</h2>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-bold">الأداء في الكمي</h2>
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-muted-foreground">المجموع</span>
+              <span className="text-2xl font-bold text-turquoise">{toArabicNumeral(mathTotalPercentage)}٪</span>
+            </div>
+          </div>
           <div className="space-y-4">
             {mathPerformance.map((category, index) => (
               <motion.div
@@ -525,7 +539,13 @@ const ProfileView = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.65 }}
         >
-          <h2 className="text-xl font-bold mb-4">الأداء في اللفظي</h2>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-bold">الأداء في اللفظي</h2>
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-muted-foreground">المجموع</span>
+              <span className="text-2xl font-bold text-turquoise">{toArabicNumeral(languageTotalPercentage)}٪</span>
+            </div>
+          </div>
           <div className="space-y-4">
             {languagePerformance.map((category, index) => (
               <motion.div
