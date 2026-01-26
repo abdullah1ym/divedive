@@ -1,57 +1,44 @@
-import { motion } from "framer-motion";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
-  Target,
-  Clock,
-  Brain,
-  Trophy,
-  Star,
-  Zap,
-  Award,
-  Rocket,
-  TrendingUp,
-  CheckCircle2,
   Flame,
   Calendar,
-  Layers,
-  RotateCcw,
+  TrendingUp,
+  Clock,
+  Target,
+  Award,
+  ArrowUp,
+  ArrowDown,
+  Minus,
+  Settings2,
   X,
   Check,
-  ChevronLeft,
-  ChevronRight,
 } from "lucide-react";
 import { useUserProfile } from "@/contexts/UserProfileContext";
 
-const iconMap: Record<string, React.ReactNode> = {
-  Rocket: <Rocket className="w-5 h-5" />,
-  Flame: <Flame className="w-5 h-5" />,
-  Fire: <Flame className="w-5 h-5" />,
-  Target: <Target className="w-5 h-5" />,
-  Zap: <Zap className="w-5 h-5" />,
-  Award: <Award className="w-5 h-5" />,
-  Trophy: <Trophy className="w-5 h-5" />,
-  Star: <Star className="w-5 h-5" />,
-  Brain: <Brain className="w-5 h-5" />,
+// Helper to convert number to Arabic numerals
+const toArabicNumeral = (num: number): string => {
+  const arabicNumerals = ["٠", "١", "٢", "٣", "٤", "٥", "٦", "٧", "٨", "٩"];
+  return num.toString().split("").map(d => arabicNumerals[parseInt(d)] || d).join("");
 };
 
-// Generate activity data for the last 12 weeks (like GitHub)
+// Generate activity data for the last 18 weeks
 const generateActivityData = (currentStreak: number, exercisesCompleted: number) => {
   const weeks = [];
   const today = new Date();
 
-  for (let week = 11; week >= 0; week--) {
+  for (let week = 17; week >= 0; week--) {
     const days = [];
     for (let day = 6; day >= 0; day--) {
       const date = new Date(today);
       date.setDate(date.getDate() - (week * 7 + day));
 
       const daysAgo = week * 7 + day;
-      // Simulate activity: recent days based on streak, older days random based on total exercises
       let level = 0;
       if (daysAgo < currentStreak) {
-        level = Math.floor(Math.random() * 3) + 1; // 1-3 for streak days
+        level = Math.floor(Math.random() * 3) + 1;
       } else if (exercisesCompleted > 0 && Math.random() < 0.3) {
-        level = Math.floor(Math.random() * 2) + 1; // Some random past activity
+        level = Math.floor(Math.random() * 2) + 1;
       }
 
       days.push({
@@ -66,75 +53,76 @@ const generateActivityData = (currentStreak: number, exercisesCompleted: number)
 };
 
 const ProfileView = () => {
-  const { stats, badges, flashcards, removeFlashcard, markFlashcardReviewed } = useUserProfile();
-  const [currentFlashcardIndex, setCurrentFlashcardIndex] = useState(0);
-  const [isFlipped, setIsFlipped] = useState(false);
-  const [flashcardTab, setFlashcardTab] = useState<"quantitative" | "verbal">("quantitative");
+  const { stats, badges, setDailyGoalTargets } = useUserProfile();
+  const [isEditingGoals, setIsEditingGoals] = useState(false);
+  const [editMathTarget, setEditMathTarget] = useState(stats.dailyGoal?.mathTarget ?? 3);
+  const [editLanguageTarget, setEditLanguageTarget] = useState(stats.dailyGoal?.languageTarget ?? 2);
 
-  const mathFlashcards = flashcards.filter(fc => fc.category === "quantitative");
-  const verbalFlashcards = flashcards.filter(fc => fc.category === "verbal");
-  const currentCategoryFlashcards = flashcardTab === "quantitative" ? mathFlashcards : verbalFlashcards;
+  // Sync edit values when goals change
+  useEffect(() => {
+    setEditMathTarget(stats.dailyGoal?.mathTarget ?? 3);
+    setEditLanguageTarget(stats.dailyGoal?.languageTarget ?? 2);
+  }, [stats.dailyGoal?.mathTarget, stats.dailyGoal?.languageTarget]);
+
+  const handleSaveGoals = () => {
+    setDailyGoalTargets(editMathTarget, editLanguageTarget);
+    setIsEditingGoals(false);
+  };
 
   const xpProgress = ((stats.totalXpForNextLevel - stats.xpToNextLevel) / stats.totalXpForNextLevel) * 100;
-  const dailyExerciseProgress = (stats.dailyGoal.exercisesCompleted / stats.dailyGoal.exercisesTarget) * 100;
-  const dailyXpProgress = (stats.dailyGoal.xpEarned / stats.dailyGoal.xpTarget) * 100;
-
-  const unlockedBadges = badges.filter(b => b.isUnlocked);
-  const lockedBadges = badges.filter(b => !b.isUnlocked);
-
   const activityData = generateActivityData(stats.currentStreak, stats.exercisesCompleted);
+  const unlockedAchievements = badges.filter(b => b.isUnlocked).length;
 
-  const formatTime = (minutes: number) => {
-    if (minutes < 60) return `${minutes} د`;
-    const hours = Math.floor(minutes / 60);
-    const mins = minutes % 60;
-    return `${hours} س ${mins} د`;
+  // Daily goal data
+  const { dailyGoal } = stats;
+  const mathGoal = {
+    completed: dailyGoal?.mathCompleted ?? 0,
+    total: dailyGoal?.mathTarget ?? 3
   };
-
-  const currentFlashcard = currentCategoryFlashcards[currentFlashcardIndex];
-
-  const handleNextFlashcard = () => {
-    setIsFlipped(false);
-    setCurrentFlashcardIndex(prev =>
-      prev < currentCategoryFlashcards.length - 1 ? prev + 1 : 0
-    );
+  const languageGoal = {
+    completed: dailyGoal?.languageCompleted ?? 0,
+    total: dailyGoal?.languageTarget ?? 2
   };
+  const mathProgress = mathGoal.total > 0 ? (mathGoal.completed / mathGoal.total) * 100 : 0;
+  const languageProgress = languageGoal.total > 0 ? (languageGoal.completed / languageGoal.total) * 100 : 0;
 
-  const handlePrevFlashcard = () => {
-    setIsFlipped(false);
-    setCurrentFlashcardIndex(prev =>
-      prev > 0 ? prev - 1 : currentCategoryFlashcards.length - 1
-    );
-  };
+  // Performance by category - Math
+  const mathPerformance = [
+    { name: "الكسور", score: 85, color: "bg-turquoise" },
+    { name: "المتتاليات", score: 90, color: "bg-turquoise" },
+    { name: "الهندسة", score: 65, color: "bg-turquoise" },
+    { name: "الجبر", score: 78, color: "bg-turquoise" },
+    { name: "النسبة والتناسب", score: 82, color: "bg-turquoise" },
+    { name: "الإحصاء", score: 70, color: "bg-turquoise" },
+    { name: "الاحتمالات", score: 88, color: "bg-turquoise" },
+  ];
 
-  const handleMarkReviewed = () => {
-    if (currentFlashcard) {
-      markFlashcardReviewed(currentFlashcard.id);
-      if (currentCategoryFlashcards.length > 1) {
-        handleNextFlashcard();
-      }
-    }
-  };
+  // Performance by category - Language
+  const languagePerformance = [
+    { name: "التناظر اللفظي", score: 72, color: "bg-turquoise" },
+    { name: "إكمال الجمل", score: 80, color: "bg-turquoise" },
+    { name: "الخطأ السياقي", score: 68, color: "bg-turquoise" },
+    { name: "المفردة الشاذة", score: 75, color: "bg-turquoise" },
+    { name: "استيعاب المقروء", score: 82, color: "bg-turquoise" },
+  ];
 
-  const handleRemoveFlashcard = () => {
-    if (currentFlashcard) {
-      removeFlashcard(currentFlashcard.id);
-      if (currentFlashcardIndex >= currentCategoryFlashcards.length - 1) {
-        setCurrentFlashcardIndex(Math.max(0, currentCategoryFlashcards.length - 2));
-      }
-      setIsFlipped(false);
-    }
-  };
+  // Week comparison data
+  const weekComparison = [
+    { label: "التمارين", thisWeek: 12, lastWeek: 8, unit: "" },
+    { label: "نسبة النجاح", thisWeek: 85, lastWeek: 78, unit: "٪" },
+    { label: "الوقت", thisWeek: 45, lastWeek: 50, unit: " د", lowerIsBetter: true },
+  ];
 
-  const handleTabChange = (tab: "quantitative" | "verbal") => {
-    setFlashcardTab(tab);
-    setCurrentFlashcardIndex(0);
-    setIsFlipped(false);
-  };
+  const statsDisplay = [
+    { label: "التمارين المكتملة", value: toArabicNumeral(stats.exercisesCompleted), icon: Target, color: "text-turquoise" },
+    { label: "الوقت الكلي", value: `${toArabicNumeral(stats.totalTimeSpent)} د`, icon: Clock, color: "text-turquoise" },
+    { label: "نسبة النجاح", value: `${toArabicNumeral(stats.accuracy)}٪`, icon: TrendingUp, color: "text-turquoise" },
+    { label: "الإنجازات", value: toArabicNumeral(unlockedAchievements), icon: Award, color: "text-turquoise" },
+  ];
 
   return (
-    <div className="space-y-6">
-      {/* Profile Header */}
+    <div className="space-y-6 max-w-4xl mx-auto">
+      {/* Profile Header - Level Section */}
       <motion.div
         className="bg-card rounded-2xl p-6"
         initial={{ opacity: 0, y: 20 }}
@@ -172,45 +160,11 @@ const ProfileView = () => {
         </div>
       </motion.div>
 
-      {/* Activity Graph + Stats Row */}
-      <div className="grid grid-cols-[1fr_auto] gap-8 items-start">
-        {/* Stats Grid - Right Side */}
+      {/* Activity & Recent Activity Row */}
+      <div className="grid grid-cols-1 md:grid-cols-[auto_1fr] gap-4">
+        {/* Activity Contribution Graph - Left */}
         <motion.div
-          className="bg-card rounded-2xl p-6"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.15 }}
-        >
-          <div className="flex items-center gap-2 mb-4">
-            <TrendingUp className="w-5 h-5 text-turquoise" />
-            <h4 className="font-bold">الإحصائيات</h4>
-          </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div className="bg-muted/50 rounded-xl p-4 text-center">
-              <Target className="w-6 h-6 text-turquoise mx-auto mb-2" />
-              <p className="text-2xl font-bold">{stats.accuracy}%</p>
-              <p className="text-sm text-muted-foreground">الدقة</p>
-            </div>
-            <div className="bg-muted/50 rounded-xl p-4 text-center">
-              <Brain className="w-6 h-6 text-violet-500 mx-auto mb-2" />
-              <p className="text-2xl font-bold">{stats.totalQuestionsAnswered}</p>
-              <p className="text-sm text-muted-foreground">سؤال</p>
-            </div>
-            <div className="bg-muted/50 rounded-xl p-4 text-center">
-              <CheckCircle2 className="w-6 h-6 text-mint mx-auto mb-2" />
-              <p className="text-2xl font-bold">{stats.exercisesCompleted}</p>
-              <p className="text-sm text-muted-foreground">تمرين مكتمل</p>
-            </div>
-            <div className="bg-muted/50 rounded-xl p-4 text-center">
-              <Clock className="w-6 h-6 text-yellow mx-auto mb-2" />
-              <p className="text-2xl font-bold">{formatTime(stats.totalTimeSpent)}</p>
-              <p className="text-sm text-muted-foreground">وقت التدريب</p>
-            </div>
-          </div>
-        </motion.div>
-
-        {/* Activity Contribution Graph - Left Side (Standalone) */}
-        <motion.div
+          className="bg-card rounded-2xl p-5 w-fit"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
@@ -220,22 +174,21 @@ const ProfileView = () => {
               <Calendar className="w-5 h-5 text-turquoise" />
               <h4 className="font-bold">نشاط التدريب</h4>
             </div>
-            <div className="flex items-center gap-2 mr-4">
+            <div className="flex items-center gap-2">
               <Flame className="w-4 h-4 text-orange-500" />
               <span className="text-sm font-semibold">{stats.currentStreak} يوم متتالي</span>
             </div>
           </div>
 
-          {/* Contribution Grid */}
-          <div className="flex gap-[6px]">
+          <div className="flex gap-1.5">
             {activityData.map((week, weekIndex) => (
-              <div key={weekIndex} className="flex flex-col gap-[6px]">
+              <div key={weekIndex} className="flex flex-col gap-1.5">
                 {week.map((day, dayIndex) => (
                   <motion.div
                     key={dayIndex}
-                    className={`w-8 h-8 rounded-lg ${
+                    className={`w-5 h-5 rounded ${
                       day.isToday
-                        ? "ring-2 ring-primary ring-offset-2 ring-offset-background"
+                        ? "ring-2 ring-primary ring-offset-1 ring-offset-background"
                         : ""
                     } ${
                       day.level === 0
@@ -248,7 +201,7 @@ const ProfileView = () => {
                     }`}
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
-                    transition={{ delay: 0.2 + weekIndex * 0.02 + dayIndex * 0.01 }}
+                    transition={{ delay: 0.2 + weekIndex * 0.01 + dayIndex * 0.005 }}
                     title={day.date}
                   />
                 ))}
@@ -256,263 +209,350 @@ const ProfileView = () => {
             ))}
           </div>
 
-          {/* Legend */}
-          <div className="flex items-center justify-start gap-3 mt-4 text-sm text-muted-foreground">
+          <div className="flex items-center justify-start gap-2 mt-3 text-xs text-muted-foreground">
             <span>أقل</span>
-            <div className="w-4 h-4 rounded-md bg-muted" />
-            <div className="w-4 h-4 rounded-md bg-turquoise/30" />
-            <div className="w-4 h-4 rounded-md bg-turquoise/60" />
-            <div className="w-4 h-4 rounded-md bg-turquoise" />
+            <div className="w-3 h-3 rounded bg-muted" />
+            <div className="w-3 h-3 rounded bg-turquoise/30" />
+            <div className="w-3 h-3 rounded bg-turquoise/60" />
+            <div className="w-3 h-3 rounded bg-turquoise" />
             <span>أكثر</span>
           </div>
         </motion.div>
-      </div>
 
-      {/* Flashcards Section */}
-      <motion.div
-        className="bg-card rounded-2xl p-6"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.35 }}
-      >
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-2">
-            <Layers className="w-5 h-5 text-coral" />
-            <h4 className="font-bold">البطاقات التعليمية</h4>
-            <span className="text-sm text-muted-foreground">({flashcards.length})</span>
-          </div>
-          {flashcards.length > 0 && (
-            <span className="text-xs text-muted-foreground">
-              اضغط على البطاقة لرؤية الإجابة
-            </span>
-          )}
-        </div>
-
-        {/* Category Tabs */}
-        <div className="flex gap-2 mb-4">
-          <button
-            onClick={() => handleTabChange("quantitative")}
-            className={`flex-1 py-3 px-4 rounded-xl font-medium transition-all flex items-center justify-center gap-2 ${
-              flashcardTab === "quantitative"
-                ? "bg-turquoise text-turquoise-foreground"
-                : "bg-muted hover:bg-muted/80 text-muted-foreground"
-            }`}
-          >
-            <Brain className="w-4 h-4" />
-            الكمي
-            <span className={`text-xs px-2 py-0.5 rounded-full ${
-              flashcardTab === "quantitative" ? "bg-white/20" : "bg-muted-foreground/20"
-            }`}>
-              {mathFlashcards.length}
-            </span>
-          </button>
-          <button
-            onClick={() => handleTabChange("verbal")}
-            className={`flex-1 py-3 px-4 rounded-xl font-medium transition-all flex items-center justify-center gap-2 ${
-              flashcardTab === "verbal"
-                ? "bg-violet-500 text-white"
-                : "bg-muted hover:bg-muted/80 text-muted-foreground"
-            }`}
-          >
-            <Award className="w-4 h-4" />
-            اللفظي
-            <span className={`text-xs px-2 py-0.5 rounded-full ${
-              flashcardTab === "verbal" ? "bg-white/20" : "bg-muted-foreground/20"
-            }`}>
-              {verbalFlashcards.length}
-            </span>
-          </button>
-        </div>
-
-        {currentCategoryFlashcards.length === 0 ? (
-          <div className="text-center py-8 text-muted-foreground">
-            <Layers className="w-12 h-12 mx-auto mb-3 opacity-30" />
-            <p className="font-medium">لا توجد بطاقات {flashcardTab === "quantitative" ? "كمية" : "لفظية"} حالياً</p>
-            <p className="text-sm mt-1">الأسئلة التي تجيب عليها بشكل خاطئ ستظهر هنا للمراجعة</p>
-          </div>
-        ) : (
-          <div className="space-y-4">
-            {/* Flashcard */}
-            <div
-              className="relative h-48 cursor-pointer"
-              style={{ perspective: "1000px" }}
-              onClick={() => setIsFlipped(!isFlipped)}
-            >
-              <motion.div
-                className="w-full h-full relative"
-                animate={{ rotateY: isFlipped ? 180 : 0 }}
-                transition={{ duration: 0.5 }}
-                style={{ transformStyle: "preserve-3d" }}
+        {/* Recent Activity - Right */}
+        <motion.div
+          className="bg-card rounded-2xl p-5"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.25 }}
+        >
+          <h2 className="text-lg font-bold mb-4">النشاط الأخير</h2>
+          <div className="space-y-3">
+            {[
+              { title: "تمرين الكسور", score: "٩٠٪", time: "منذ ساعة" },
+              { title: "المتتاليات العددية", score: "٧٥٪", time: "منذ ٣ ساعات" },
+              { title: "التناظر اللفظي", score: "١٠٠٪", time: "أمس" },
+            ].map((activity, index) => (
+              <div
+                key={index}
+                className="flex items-center justify-between p-3 bg-muted/30 rounded-xl"
               >
-                {/* Front - Question */}
-                <div
-                  className="absolute inset-0 bg-gradient-to-br from-primary/10 to-accent/10 rounded-xl p-6 flex flex-col items-center justify-center border-2 border-primary/20"
-                  style={{ backfaceVisibility: "hidden" }}
-                >
-                  <p className="text-xs text-muted-foreground mb-2">{currentFlashcard?.exerciseTitle}</p>
-                  <p className="text-lg font-medium text-center">{currentFlashcard?.question}</p>
-                  <p className="text-sm text-red-400 mt-3">
-                    إجابتك: {currentFlashcard?.userAnswer}
-                  </p>
+                <div>
+                  <p className="font-medium text-sm">{activity.title}</p>
+                  <p className="text-xs text-muted-foreground">{activity.time}</p>
                 </div>
-
-                {/* Back - Answer */}
-                <div
-                  className="absolute inset-0 bg-gradient-to-br from-turquoise/20 to-mint/20 rounded-xl p-6 flex flex-col items-center justify-center border-2 border-turquoise/30"
-                  style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
-                >
-                  <p className="text-xs text-muted-foreground mb-2">الإجابة الصحيحة</p>
-                  <p className="text-2xl font-bold text-turquoise text-center">
-                    {currentFlashcard?.correctAnswer}
-                  </p>
-                  <p className="text-sm text-muted-foreground mt-3">
-                    تمت المراجعة {currentFlashcard?.reviewCount || 0} مرات
-                  </p>
-                </div>
-              </motion.div>
-            </div>
-
-            {/* Controls */}
-            <div className="flex items-center justify-between">
-              <button
-                onClick={handlePrevFlashcard}
-                className="p-2 hover:bg-muted rounded-lg transition-colors"
-                disabled={currentCategoryFlashcards.length <= 1}
-              >
-                <ChevronRight className="w-5 h-5" />
-              </button>
-
-              <div className="flex items-center gap-2">
-                <span className="text-sm text-muted-foreground">
-                  {currentFlashcardIndex + 1} / {currentCategoryFlashcards.length}
-                </span>
-              </div>
-
-              <button
-                onClick={handleNextFlashcard}
-                className="p-2 hover:bg-muted rounded-lg transition-colors"
-                disabled={currentCategoryFlashcards.length <= 1}
-              >
-                <ChevronLeft className="w-5 h-5" />
-              </button>
-            </div>
-
-            {/* Action Buttons */}
-            <div className="flex gap-3">
-              <motion.button
-                onClick={handleRemoveFlashcard}
-                className="flex-1 py-3 bg-red-500/10 hover:bg-red-500/20 text-red-500 rounded-xl font-medium flex items-center justify-center gap-2 transition-colors"
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <X className="w-4 h-4" />
-                حذف البطاقة
-              </motion.button>
-              <motion.button
-                onClick={handleMarkReviewed}
-                className="flex-1 py-3 bg-turquoise/10 hover:bg-turquoise/20 text-turquoise rounded-xl font-medium flex items-center justify-center gap-2 transition-colors"
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <Check className="w-4 h-4" />
-                تمت المراجعة
-              </motion.button>
-            </div>
-          </div>
-        )}
-      </motion.div>
-
-      {/* Daily Goals + More Stats Row */}
-      <div className="grid grid-cols-2 gap-6">
-        {/* Daily Goals */}
-        <motion.div className="bg-card rounded-2xl p-6" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
-          <div className="flex items-center gap-2 mb-4">
-            <Target className="w-5 h-5 text-turquoise" />
-            <h4 className="font-bold">أهداف اليوم</h4>
-          </div>
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <div className="flex items-center justify-between text-sm">
-                <span>التمارين</span>
-                <span className="font-semibold">{stats.dailyGoal.exercisesCompleted}/{stats.dailyGoal.exercisesTarget}</span>
-              </div>
-              <div className="h-3 bg-muted rounded-full overflow-hidden">
-                <motion.div className="h-full bg-turquoise rounded-full" initial={{ width: 0 }} animate={{ width: `${Math.min(dailyExerciseProgress, 100)}%` }} transition={{ duration: 0.8 }} />
-              </div>
-            </div>
-            <div className="space-y-2">
-              <div className="flex items-center justify-between text-sm">
-                <span>نقاط الخبرة</span>
-                <span className="font-semibold">{stats.dailyGoal.xpEarned}/{stats.dailyGoal.xpTarget} XP</span>
-              </div>
-              <div className="h-3 bg-muted rounded-full overflow-hidden">
-                <motion.div className="h-full bg-yellow rounded-full" initial={{ width: 0 }} animate={{ width: `${Math.min(dailyXpProgress, 100)}%` }} transition={{ duration: 0.8 }} />
-              </div>
-            </div>
-          </div>
-        </motion.div>
-
-        {/* Additional Stats */}
-        <motion.div className="bg-card rounded-2xl p-6" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.45 }}>
-          <div className="flex items-center gap-2 mb-4">
-            <Award className="w-5 h-5 text-yellow" />
-            <h4 className="font-bold">إنجازات إضافية</h4>
-          </div>
-          <div className="grid grid-cols-3 gap-3 text-center">
-            <div className="p-4 bg-muted/50 rounded-xl">
-              <p className="text-sm text-muted-foreground mb-1">إجابات صحيحة</p>
-              <p className="text-xl font-bold text-turquoise">{stats.correctAnswers}</p>
-            </div>
-            <div className="p-4 bg-muted/50 rounded-xl">
-              <p className="text-sm text-muted-foreground mb-1">أفضل streak</p>
-              <p className="text-xl font-bold text-orange-500">{stats.longestStreak}</p>
-            </div>
-            <div className="p-4 bg-muted/50 rounded-xl">
-              <p className="text-sm text-muted-foreground mb-1">إجمالي XP</p>
-              <p className="text-xl font-bold text-yellow">{stats.xp}</p>
-            </div>
-          </div>
-        </motion.div>
-      </div>
-
-      {/* Badges */}
-      <motion.div className="bg-card rounded-2xl p-6" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}>
-        <div className="flex items-center gap-2 mb-4">
-          <Trophy className="w-5 h-5 text-yellow" />
-          <h4 className="font-bold">الشارات</h4>
-          <span className="text-sm text-muted-foreground">({unlockedBadges.length}/{badges.length})</span>
-        </div>
-
-        {unlockedBadges.length > 0 && (
-          <div className="mb-4">
-            <p className="text-sm text-muted-foreground mb-3">مفتوحة</p>
-            <div className="grid grid-cols-7 gap-3">
-              {unlockedBadges.map((badge) => (
-                <div key={badge.id} className="flex flex-col items-center p-3 bg-gradient-to-br from-yellow/20 to-orange-500/20 rounded-xl border border-yellow/30">
-                  <div className="w-8 h-8 rounded-full bg-yellow/20 flex items-center justify-center text-yellow mb-1">
-                    {iconMap[badge.icon] || <Star className="w-4 h-4" />}
-                  </div>
-                  <p className="text-xs font-semibold text-center">{badge.name}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        <div>
-          <p className="text-sm text-muted-foreground mb-3">مقفلة</p>
-          <div className="grid grid-cols-7 gap-3">
-            {lockedBadges.map((badge) => (
-              <div key={badge.id} className="flex flex-col items-center p-3 bg-muted/50 rounded-xl opacity-50" title={badge.description}>
-                <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center text-muted-foreground mb-1">
-                  {iconMap[badge.icon] || <Star className="w-4 h-4" />}
-                </div>
-                <p className="text-xs font-semibold text-center text-muted-foreground">{badge.name}</p>
+                <span className="text-turquoise font-bold">{activity.score}</span>
               </div>
             ))}
           </div>
-        </div>
-      </motion.div>
+        </motion.div>
+      </div>
+
+      {/* Stats Grid */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {statsDisplay.map((stat, index) => (
+          <motion.div
+            key={stat.label}
+            className="bg-card rounded-2xl p-6"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 + index * 0.1 }}
+          >
+            <stat.icon className={`w-8 h-8 ${stat.color} mb-3`} />
+            <p className="text-3xl font-bold mb-1">{stat.value}</p>
+            <p className="text-sm text-muted-foreground">{stat.label}</p>
+          </motion.div>
+        ))}
+      </div>
+
+      {/* Daily Goal & Week Comparison Row */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Daily Goal Rings */}
+        <motion.div
+          className="bg-card rounded-2xl p-6"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+        >
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-bold">هدف اليوم</h2>
+            <button
+              onClick={() => setIsEditingGoals(true)}
+              className="p-2 rounded-lg hover:bg-muted/30 transition-colors"
+            >
+              <Settings2 className="w-5 h-5 text-muted-foreground" />
+            </button>
+          </div>
+
+          {/* Edit Goals Modal */}
+          <AnimatePresence>
+            {isEditingGoals && (
+              <motion.div
+                className="mb-4 p-4 bg-muted/20 rounded-xl"
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+              >
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium">هدف الكمي</span>
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => setEditMathTarget(Math.max(1, editMathTarget - 1))}
+                        className="w-8 h-8 rounded-lg bg-muted/30 hover:bg-muted/50 flex items-center justify-center"
+                      >
+                        -
+                      </button>
+                      <span className="w-8 text-center font-bold">{toArabicNumeral(editMathTarget)}</span>
+                      <button
+                        onClick={() => setEditMathTarget(editMathTarget + 1)}
+                        className="w-8 h-8 rounded-lg bg-muted/30 hover:bg-muted/50 flex items-center justify-center"
+                      >
+                        +
+                      </button>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium">هدف اللفظي</span>
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => setEditLanguageTarget(Math.max(1, editLanguageTarget - 1))}
+                        className="w-8 h-8 rounded-lg bg-muted/30 hover:bg-muted/50 flex items-center justify-center"
+                      >
+                        -
+                      </button>
+                      <span className="w-8 text-center font-bold">{toArabicNumeral(editLanguageTarget)}</span>
+                      <button
+                        onClick={() => setEditLanguageTarget(editLanguageTarget + 1)}
+                        className="w-8 h-8 rounded-lg bg-muted/30 hover:bg-muted/50 flex items-center justify-center"
+                      >
+                        +
+                      </button>
+                    </div>
+                  </div>
+                  <div className="flex gap-2 pt-2">
+                    <button
+                      onClick={handleSaveGoals}
+                      className="flex-1 py-2 bg-turquoise text-white rounded-lg font-medium flex items-center justify-center gap-2"
+                    >
+                      <Check className="w-4 h-4" />
+                      حفظ
+                    </button>
+                    <button
+                      onClick={() => setIsEditingGoals(false)}
+                      className="px-4 py-2 bg-muted/30 rounded-lg"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          <div className="flex items-center justify-around">
+            {/* Math Goal */}
+            <div className="flex flex-col items-center">
+              <div className="relative w-36 h-36">
+                <svg className="w-full h-full transform -rotate-90">
+                  <circle
+                    cx="72"
+                    cy="72"
+                    r="60"
+                    stroke="currentColor"
+                    strokeWidth="12"
+                    fill="none"
+                    className="text-muted/20"
+                  />
+                  <motion.circle
+                    key={`math-${mathGoal.total}`}
+                    cx="72"
+                    cy="72"
+                    r="60"
+                    stroke="currentColor"
+                    strokeWidth="12"
+                    fill="none"
+                    strokeLinecap="round"
+                    className="text-turquoise"
+                    initial={{ strokeDasharray: "0 377" }}
+                    animate={{ strokeDasharray: `${mathProgress * 3.77} 377` }}
+                    transition={{ duration: 0.8, ease: "easeOut" }}
+                  />
+                </svg>
+                <div className="absolute inset-0 flex flex-col items-center justify-center">
+                  <span className="text-3xl font-bold">{toArabicNumeral(mathGoal.completed)}/{toArabicNumeral(mathGoal.total)}</span>
+                  <span className="text-sm text-muted-foreground">تمارين</span>
+                </div>
+              </div>
+              <p className="text-center text-muted-foreground mt-3 font-medium">الكمي</p>
+            </div>
+
+            {/* Language Goal */}
+            <div className="flex flex-col items-center">
+              <div className="relative w-36 h-36">
+                <svg className="w-full h-full transform -rotate-90">
+                  <circle
+                    cx="72"
+                    cy="72"
+                    r="60"
+                    stroke="currentColor"
+                    strokeWidth="12"
+                    fill="none"
+                    className="text-muted/20"
+                  />
+                  <motion.circle
+                    key={`lang-${languageGoal.total}`}
+                    cx="72"
+                    cy="72"
+                    r="60"
+                    stroke="currentColor"
+                    strokeWidth="12"
+                    fill="none"
+                    strokeLinecap="round"
+                    className="text-turquoise"
+                    initial={{ strokeDasharray: "0 377" }}
+                    animate={{ strokeDasharray: `${languageProgress * 3.77} 377` }}
+                    transition={{ duration: 0.8, ease: "easeOut" }}
+                  />
+                </svg>
+                <div className="absolute inset-0 flex flex-col items-center justify-center">
+                  <span className="text-3xl font-bold">{toArabicNumeral(languageGoal.completed)}/{toArabicNumeral(languageGoal.total)}</span>
+                  <span className="text-sm text-muted-foreground">تمارين</span>
+                </div>
+              </div>
+              <p className="text-center text-muted-foreground mt-3 font-medium">اللفظي</p>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Today & This Week Stats */}
+        <motion.div
+          className="bg-card rounded-2xl p-6"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5 }}
+        >
+          <h2 className="text-xl font-bold mb-3">اليوم</h2>
+          <div className="grid grid-cols-3 gap-3 mb-6">
+            <div className="bg-muted/20 rounded-xl p-3 text-center">
+              <p className="text-2xl font-bold text-turquoise">{toArabicNumeral(3)}</p>
+              <p className="text-xs text-muted-foreground">تمارين</p>
+            </div>
+            <div className="bg-muted/20 rounded-xl p-3 text-center">
+              <p className="text-2xl font-bold text-turquoise">{toArabicNumeral(88)}٪</p>
+              <p className="text-xs text-muted-foreground">النجاح</p>
+            </div>
+            <div className="bg-muted/20 rounded-xl p-3 text-center">
+              <p className="text-2xl font-bold text-turquoise">{toArabicNumeral(15)}</p>
+              <p className="text-xs text-muted-foreground">دقيقة</p>
+            </div>
+          </div>
+
+          <h2 className="text-xl font-bold mb-3">هذا الأسبوع</h2>
+          <div className="space-y-3">
+            {weekComparison.map((item, index) => {
+              const diff = item.thisWeek - item.lastWeek;
+              const isImproved = item.lowerIsBetter ? diff < 0 : diff > 0;
+              const isEqual = diff === 0;
+
+              return (
+                <motion.div
+                  key={item.label}
+                  className="flex items-center justify-between"
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.6 + index * 0.1 }}
+                >
+                  <span className="text-muted-foreground text-sm">{item.label}</span>
+                  <div className="flex items-center gap-2">
+                    <span className="font-bold">{toArabicNumeral(item.thisWeek)}{item.unit}</span>
+                    <div className={`flex items-center gap-1 px-2 py-0.5 rounded-full text-xs ${
+                      isEqual ? "bg-muted/30 text-muted-foreground" :
+                      isImproved ? "bg-turquoise/20 text-turquoise" : "bg-turquoise/20 text-turquoise"
+                    }`}>
+                      {isEqual ? <Minus className="w-3 h-3" /> :
+                       isImproved ? <ArrowUp className="w-3 h-3" /> : <ArrowDown className="w-3 h-3" />}
+                      <span>{toArabicNumeral(Math.abs(diff))}{item.unit}</span>
+                    </div>
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
+        </motion.div>
+      </div>
+
+      {/* Performance by Category */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Math Performance */}
+        <motion.div
+          className="bg-card rounded-2xl p-6"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6 }}
+        >
+          <h2 className="text-xl font-bold mb-4">الأداء في الكمي</h2>
+          <div className="space-y-4">
+            {mathPerformance.map((category, index) => (
+              <motion.div
+                key={category.name}
+                className="space-y-2"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.7 + index * 0.1 }}
+              >
+                <div className="flex justify-between items-center">
+                  <span className="font-medium">{category.name}</span>
+                  <span className="text-muted-foreground">{toArabicNumeral(category.score)}٪</span>
+                </div>
+                <div className="h-3 bg-muted/20 rounded-full overflow-hidden">
+                  <motion.div
+                    className={`h-full rounded-full ${category.color}`}
+                    initial={{ width: 0 }}
+                    animate={{ width: `${category.score}%` }}
+                    transition={{ delay: 0.8 + index * 0.1, duration: 0.6, ease: "easeOut" }}
+                  />
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* Language Performance */}
+        <motion.div
+          className="bg-card rounded-2xl p-6"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.65 }}
+        >
+          <h2 className="text-xl font-bold mb-4">الأداء في اللفظي</h2>
+          <div className="space-y-4">
+            {languagePerformance.map((category, index) => (
+              <motion.div
+                key={category.name}
+                className="space-y-2"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.75 + index * 0.1 }}
+              >
+                <div className="flex justify-between items-center">
+                  <span className="font-medium">{category.name}</span>
+                  <span className="text-muted-foreground">{toArabicNumeral(category.score)}٪</span>
+                </div>
+                <div className="h-3 bg-muted/20 rounded-full overflow-hidden">
+                  <motion.div
+                    className={`h-full rounded-full ${category.color}`}
+                    initial={{ width: 0 }}
+                    animate={{ width: `${category.score}%` }}
+                    transition={{ delay: 0.85 + index * 0.1, duration: 0.6, ease: "easeOut" }}
+                  />
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+      </div>
+
     </div>
   );
 };

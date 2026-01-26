@@ -12,18 +12,10 @@ interface Recommendation {
 
 const RecommendationPanel = () => {
   const [mapOpen, setMapOpen] = useState(false);
-  const { stats, flashcards } = useUserProfile();
+  const { stats } = useUserProfile();
 
   const getRecommendation = (): Recommendation => {
-    // Priority 1: Review mistakes if any
-    if (flashcards.length > 0) {
-      return {
-        title: "لديك أسئلة تحتاج مراجعة",
-        description: `${flashcards.length} سؤال في قائمة المراجعة`,
-      };
-    }
-
-    // Priority 2: New user - start with basics
+    // Priority 1: New user - start with basics
     if (stats.exercisesCompleted < 3) {
       return {
         title: "ننصحك بتمارين الأساسيات",

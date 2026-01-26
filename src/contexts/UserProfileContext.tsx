@@ -21,19 +21,6 @@ export interface DailyGoal {
   languageCompleted: number;
 }
 
-export interface Flashcard {
-  id: string;
-  question: string;
-  correctAnswer: string;
-  userAnswer: string;
-  options: string[];
-  exerciseTitle: string;
-  category: "quantitative" | "verbal";
-  addedAt: string;
-  reviewCount: number;
-  lastReviewed?: string;
-}
-
 export interface UserStats {
   xp: number;
   level: number;
@@ -52,24 +39,13 @@ export interface UserStats {
   title: string;
 }
 
-export interface QuestionData {
-  prompt: string;
-  options: string[];
-  correctAnswer: number;
-  exerciseTitle: string;
-  exerciseType: "quantitative" | "verbal" | "algebra" | "analogy" | "mixed";
-}
-
 interface UserProfileContextType {
   stats: UserStats;
   badges: Badge[];
-  flashcards: Flashcard[];
   addXp: (amount: number) => void;
-  recordAnswer: (isCorrect: boolean, timeSpent: number, questionData?: QuestionData, selectedAnswer?: number) => void;
+  recordAnswer: (isCorrect: boolean, timeSpent: number) => void;
   completeExercise: (category?: "math" | "language") => void;
   resetStats: () => void;
-  removeFlashcard: (id: string) => void;
-  markFlashcardReviewed: (id: string) => void;
   setDailyGoalTargets: (mathTarget: number, languageTarget: number) => void;
 }
 
@@ -130,7 +106,6 @@ const defaultStats: UserStats = {
 
 const STORAGE_KEY = "divedive-user-profile";
 const BADGES_KEY = "divedive-badges";
-const FLASHCARDS_KEY = "divedive-flashcards";
 
 const UserProfileContext = createContext<UserProfileContextType | undefined>(undefined);
 
@@ -159,18 +134,6 @@ export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
     return defaultBadges;
   });
 
-  const [flashcards, setFlashcards] = useState<Flashcard[]>(() => {
-    const stored = localStorage.getItem(FLASHCARDS_KEY);
-    if (stored) {
-      try {
-        return JSON.parse(stored);
-      } catch {
-        return [];
-      }
-    }
-    return [];
-  });
-
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(stats));
   }, [stats]);
@@ -178,10 +141,6 @@ export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     localStorage.setItem(BADGES_KEY, JSON.stringify(badges));
   }, [badges]);
-
-  useEffect(() => {
-    localStorage.setItem(FLASHCARDS_KEY, JSON.stringify(flashcards));
-  }, [flashcards]);
 
   const getTitleForLevel = (level: number): string => {
     if (level >= 15) return "خبير";
@@ -282,27 +241,7 @@ export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
     });
   };
 
-  const recordAnswer = (isCorrect: boolean, timeSpent: number, questionData?: QuestionData, selectedAnswer?: number) => {
-    // Add to flashcards if answer is wrong
-    if (!isCorrect && questionData && selectedAnswer !== undefined) {
-      // Determine category based on exercise type
-      const isVerbal = questionData.exerciseType === "verbal" || questionData.exerciseType === "analogy";
-      const category: "quantitative" | "verbal" = isVerbal ? "verbal" : "quantitative";
-
-      const flashcard: Flashcard = {
-        id: `fc-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-        question: questionData.prompt,
-        correctAnswer: questionData.options[questionData.correctAnswer],
-        userAnswer: questionData.options[selectedAnswer],
-        options: questionData.options,
-        exerciseTitle: questionData.exerciseTitle,
-        category,
-        addedAt: new Date().toISOString(),
-        reviewCount: 0,
-      };
-      setFlashcards(prev => [...prev, flashcard]);
-    }
-
+  const recordAnswer = (isCorrect: boolean, timeSpent: number) => {
     setStats(prev => {
       const newCorrect = prev.correctAnswers + (isCorrect ? 1 : 0);
       const newTotal = prev.totalQuestionsAnswered + 1;
@@ -369,35 +308,18 @@ export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
   const resetStats = () => {
     setStats(defaultStats);
     setBadges(defaultBadges);
-    setFlashcards([]);
     localStorage.removeItem(STORAGE_KEY);
     localStorage.removeItem(BADGES_KEY);
-    localStorage.removeItem(FLASHCARDS_KEY);
-  };
-
-  const removeFlashcard = (id: string) => {
-    setFlashcards(prev => prev.filter(fc => fc.id !== id));
-  };
-
-  const markFlashcardReviewed = (id: string) => {
-    setFlashcards(prev => prev.map(fc =>
-      fc.id === id
-        ? { ...fc, reviewCount: fc.reviewCount + 1, lastReviewed: new Date().toISOString() }
-        : fc
-    ));
   };
 
   return (
     <UserProfileContext.Provider value={{
       stats,
       badges,
-      flashcards,
       addXp,
       recordAnswer,
       completeExercise,
       resetStats,
-      removeFlashcard,
-      markFlashcardReviewed,
       setDailyGoalTargets,
     }}>
       {children}
