@@ -1,4 +1,24 @@
 import { LearningUnit } from "@/types/units";
+import bank1Data from "@/data/bank1_tanadhur_questions.json";
+
+// Transform JSON questions to match the app's expected format
+const transformQuestions = (questions: typeof bank1Data.questions, difficulty: "easy" | "medium" | "hard", startIdx: number, endIdx: number) => {
+  return questions.slice(startIdx, endIdx).map((q, idx) => ({
+    id: `va-bank1-${q.id}`,
+    prompt: q.prompt,
+    options: q.options.filter(opt => opt !== ""), // Remove empty options
+    correctAnswer: q.correctAnswer,
+    explanation: "العلاقة: ترادف أو تشابه في المعنى",
+    difficulty,
+    source: "collection" as const,
+    year: 2025
+  }));
+};
+
+// Split 138 questions into difficulty levels
+const easyQuestions = transformQuestions(bank1Data.questions, "easy", 0, 46);
+const mediumQuestions = transformQuestions(bank1Data.questions, "medium", 46, 92);
+const hardQuestions = transformQuestions(bank1Data.questions, "hard", 92, 138);
 
 export const verbalAnalogyUnit: LearningUnit = {
   id: "verbal-analogy",
@@ -10,8 +30,8 @@ export const verbalAnalogyUnit: LearningUnit = {
   icon: "ArrowLeftRight",
   color: "turquoise",
   order: 3,
-  totalQuestions: 15,
-  estimatedDuration: "١٥-٢٠ دقيقة",
+  totalQuestions: 138,
+  estimatedDuration: "٤٥-٦٠ دقيقة",
 
   foundationalLesson: {
     id: "lesson-verbal-analogy",
@@ -71,171 +91,24 @@ export const verbalAnalogyUnit: LearningUnit = {
   exerciseSets: [
     {
       id: "verbal-analogy-easy",
-      title: "تمارين تأسيسية",
+      title: "تمارين تأسيسية (البنك الأول)",
       type: "practice",
       difficulty: "easy",
-      questions: [
-        {
-          id: "va-e1",
-          prompt: "ليل : نهار",
-          options: ["شمس : قمر", "نور : ظلام", "صيف : حار", "شتاء : بارد"],
-          correctAnswer: 1,
-          explanation: "العلاقة: تضاد. ليل عكس نهار، ونور عكس ظلام",
-          hint: "ابحث عن علاقة التضاد (العكس)",
-          difficulty: "easy",
-          source: "practice"
-        },
-        {
-          id: "va-e2",
-          prompt: "طبيب : مستشفى",
-          options: ["طالب : كتاب", "معلم : مدرسة", "سيارة : شارع", "طعام : مطبخ"],
-          correctAnswer: 1,
-          explanation: "العلاقة: عامل ومكان عمله. الطبيب يعمل في المستشفى، والمعلم يعمل في المدرسة",
-          difficulty: "easy",
-          source: "practice"
-        },
-        {
-          id: "va-e3",
-          prompt: "أسد : زئير",
-          options: ["قط : حليب", "كلب : نباح", "طائر : سماء", "سمكة : ماء"],
-          correctAnswer: 1,
-          explanation: "العلاقة: حيوان وصوته. الأسد يزأر، والكلب ينبح",
-          difficulty: "easy",
-          source: "practice"
-        },
-        {
-          id: "va-e4",
-          prompt: "يد : إصبع",
-          options: ["قدم : حذاء", "رأس : شعر", "شجرة : غابة", "كتاب : مكتبة"],
-          correctAnswer: 1,
-          explanation: "العلاقة: الكل والجزء. الإصبع جزء من اليد، والشعر جزء من الرأس",
-          difficulty: "easy",
-          source: "practice"
-        },
-        {
-          id: "va-e5",
-          prompt: "سعيد : حزين",
-          options: ["طويل : قصير", "جميل : وردة", "كبير : ضخم", "سريع : سيارة"],
-          correctAnswer: 0,
-          explanation: "العلاقة: تضاد. سعيد عكس حزين، وطويل عكس قصير",
-          difficulty: "easy",
-          source: "practice"
-        }
-      ]
+      questions: easyQuestions
     },
     {
       id: "verbal-analogy-medium",
-      title: "تمارين متوسطة",
+      title: "تمارين متوسطة (البنك الأول)",
       type: "practice",
       difficulty: "medium",
-      questions: [
-        {
-          id: "va-m1",
-          prompt: "قمح : خبز",
-          options: ["حليب : بقرة", "عنب : نبيذ", "ماء : نهر", "شجرة : خشب"],
-          correctAnswer: 1,
-          explanation: "العلاقة: مادة خام ومنتج. القمح يُصنع منه الخبز، والعنب يُصنع منه النبيذ",
-          hint: "ابحث عن علاقة المادة الخام والمنتج النهائي",
-          difficulty: "medium",
-          source: "practice"
-        },
-        {
-          id: "va-m2",
-          prompt: "كاتب : رواية",
-          options: ["رسام : لوحة", "قارئ : كتاب", "معلم : طالب", "طبيب : مريض"],
-          correctAnswer: 0,
-          explanation: "العلاقة: منتِج ومنتَج. الكاتب ينتج الرواية، والرسام ينتج اللوحة",
-          difficulty: "medium",
-          source: "practice"
-        },
-        {
-          id: "va-m3",
-          prompt: "طفل : رجل",
-          options: ["بذرة : شجرة", "ماء : ثلج", "صيف : شتاء", "نهار : ليل"],
-          correctAnswer: 0,
-          explanation: "العلاقة: مرحلة نمو. الطفل يصبح رجلاً، والبذرة تصبح شجرة",
-          difficulty: "medium",
-          source: "practice"
-        },
-        {
-          id: "va-m4",
-          prompt: "عين : بصر",
-          options: ["يد : لمس", "أذن : سمع", "أنف : شم", "جميع ما سبق"],
-          correctAnswer: 1,
-          explanation: "العلاقة: عضو وحاسته. العين للبصر، والأذن للسمع",
-          difficulty: "medium",
-          source: "practice"
-        },
-        {
-          id: "va-m5",
-          prompt: "محيط : دائرة",
-          options: ["مساحة : مربع", "ضلع : مثلث", "قطر : كرة", "محيط : مستطيل"],
-          correctAnswer: 3,
-          explanation: "العلاقة: قياس وشكله. المحيط قياس للدائرة وأيضاً للمستطيل",
-          hint: "المحيط يمكن حسابه لأشكال مختلفة",
-          difficulty: "medium",
-          source: "practice"
-        }
-      ]
+      questions: mediumQuestions
     },
     {
       id: "verbal-analogy-collection",
-      title: "أسئلة تجميعات",
+      title: "أسئلة تجميعات (البنك الأول)",
       type: "collection",
       difficulty: "hard",
-      questions: [
-        {
-          id: "va-c1",
-          prompt: "متفائل : متشائم",
-          options: ["كريم : بخيل", "ذكي : عالم", "سريع : بطيء", "جميع ما سبق"],
-          correctAnswer: 0,
-          explanation: "العلاقة: تضاد في الصفات. متفائل عكس متشائم، وكريم عكس بخيل. (سريع وبطيء أيضاً تضاد لكن كريم وبخيل أدق لأنها صفات شخصية مثل الأصل)",
-          difficulty: "hard",
-          source: "collection",
-          year: 1445
-        },
-        {
-          id: "va-c2",
-          prompt: "ريشة : طائر",
-          options: ["شعر : إنسان", "حرشفة : سمكة", "جلد : حيوان", "ورقة : شجرة"],
-          correctAnswer: 1,
-          explanation: "العلاقة: غطاء خارجي مميز للكائن. الريش للطائر والحراشف للسمكة",
-          hint: "ابحث عن الغطاء الخارجي المميز",
-          difficulty: "hard",
-          source: "collection",
-          year: 1444
-        },
-        {
-          id: "va-c3",
-          prompt: "جوع : طعام",
-          options: ["عطش : ماء", "نوم : سرير", "برد : معطف", "مرض : دواء"],
-          correctAnswer: 0,
-          explanation: "العلاقة: حاجة وما يشبعها مباشرة. الجوع يُشبع بالطعام، والعطش يُشبع بالماء",
-          difficulty: "hard",
-          source: "collection",
-          year: 1445
-        },
-        {
-          id: "va-c4",
-          prompt: "نحلة : خلية",
-          options: ["نملة : قرية", "عصفور : عش", "سمكة : بحر", "إنسان : مدينة"],
-          correctAnswer: 1,
-          explanation: "العلاقة: كائن ومسكنه الذي يبنيه. النحلة تعيش في الخلية، والعصفور يعيش في العش",
-          difficulty: "hard",
-          source: "collection",
-          year: 1443
-        },
-        {
-          id: "va-c5",
-          prompt: "جاهل : علم",
-          options: ["فقير : مال", "مريض : صحة", "ضعيف : قوة", "جميع ما سبق"],
-          correctAnswer: 3,
-          explanation: "العلاقة: شخص يفتقر لشيء. الجاهل يفتقر للعلم، والفقير للمال، والمريض للصحة، والضعيف للقوة",
-          difficulty: "hard",
-          source: "collection",
-          year: 1444
-        }
-      ]
+      questions: hardQuestions
     }
   ]
 };

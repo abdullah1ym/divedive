@@ -1,11 +1,44 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import bank1TanadhurData from "@/data/bank1_tanadhur_questions.json";
+import bank1SentenceCompletionData from "@/data/bank1_sentence_completion_questions.json";
+import bank1ContextualErrorData from "@/data/bank1_contextual_error_questions.json";
+import bank1OddWordData from "@/data/bank1_odd_word_questions.json";
 
 // Transform bank1 tanadhur questions to match Question interface
 const bank1TanadhurQuestions = bank1TanadhurData.questions.map((q: any) => ({
   id: `bank1-tanadhur-${q.id}`,
   prompt: q.prompt,
   audioPlaceholder: "تناظر لفظي",
+  options: q.options.filter((opt: string) => opt !== ""),
+  correctAnswer: q.correctAnswer,
+  explanation: q.explanation,
+}));
+
+// Transform bank1 sentence completion questions to match Question interface
+const bank1SentenceCompletionQuestions = bank1SentenceCompletionData.questions.map((q: any) => ({
+  id: `bank1-sc-${q.id}`,
+  prompt: q.prompt,
+  audioPlaceholder: "إكمال جملة",
+  options: q.options.filter((opt: string) => opt !== "" && opt !== "......"),
+  correctAnswer: q.correctAnswer,
+  explanation: q.explanation,
+}));
+
+// Transform bank1 contextual error questions to match Question interface
+const bank1ContextualErrorQuestions = bank1ContextualErrorData.questions.map((q: any) => ({
+  id: `bank1-ce-${q.id}`,
+  prompt: q.prompt,
+  audioPlaceholder: "خطأ سياقي",
+  options: q.options.filter((opt: string) => opt !== ""),
+  correctAnswer: q.correctAnswer,
+  explanation: q.explanation,
+}));
+
+// Transform bank1 odd word questions to match Question interface
+const bank1OddWordQuestions = bank1OddWordData.questions.map((q: any) => ({
+  id: `bank1-ow-${q.id}`,
+  prompt: q.prompt,
+  audioPlaceholder: "مفردة شاذة",
   options: q.options.filter((opt: string) => opt !== ""),
   correctAnswer: q.correctAnswer,
   explanation: q.explanation,
@@ -222,50 +255,38 @@ const defaultExercises: Exercise[] = [
     duration: "٤٥ دقيقة",
     questions: bank1TanadhurQuestions,
   },
-  // البنك الأول - إكمال الجمل
+  // البنك الأول - إكمال الجمل (101 سؤال من الملف المحلول)
   {
     id: "verbal-2",
     title: "إكمال الجمل",
-    description: "اختيار الكلمة المناسبة لإكمال الجملة",
+    description: "اختيار الكلمة المناسبة لإكمال الجملة - ١٠١ سؤال",
     category: "verbal",
     difficulty: "beginner",
     type: "verbal",
-    duration: "٥ دقائق",
-    questions: [
-      { id: "q1", prompt: "الصبر _____ الفرج", audioPlaceholder: "إكمال جملة", options: ["قبل", "مفتاح", "بعد", "طريق"], correctAnswer: 1 },
-      { id: "q2", prompt: "العلم _____ والجهل ظلام", audioPlaceholder: "إكمال جملة", options: ["ظلمة", "نور", "صعب", "سهل"], correctAnswer: 1 },
-      { id: "q3", prompt: "من جدّ _____", audioPlaceholder: "إكمال جملة", options: ["نجح", "وجد", "فاز", "تعلم"], correctAnswer: 1 },
-    ],
+    duration: "٤٥ دقيقة",
+    questions: bank1SentenceCompletionQuestions,
   },
-  // البنك الأول - الخطأ السياقي
+  // البنك الأول - الخطأ السياقي (101 سؤال من الملف المحلول)
   {
     id: "verbal-3",
     title: "الخطأ السياقي",
-    description: "تحديد الكلمة الخاطئة في السياق",
+    description: "تحديد الكلمة الخاطئة في السياق - ١٠١ سؤال",
     category: "verbal",
     difficulty: "intermediate",
     type: "verbal",
-    duration: "٧ دقائق",
-    questions: [
-      { id: "q1", prompt: "حدد الكلمة الخاطئة: ذهبت إلى المكتبة لأشتري الخضروات", audioPlaceholder: "خطأ سياقي", options: ["ذهبت", "المكتبة", "لأشتري", "الخضروات"], correctAnswer: 1 },
-      { id: "q2", prompt: "حدد الكلمة الخاطئة: الطبيب يعالج المرضى في المدرسة", audioPlaceholder: "خطأ سياقي", options: ["الطبيب", "يعالج", "المرضى", "المدرسة"], correctAnswer: 3 },
-      { id: "q3", prompt: "حدد الكلمة الخاطئة: السيارة تطير في الشارع بسرعة", audioPlaceholder: "خطأ سياقي", options: ["السيارة", "تطير", "الشارع", "بسرعة"], correctAnswer: 1 },
-    ],
+    duration: "٤٥ دقيقة",
+    questions: bank1ContextualErrorQuestions,
   },
-  // البنك الأول - المفردة الشاذة
+  // البنك الأول - المفردة الشاذة (100 سؤال من الملف المحلول)
   {
     id: "verbal-4",
     title: "المفردة الشاذة",
-    description: "تحديد الكلمة التي لا تنتمي للمجموعة",
+    description: "تحديد الكلمة التي لا تنتمي للمجموعة - ١٠٠ سؤال",
     category: "verbal",
     difficulty: "beginner",
     type: "verbal",
-    duration: "٥ دقائق",
-    questions: [
-      { id: "q1", prompt: "حدد المفردة الشاذة:", audioPlaceholder: "مفردة شاذة", options: ["تفاح", "برتقال", "جزر", "موز"], correctAnswer: 2 },
-      { id: "q2", prompt: "حدد المفردة الشاذة:", audioPlaceholder: "مفردة شاذة", options: ["قلم", "كتاب", "سيارة", "دفتر"], correctAnswer: 2 },
-      { id: "q3", prompt: "حدد المفردة الشاذة:", audioPlaceholder: "مفردة شاذة", options: ["أحمر", "أخضر", "سريع", "أزرق"], correctAnswer: 2 },
-    ],
+    duration: "٤٥ دقيقة",
+    questions: bank1OddWordQuestions,
   },
   // البنك الأول - استيعاب المقروء
   {

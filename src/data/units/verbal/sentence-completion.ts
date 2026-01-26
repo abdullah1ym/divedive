@@ -1,4 +1,24 @@
 import { LearningUnit } from "@/types/units";
+import bank1Data from "@/data/bank1_sentence_completion_questions.json";
+
+// Transform JSON questions to match the app's expected format
+const transformQuestions = (questions: typeof bank1Data.questions, difficulty: "easy" | "medium" | "hard", startIdx: number, endIdx: number) => {
+  return questions.slice(startIdx, endIdx).map((q) => ({
+    id: `sc-bank1-${q.id}`,
+    prompt: q.prompt,
+    options: q.options.filter(opt => opt !== "" && opt !== "......"), // Remove empty options
+    correctAnswer: q.correctAnswer,
+    explanation: q.explanation,
+    difficulty,
+    source: "collection" as const,
+    year: 2025
+  }));
+};
+
+// Split 101 questions into difficulty levels
+const easyQuestions = transformQuestions(bank1Data.questions, "easy", 0, 34);
+const mediumQuestions = transformQuestions(bank1Data.questions, "medium", 34, 68);
+const hardQuestions = transformQuestions(bank1Data.questions, "hard", 68, 101);
 
 export const sentenceCompletionUnit: LearningUnit = {
   id: "verbal-sentence-completion",
@@ -10,8 +30,8 @@ export const sentenceCompletionUnit: LearningUnit = {
   icon: "PenLine",
   color: "mint",
   order: 2,
-  totalQuestions: 15,
-  estimatedDuration: "١٥-٢٠ دقيقة",
+  totalQuestions: 101,
+  estimatedDuration: "٤٥-٦٠ دقيقة",
 
   foundationalLesson: {
     id: "lesson-sentence-completion",
@@ -65,171 +85,24 @@ export const sentenceCompletionUnit: LearningUnit = {
   exerciseSets: [
     {
       id: "sentence-completion-easy",
-      title: "تمارين تأسيسية",
+      title: "تمارين تأسيسية (البنك الأول)",
       type: "practice",
       difficulty: "easy",
-      questions: [
-        {
-          id: "sc-e1",
-          prompt: "الشمس _______ من الشرق كل يوم.",
-          options: ["تغرب", "تشرق", "تختفي", "تسقط"],
-          correctAnswer: 1,
-          explanation: "الشمس تشرق (تطلع) من الشرق، وتغرب في الغرب",
-          difficulty: "easy",
-          source: "practice"
-        },
-        {
-          id: "sc-e2",
-          prompt: "القراءة تُنمّي _______ وتوسع المدارك.",
-          options: ["الجهل", "الملل", "العقل", "النوم"],
-          correctAnswer: 2,
-          explanation: "القراءة تنمي العقل والمعرفة",
-          hint: "ابحث عن كلمة إيجابية تناسب فائدة القراءة",
-          difficulty: "easy",
-          source: "practice"
-        },
-        {
-          id: "sc-e3",
-          prompt: "الطبيب يعالج _______ في المستشفى.",
-          options: ["السيارات", "المرضى", "الكتب", "الأشجار"],
-          correctAnswer: 1,
-          explanation: "الطبيب يعالج المرضى",
-          difficulty: "easy",
-          source: "practice"
-        },
-        {
-          id: "sc-e4",
-          prompt: "الماء _______ للحياة على كوكب الأرض.",
-          options: ["ضار", "مفيد", "ضروري", "غريب"],
-          correctAnswer: 2,
-          explanation: "الماء ضروري (أساسي ولا غنى عنه) للحياة",
-          difficulty: "easy",
-          source: "practice"
-        },
-        {
-          id: "sc-e5",
-          prompt: "في فصل الشتاء يكون الجو _______.",
-          options: ["حاراً", "بارداً", "صيفياً", "ربيعياً"],
-          correctAnswer: 1,
-          explanation: "فصل الشتاء يتميز بالجو البارد",
-          difficulty: "easy",
-          source: "practice"
-        }
-      ]
+      questions: easyQuestions
     },
     {
       id: "sentence-completion-medium",
-      title: "تمارين متوسطة",
+      title: "تمارين متوسطة (البنك الأول)",
       type: "practice",
       difficulty: "medium",
-      questions: [
-        {
-          id: "sc-m1",
-          prompt: "على الرغم من _______ الامتحان، إلا أن الطالب نجح بتفوق.",
-          options: ["سهولة", "صعوبة", "جمال", "قصر"],
-          correctAnswer: 1,
-          explanation: "\"على الرغم من\" تدل على تناقض: صعوبة الامتحان تتناقض مع النجاح المتفوق",
-          hint: "\"على الرغم من\" تشير إلى تضاد بين جزئي الجملة",
-          difficulty: "medium",
-          source: "practice"
-        },
-        {
-          id: "sc-m2",
-          prompt: "العالِم _______ يبحث عن الحقيقة مهما كانت التحديات.",
-          options: ["المتردد", "الحقيقي", "الكسول", "الخائف"],
-          correctAnswer: 1,
-          explanation: "العالِم الحقيقي يبحث عن الحقيقة بإصرار",
-          difficulty: "medium",
-          source: "practice"
-        },
-        {
-          id: "sc-m3",
-          prompt: "بسبب الأمطار الغزيرة، _______ المباراة إلى الأسبوع القادم.",
-          options: ["أُقيمت", "أُجّلت", "انتهت", "فازت"],
-          correctAnswer: 1,
-          explanation: "الأمطار سبب لتأجيل المباراة وليس إقامتها",
-          difficulty: "medium",
-          source: "practice"
-        },
-        {
-          id: "sc-m4",
-          prompt: "الصدق _______ بينما الكذب يُفقد الثقة.",
-          options: ["يضر بالعلاقات", "يبني الثقة", "يسبب المشاكل", "يؤدي للفشل"],
-          correctAnswer: 1,
-          explanation: "\"بينما\" تدل على التضاد: الصدق عكس الكذب، فإذا الكذب يُفقد الثقة، فالصدق يبنيها",
-          difficulty: "medium",
-          source: "practice"
-        },
-        {
-          id: "sc-m5",
-          prompt: "كلما زاد العلم، _______ التواضع عند صاحبه.",
-          options: ["قلّ", "زاد", "اختفى", "ضعف"],
-          correctAnswer: 1,
-          explanation: "المعنى: كلما زاد العلم زاد التواضع (العلاقة طردية إيجابية)",
-          hint: "العلم الحقيقي يؤدي إلى التواضع لا الكبر",
-          difficulty: "medium",
-          source: "practice"
-        }
-      ]
+      questions: mediumQuestions
     },
     {
       id: "sentence-completion-collection",
-      title: "أسئلة تجميعات",
+      title: "أسئلة تجميعات (البنك الأول)",
       type: "collection",
       difficulty: "hard",
-      questions: [
-        {
-          id: "sc-c1",
-          prompt: "لم يكن الأمر _______ كما توقعنا، بل كان أكثر تعقيداً.",
-          options: ["صعباً", "معقداً", "بسيطاً", "مستحيلاً"],
-          correctAnswer: 2,
-          explanation: "\"بل كان أكثر تعقيداً\" يدل على أن التوقع كان أنه بسيط",
-          difficulty: "hard",
-          source: "collection",
-          year: 1445
-        },
-        {
-          id: "sc-c2",
-          prompt: "إن _______ في العمل يؤدي إلى إتقانه، لكن التسرع يفسد النتائج.",
-          options: ["الإهمال", "التأني", "التردد", "الخوف"],
-          correctAnswer: 1,
-          explanation: "التأني (عكس التسرع) يؤدي للإتقان، و\"لكن\" تشير للتضاد",
-          difficulty: "hard",
-          source: "collection",
-          year: 1444
-        },
-        {
-          id: "sc-c3",
-          prompt: "يتميز القائد الناجح بـ _______ في اتخاذ القرارات و _______ في التعامل مع فريقه.",
-          options: ["التردد - القسوة", "الحزم - المرونة", "التسرع - الجمود", "الضعف - الشدة"],
-          correctAnswer: 1,
-          explanation: "القائد الناجح يجمع بين الحزم في القرارات والمرونة في التعامل",
-          hint: "ابحث عن صفات إيجابية ومتوازنة للقائد",
-          difficulty: "hard",
-          source: "collection",
-          year: 1445
-        },
-        {
-          id: "sc-c4",
-          prompt: "مهما بلغت _______ المرء، فإنه يظل بحاجة إلى من ينصحه ويرشده.",
-          options: ["ثروة", "حكمة", "شهرة", "قوة"],
-          correctAnswer: 1,
-          explanation: "حتى الحكيم يحتاج النصيحة، وهذا يدل على أهمية الاستماع للآخرين",
-          difficulty: "hard",
-          source: "collection",
-          year: 1443
-        },
-        {
-          id: "sc-c5",
-          prompt: "النجاح الحقيقي لا يُقاس بـ _______ فحسب، بل بمدى تأثيرك الإيجابي في من حولك.",
-          options: ["العمل الجاد", "الإنجازات الشخصية", "مساعدة الآخرين", "السعادة الداخلية"],
-          correctAnswer: 1,
-          explanation: "\"لا ... فحسب، بل\" تشير إلى أن هناك ما هو أهم من الإنجازات الشخصية وهو التأثير في الآخرين",
-          difficulty: "hard",
-          source: "collection",
-          year: 1444
-        }
-      ]
+      questions: hardQuestions
     }
   ]
 };
