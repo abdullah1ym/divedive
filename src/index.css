@@ -29,28 +29,24 @@
     --muted: 230 18% 88%;
     --muted-foreground: 220 15% 40%;
 
-    /* Accent - True Purple */
-    --accent: 260 60% 55%;
+    /* Accent - Blue */
+    --accent: 210 85% 60%;
     --accent-foreground: 0 0% 98%;
 
-    /* Coral - Purple */
-    --coral: 265 60% 55%;
+    /* Blue shades - 3 variants */
+    --coral: 210 85% 60%;
     --coral-foreground: 0 0% 98%;
 
-    /* Turquoise - True Purple */
-    --turquoise: 260 60% 55%;
+    --turquoise: 210 90% 55%;
     --turquoise-foreground: 0 0% 98%;
 
-    /* Yellow - True Purple */
-    --yellow: 255 55% 52%;
+    --yellow: 210 85% 60%;
     --yellow-foreground: 0 0% 98%;
 
-    /* Mint - True Purple */
-    --mint: 258 55% 50%;
+    --mint: 210 85% 52%;
     --mint-foreground: 0 0% 98%;
 
-    /* Jellyfish - True Purple */
-    --jellyfish: 262 60% 58%;
+    --jellyfish: 210 85% 52%;
     --jellyfish-foreground: 0 0% 98%;
 
     --destructive: 0 65% 50%;
@@ -63,13 +59,13 @@
     --radius: 1rem;
 
     /* Gradients */
-    --gradient-ocean: linear-gradient(135deg, hsl(210 90% 50%) 0%, hsl(260 60% 55%) 100%);
+    --gradient-ocean: linear-gradient(135deg, hsl(210 90% 55%) 0%, hsl(210 85% 52%) 100%);
     --gradient-card: linear-gradient(135deg, hsl(230 20% 96%) 0%, hsl(230 25% 92%) 100%);
-    --gradient-coral: linear-gradient(135deg, hsl(265 60% 55%) 0%, hsl(260 55% 50%) 100%);
-    --gradient-turquoise: linear-gradient(135deg, hsl(260 60% 55%) 0%, hsl(255 55% 50%) 100%);
-    --gradient-yellow: linear-gradient(135deg, hsl(255 55% 52%) 0%, hsl(250 50% 48%) 100%);
-    --gradient-mint: linear-gradient(135deg, hsl(258 55% 50%) 0%, hsl(252 50% 46%) 100%);
-    --gradient-jellyfish: linear-gradient(135deg, hsl(262 60% 58%) 0%, hsl(256 55% 52%) 100%);
+    --gradient-coral: linear-gradient(135deg, hsl(210 85% 60%) 0%, hsl(210 90% 55%) 100%);
+    --gradient-turquoise: linear-gradient(135deg, hsl(210 90% 55%) 0%, hsl(210 85% 52%) 100%);
+    --gradient-yellow: linear-gradient(135deg, hsl(210 85% 60%) 0%, hsl(210 90% 55%) 100%);
+    --gradient-mint: linear-gradient(135deg, hsl(210 85% 52%) 0%, hsl(210 80% 48%) 100%);
+    --gradient-jellyfish: linear-gradient(135deg, hsl(210 85% 52%) 0%, hsl(210 80% 48%) 100%);
 
     /* Shadows */
     --shadow-glow: 0 0 30px hsl(210 90% 50% / 0.2);

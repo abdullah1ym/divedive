@@ -9,7 +9,6 @@ import BubbleDecoration from "@/components/BubbleDecoration";
 import AdminPanel from "@/components/AdminPanel";
 import ExerciseModal from "@/components/ExerciseModal";
 import { Exercise } from "@/contexts/ExercisesContext";
-import ProgressView from "@/components/views/ProgressView";
 import SettingsView from "@/components/views/SettingsView";
 import HelpView from "@/components/views/HelpView";
 import LessonsView from "@/components/views/LessonsView";
@@ -178,8 +177,6 @@ const Index = () => {
                   />
                 </>
               )
-            ) : activeSection === "progress" ? (
-              <ProgressView />
             ) : activeSection === "settings" ? (
               <SettingsView />
             ) : activeSection === "help" ? (

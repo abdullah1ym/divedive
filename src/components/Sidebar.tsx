@@ -1,7 +1,6 @@
 import { motion } from "framer-motion";
 import {
   Home,
-  BarChart3,
   Settings,
   HelpCircle,
   BookOpen,
@@ -36,7 +35,6 @@ const resourceItems = [
 
 const systemItems = [
   { id: "settings", icon: Settings, label: "الإعدادات", group: "النظام" },
-  { id: "progress", icon: BarChart3, label: "التقدم", group: "النظام" },
   { id: "help", icon: HelpCircle, label: "المساعدة", group: "النظام" },
 ];
 
@@ -123,7 +121,6 @@ const Sidebar = ({ activeSection, onSectionChange }: SidebarProps) => {
           { id: "home", icon: Home, label: "الرئيسية" },
           { id: "skillmap", icon: Map, label: "المهارات" },
           { id: "lessons", icon: BookOpen, label: "الدروس" },
-          { id: "progress", icon: BarChart3, label: "التقدم" },
           { id: "settings", icon: Settings, label: "الإعدادات" },
         ].map((item) => {
           const Icon = item.icon;

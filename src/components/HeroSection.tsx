@@ -94,9 +94,9 @@ const HeroSection = () => {
               <span className="inline-block px-2 py-0.5 bg-yellow text-yellow-foreground rounded-full text-[10px] font-semibold mb-1">
                 دليل المتدرب
               </span>
-              <h1 className="text-base font-bold mb-1">مقدمة في اختبار القدرات</h1>
+              <h1 className="text-base font-bold mb-1">كيف تستخدم المنصة</h1>
               <p className="text-xs text-muted-foreground line-clamp-2">
-                تعرف على أقسام الاختبار: الكمي واللفظي
+                دليلك الشامل لاستخدام المنصة بكفاءة
               </p>
             </div>
           </div>
@@ -138,7 +138,7 @@ const HeroSection = () => {
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.3 }}
             >
-              مقدمة في اختبار القدرات
+              كيف تستخدم المنصة
             </motion.h1>
 
             <motion.p
@@ -147,7 +147,7 @@ const HeroSection = () => {
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.4 }}
             >
-              تعرف على اختبار القدرات العامة وأقسامه الرئيسية: الكمي واللفظي. نبدأ بالأساسيات ونتدرج للمستويات المتقدمة.
+              دليلك الشامل لاستخدام المنصة بكفاءة. تعرف على طريقة المذاكرة، التمارين، خريطة المهارات، ومراجعة الأخطاء.
             </motion.p>
 
             <motion.div
@@ -156,11 +156,11 @@ const HeroSection = () => {
               animate={{ opacity: 1 }}
               transition={{ delay: 0.5 }}
             >
-              <span>١٠ دقائق</span>
+              <span>٥ دقائق</span>
               <span>•</span>
-              <span>تمهيدي</span>
+              <span>دليل المستخدم</span>
               <span>•</span>
-              <span>نظرة عامة</span>
+              <span>٤ أقسام</span>
             </motion.div>
 
             {/* Tags */}
