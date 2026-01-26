@@ -1,4 +1,15 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import bank1TanadhurData from "@/data/bank1_tanadhur_questions.json";
+
+// Transform bank1 tanadhur questions to match Question interface
+const bank1TanadhurQuestions = bank1TanadhurData.questions.map((q: any) => ({
+  id: `bank1-tanadhur-${q.id}`,
+  prompt: q.prompt,
+  audioPlaceholder: "تناظر لفظي",
+  options: q.options.filter((opt: string) => opt !== ""),
+  correctAnswer: q.correctAnswer,
+  explanation: q.explanation,
+}));
 
 export interface Question {
   id: string;
@@ -200,20 +211,16 @@ const defaultExercises: Exercise[] = [
       { id: "q2", prompt: "ما العدد التالي: ٣، ٦، ١٢، ٢٤، ...؟", audioPlaceholder: "متتابعة عددية", options: ["٣٦", "٤٨", "٥٠", "٥٢"], correctAnswer: 1 },
     ],
   },
-  // البنك الأول - التناظر اللفظي
+  // البنك الأول - التناظر اللفظي (138 سؤال من الملف المحلول)
   {
     id: "verbal-1",
     title: "التناظر اللفظي",
-    description: "إيجاد العلاقة بين الكلمات",
+    description: "إيجاد العلاقة بين الكلمات - ١٣٨ سؤال",
     category: "verbal",
     difficulty: "beginner",
     type: "verbal",
-    duration: "٦ دقائق",
-    questions: [
-      { id: "q1", prompt: "طبيب : مستشفى :: معلم : ؟", audioPlaceholder: "تناظر لفظي", options: ["كتاب", "مدرسة", "طالب", "قلم"], correctAnswer: 1 },
-      { id: "q2", prompt: "قلم : كتابة :: سكين : ؟", audioPlaceholder: "تناظر لفظي", options: ["طعام", "قطع", "مطبخ", "حاد"], correctAnswer: 1 },
-      { id: "q3", prompt: "شمس : نهار :: قمر : ؟", audioPlaceholder: "تناظر لفظي", options: ["نجوم", "سماء", "ليل", "ضوء"], correctAnswer: 2 },
-    ],
+    duration: "٤٥ دقيقة",
+    questions: bank1TanadhurQuestions,
   },
   // البنك الأول - إكمال الجمل
   {
