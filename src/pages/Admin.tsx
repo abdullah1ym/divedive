@@ -1,19 +1,21 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Headphones, Award, BookOpen, Download, Upload, ArrowRight, RotateCcw } from "lucide-react";
+import { Headphones, Award, BookOpen, Download, Upload, ArrowRight, RotateCcw, CheckCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 import ExerciseManager from "@/components/admin/ExerciseManager";
 import LessonManager from "@/components/admin/LessonManager";
 import SkillsManager from "@/components/admin/SkillsManager";
 import DataExport from "@/components/admin/DataExport";
+import QuickAnswerFixer from "@/components/admin/QuickAnswerFixer";
 
-type Tab = "exercises" | "skills" | "lessons";
+type Tab = "exercises" | "skills" | "lessons" | "answer-fixer";
 
 const Admin = () => {
   const [activeTab, setActiveTab] = useState<Tab>("exercises");
 
   const tabs = [
     { id: "exercises" as Tab, label: "التمارين", icon: Headphones },
+    { id: "answer-fixer" as Tab, label: "مصحح الإجابات", icon: CheckCircle },
     { id: "skills" as Tab, label: "المهارات", icon: Award },
     { id: "lessons" as Tab, label: "الدروس", icon: BookOpen },
   ];
@@ -81,6 +83,7 @@ const Admin = () => {
           {activeTab === "exercises" && <ExerciseManager />}
           {activeTab === "skills" && <SkillsManager />}
           {activeTab === "lessons" && <LessonManager />}
+          {activeTab === "answer-fixer" && <QuickAnswerFixer />}
         </motion.div>
       </main>
     </div>
