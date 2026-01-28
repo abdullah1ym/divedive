@@ -31,6 +31,10 @@ export interface DailyStats {
   timeSpent: number; // in minutes
   mathExercises: number;
   languageExercises: number;
+  mathQuestionsAnswered: number;
+  mathCorrectAnswers: number;
+  languageQuestionsAnswered: number;
+  languageCorrectAnswers: number;
 }
 
 // Weekly comparison data
@@ -47,10 +51,19 @@ export interface WeeklyComparison {
   };
 }
 
+// Overall performance stats
+export interface OverallPerformance {
+  totalQuestions: number;
+  correctAnswers: number;
+  score: number; // percentage
+}
+
 interface ActivityTrackingContextType {
   recentActivities: ActivityEntry[];
   mathPerformance: CategoryPerformance[];
   languagePerformance: CategoryPerformance[];
+  overallMathPerformance: OverallPerformance;
+  overallLanguagePerformance: OverallPerformance;
   todayStats: DailyStats;
   weeklyComparison: WeeklyComparison;
   activityHeatmap: { date: string; level: number }[];
@@ -93,6 +106,10 @@ const getDefaultDailyStats = (): DailyStats => ({
   timeSpent: 0,
   mathExercises: 0,
   languageExercises: 0,
+  mathQuestionsAnswered: 0,
+  mathCorrectAnswers: 0,
+  languageQuestionsAnswered: 0,
+  languageCorrectAnswers: 0,
 });
 
 const ActivityTrackingContext = createContext<ActivityTrackingContextType | undefined>(undefined);
@@ -168,6 +185,28 @@ export const ActivityTrackingProvider = ({ children }: { children: ReactNode }) 
     return todayData || getDefaultDailyStats();
   })();
 
+  // Calculate overall math performance from all daily stats
+  const overallMathPerformance: OverallPerformance = (() => {
+    const totalQuestions = dailyStatsHistory.reduce((sum, d) => sum + (d.mathQuestionsAnswered || 0), 0);
+    const correctAnswers = dailyStatsHistory.reduce((sum, d) => sum + (d.mathCorrectAnswers || 0), 0);
+    return {
+      totalQuestions,
+      correctAnswers,
+      score: totalQuestions > 0 ? Math.round((correctAnswers / totalQuestions) * 100) : 0,
+    };
+  })();
+
+  // Calculate overall language performance from all daily stats
+  const overallLanguagePerformance: OverallPerformance = (() => {
+    const totalQuestions = dailyStatsHistory.reduce((sum, d) => sum + (d.languageQuestionsAnswered || 0), 0);
+    const correctAnswers = dailyStatsHistory.reduce((sum, d) => sum + (d.languageCorrectAnswers || 0), 0);
+    return {
+      totalQuestions,
+      correctAnswers,
+      score: totalQuestions > 0 ? Math.round((correctAnswers / totalQuestions) * 100) : 0,
+    };
+  })();
+
   // Calculate weekly comparison
   const weeklyComparison: WeeklyComparison = (() => {
     const today = new Date();
@@ -207,6 +246,7 @@ export const ActivityTrackingProvider = ({ children }: { children: ReactNode }) 
   })();
 
   // Generate activity heatmap (last 126 days = 18 weeks)
+  // Based on questions answered, not just exercises completed
   const activityHeatmap = (() => {
     const result: { date: string; level: number }[] = [];
     const today = new Date();
@@ -219,9 +259,10 @@ export const ActivityTrackingProvider = ({ children }: { children: ReactNode }) 
       const dayStats = dailyStatsHistory.find(d => d.date === dateStr);
       let level = 0;
       if (dayStats) {
-        if (dayStats.exercisesCompleted >= 5) level = 3;
-        else if (dayStats.exercisesCompleted >= 3) level = 2;
-        else if (dayStats.exercisesCompleted >= 1) level = 1;
+        // Based on questions answered for more accurate activity tracking
+        if (dayStats.questionsAnswered >= 20) level = 3;
+        else if (dayStats.questionsAnswered >= 10) level = 2;
+        else if (dayStats.questionsAnswered >= 1) level = 1;
       }
 
       result.push({ date: dateStr, level });
@@ -230,7 +271,9 @@ export const ActivityTrackingProvider = ({ children }: { children: ReactNode }) 
     return result;
   })();
 
-  // Record a new activity
+  // Record a new activity (exercise completion)
+  // Note: questions/correctAnswers are already tracked by recordQuestionAnswer, so we only track
+  // exercise completion count and time spent here to avoid double counting
   const recordActivity = (activity: Omit<ActivityEntry, "id" | "timestamp">) => {
     const newActivity: ActivityEntry = {
       ...activity,
@@ -240,7 +283,7 @@ export const ActivityTrackingProvider = ({ children }: { children: ReactNode }) 
 
     setRecentActivities(prev => [newActivity, ...prev]);
 
-    // Update daily stats
+    // Update daily stats - only exercise count and time (questions already tracked separately)
     const today = getTodayDateString();
     setDailyStatsHistory(prev => {
       const existing = prev.find(d => d.date === today);
@@ -248,8 +291,6 @@ export const ActivityTrackingProvider = ({ children }: { children: ReactNode }) 
         return prev.map(d => d.date === today ? {
           ...d,
           exercisesCompleted: d.exercisesCompleted + 1,
-          questionsAnswered: d.questionsAnswered + activity.totalQuestions,
-          correctAnswers: d.correctAnswers + activity.correctAnswers,
           timeSpent: d.timeSpent + Math.round(activity.timeSpent / 60),
           mathExercises: activity.category === "math" ? d.mathExercises + 1 : d.mathExercises,
           languageExercises: activity.category === "language" ? d.languageExercises + 1 : d.languageExercises,
@@ -258,8 +299,8 @@ export const ActivityTrackingProvider = ({ children }: { children: ReactNode }) 
         return [{
           date: today,
           exercisesCompleted: 1,
-          questionsAnswered: activity.totalQuestions,
-          correctAnswers: activity.correctAnswers,
+          questionsAnswered: 0, // Questions tracked separately by recordQuestionAnswer
+          correctAnswers: 0,
           timeSpent: Math.round(activity.timeSpent / 60),
           mathExercises: activity.category === "math" ? 1 : 0,
           languageExercises: activity.category === "language" ? 1 : 0,
@@ -311,6 +352,10 @@ export const ActivityTrackingProvider = ({ children }: { children: ReactNode }) 
           ...d,
           questionsAnswered: d.questionsAnswered + 1,
           correctAnswers: d.correctAnswers + (isCorrect ? 1 : 0),
+          mathQuestionsAnswered: category === "math" ? (d.mathQuestionsAnswered || 0) + 1 : (d.mathQuestionsAnswered || 0),
+          mathCorrectAnswers: category === "math" && isCorrect ? (d.mathCorrectAnswers || 0) + 1 : (d.mathCorrectAnswers || 0),
+          languageQuestionsAnswered: category === "language" ? (d.languageQuestionsAnswered || 0) + 1 : (d.languageQuestionsAnswered || 0),
+          languageCorrectAnswers: category === "language" && isCorrect ? (d.languageCorrectAnswers || 0) + 1 : (d.languageCorrectAnswers || 0),
         } : d);
       } else {
         return [{
@@ -321,6 +366,10 @@ export const ActivityTrackingProvider = ({ children }: { children: ReactNode }) 
           timeSpent: 0,
           mathExercises: 0,
           languageExercises: 0,
+          mathQuestionsAnswered: category === "math" ? 1 : 0,
+          mathCorrectAnswers: category === "math" && isCorrect ? 1 : 0,
+          languageQuestionsAnswered: category === "language" ? 1 : 0,
+          languageCorrectAnswers: category === "language" && isCorrect ? 1 : 0,
         }, ...prev];
       }
     });
@@ -331,6 +380,8 @@ export const ActivityTrackingProvider = ({ children }: { children: ReactNode }) 
       recentActivities,
       mathPerformance,
       languagePerformance,
+      overallMathPerformance,
+      overallLanguagePerformance,
       todayStats,
       weeklyComparison,
       activityHeatmap,
