@@ -10,6 +10,7 @@ import { ExercisesProvider } from "@/contexts/ExercisesContext";
 import { LessonsProvider } from "@/contexts/LessonsContext";
 import { UnitsProvider } from "@/contexts/UnitsContext";
 import { UserProfileProvider } from "@/contexts/UserProfileContext";
+import { ActivityTrackingProvider } from "@/contexts/ActivityTrackingContext";
 import Index from "./pages/Index";
 import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
@@ -29,6 +30,7 @@ const App = () => (
   <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
     <QueryClientProvider client={queryClient}>
       <UserProfileProvider>
+        <ActivityTrackingProvider>
         <SkillsProvider>
           <SkillProgressProvider>
             <ExercisesProvider>
@@ -50,6 +52,7 @@ const App = () => (
             </ExercisesProvider>
           </SkillProgressProvider>
         </SkillsProvider>
+        </ActivityTrackingProvider>
       </UserProfileProvider>
     </QueryClientProvider>
   </ThemeProvider>

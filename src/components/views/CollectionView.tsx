@@ -4,6 +4,7 @@ import { ChevronRight, CheckCircle, XCircle, Library, Zap, Lock, ChevronDown, Ch
 import { Collection } from "@/components/LessonGrid";
 import { useSkillProgress } from "@/contexts/SkillProgressContext";
 import { ensureAllVariants } from "@/utils/variantGenerator";
+import { useActivityTracking } from "@/contexts/ActivityTrackingContext";
 
 // Progress persistence system
 const COLLECTION_PROGRESS_KEY = "divedive-collection-progress";
@@ -77,6 +78,10 @@ const CollectionView = ({ collection, onBack }: CollectionViewProps) => {
   // Select first bank (bank-1) by default
   const initialBankId = collection.banks && collection.banks.length > 0 ? collection.banks[0].id : null;
   const [selectedBankId, setSelectedBankId] = useState<string | null>(initialBankId);
+
+  // Activity tracking
+  const { recordActivity } = useActivityTracking();
+  const startTimeRef = useRef<number>(Date.now());
 
   // Load saved progress
   const savedProgress = getCollectionProgress(collection.id, selectedBankId);
@@ -285,6 +290,24 @@ const CollectionView = ({ collection, onBack }: CollectionViewProps) => {
     setSubmitted(true);
     setCurrentIndex(0);
     window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    // Record activity for profile tracking
+    const timeSpent = Math.round((Date.now() - startTimeRef.current) / 1000); // in seconds
+    const bankName = selectedBankId && collection.banks
+      ? collection.banks.find(b => b.id === selectedBankId)?.name || ""
+      : "";
+    const title = bankName ? `${collection.name} - ${bankName}` : collection.name;
+
+    recordActivity({
+      title,
+      collectionId: collection.id,
+      bankId: selectedBankId || undefined,
+      score: answeredCount > 0 ? Math.round((score / answeredCount) * 100) : 0,
+      totalQuestions: questions.length,
+      correctAnswers: score,
+      timeSpent,
+      category: collection.category === "quantitative" ? "math" : "language",
+    });
   };
 
   const scrollToQuestion = (index: number) => {

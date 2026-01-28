@@ -15,6 +15,7 @@ import {
   Check,
 } from "lucide-react";
 import { useUserProfile } from "@/contexts/UserProfileContext";
+import { useActivityTracking } from "@/contexts/ActivityTrackingContext";
 
 // Helper to convert number to Arabic numerals
 const toArabicNumeral = (num: number): string => {
@@ -22,38 +23,16 @@ const toArabicNumeral = (num: number): string => {
   return num.toString().split("").map(d => arabicNumerals[parseInt(d)] || d).join("");
 };
 
-// Generate activity data for the last 18 weeks
-const generateActivityData = (currentStreak: number, exercisesCompleted: number) => {
-  const weeks = [];
-  const today = new Date();
-
-  for (let week = 17; week >= 0; week--) {
-    const days = [];
-    for (let day = 6; day >= 0; day--) {
-      const date = new Date(today);
-      date.setDate(date.getDate() - (week * 7 + day));
-
-      const daysAgo = week * 7 + day;
-      let level = 0;
-      if (daysAgo < currentStreak) {
-        level = Math.floor(Math.random() * 3) + 1;
-      } else if (exercisesCompleted > 0 && Math.random() < 0.3) {
-        level = Math.floor(Math.random() * 2) + 1;
-      }
-
-      days.push({
-        date: date.toLocaleDateString('ar-SA'),
-        level,
-        isToday: daysAgo === 0,
-      });
-    }
-    weeks.push(days);
-  }
-  return weeks;
-};
-
 const ProfileView = () => {
   const { stats, badges, setDailyGoalTargets } = useUserProfile();
+  const {
+    recentActivities,
+    mathPerformance: mathPerfData,
+    languagePerformance: langPerfData,
+    todayStats,
+    weeklyComparison,
+    activityHeatmap,
+  } = useActivityTracking();
   const [isEditingGoals, setIsEditingGoals] = useState(false);
   const [editMathTarget, setEditMathTarget] = useState(stats.dailyGoal?.mathTarget ?? 3);
   const [editLanguageTarget, setEditLanguageTarget] = useState(stats.dailyGoal?.languageTarget ?? 2);
@@ -70,8 +49,28 @@ const ProfileView = () => {
   };
 
   const xpProgress = ((stats.totalXpForNextLevel - stats.xpToNextLevel) / stats.totalXpForNextLevel) * 100;
-  const activityData = generateActivityData(stats.currentStreak, stats.exercisesCompleted);
   const unlockedAchievements = badges.filter(b => b.isUnlocked).length;
+
+  // Convert activity heatmap to the format expected by the UI (18 weeks × 7 days)
+  const activityData = (() => {
+    const weeks: { date: string; level: number; isToday: boolean }[][] = [];
+    const today = new Date().toISOString().split("T")[0];
+
+    for (let w = 0; w < 18; w++) {
+      const week: { date: string; level: number; isToday: boolean }[] = [];
+      for (let d = 0; d < 7; d++) {
+        const idx = w * 7 + d;
+        const entry = activityHeatmap[idx] || { date: "", level: 0 };
+        week.push({
+          date: entry.date,
+          level: entry.level,
+          isToday: entry.date === today,
+        });
+      }
+      weeks.push(week);
+    }
+    return weeks;
+  })();
 
   // Daily goal data
   const { dailyGoal } = stats;
@@ -86,40 +85,55 @@ const ProfileView = () => {
   const mathProgress = mathGoal.total > 0 ? (mathGoal.completed / mathGoal.total) * 100 : 0;
   const languageProgress = languageGoal.total > 0 ? (languageGoal.completed / languageGoal.total) * 100 : 0;
 
-  // Performance by category - Math
-  const mathPerformance = [
-    { name: "الكسور", score: 85, color: "bg-turquoise" },
-    { name: "المتتاليات", score: 90, color: "bg-turquoise" },
-    { name: "الهندسة", score: 65, color: "bg-turquoise" },
-    { name: "الجبر", score: 78, color: "bg-turquoise" },
-    { name: "النسبة والتناسب", score: 82, color: "bg-turquoise" },
-    { name: "الإحصاء", score: 70, color: "bg-turquoise" },
-    { name: "الاحتمالات", score: 88, color: "bg-turquoise" },
-  ];
+  // Performance by category - Math (from real data)
+  const mathPerformance = mathPerfData.map(cat => ({
+    name: cat.name,
+    score: cat.totalQuestions > 0 ? cat.score : 0,
+    color: "bg-turquoise",
+    hasData: cat.totalQuestions > 0,
+  }));
 
-  // Performance by category - Language
-  const languagePerformance = [
-    { name: "التناظر اللفظي", score: 72, color: "bg-turquoise" },
-    { name: "إكمال الجمل", score: 80, color: "bg-turquoise" },
-    { name: "الخطأ السياقي", score: 68, color: "bg-turquoise" },
-    { name: "المفردة الشاذة", score: 75, color: "bg-turquoise" },
-    { name: "استيعاب المقروء", score: 82, color: "bg-turquoise" },
-  ];
+  // Performance by category - Language (from real data)
+  const languagePerformance = langPerfData.map(cat => ({
+    name: cat.name,
+    score: cat.totalQuestions > 0 ? cat.score : 0,
+    color: "bg-turquoise",
+    hasData: cat.totalQuestions > 0,
+  }));
 
-  // Calculate total percentages
-  const mathTotalPercentage = Math.round(
-    mathPerformance.reduce((sum, item) => sum + item.score, 0) / mathPerformance.length
-  );
-  const languageTotalPercentage = Math.round(
-    languagePerformance.reduce((sum, item) => sum + item.score, 0) / languagePerformance.length
-  );
+  // Calculate total percentages (only from categories with data)
+  const mathWithData = mathPerformance.filter(p => p.hasData);
+  const langWithData = languagePerformance.filter(p => p.hasData);
+  const mathTotalPercentage = mathWithData.length > 0
+    ? Math.round(mathWithData.reduce((sum, item) => sum + item.score, 0) / mathWithData.length)
+    : 0;
+  const languageTotalPercentage = langWithData.length > 0
+    ? Math.round(langWithData.reduce((sum, item) => sum + item.score, 0) / langWithData.length)
+    : 0;
 
-  // Week comparison data
+  // Week comparison data (from real data)
   const weekComparison = [
-    { label: "التمارين", thisWeek: 12, lastWeek: 8, unit: "" },
-    { label: "نسبة النجاح", thisWeek: 85, lastWeek: 78, unit: "٪" },
-    { label: "الوقت", thisWeek: 45, lastWeek: 50, unit: " د", lowerIsBetter: true },
+    { label: "التمارين", thisWeek: weeklyComparison.thisWeek.exercises, lastWeek: weeklyComparison.lastWeek.exercises, unit: "" },
+    { label: "نسبة النجاح", thisWeek: weeklyComparison.thisWeek.successRate, lastWeek: weeklyComparison.lastWeek.successRate, unit: "٪" },
+    { label: "الوقت", thisWeek: weeklyComparison.thisWeek.timeSpent, lastWeek: weeklyComparison.lastWeek.timeSpent, unit: " د", lowerIsBetter: true },
   ];
+
+  // Format relative time in Arabic
+  const formatRelativeTime = (timestamp: string) => {
+    const now = new Date();
+    const date = new Date(timestamp);
+    const diffMs = now.getTime() - date.getTime();
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMins / 60);
+    const diffDays = Math.floor(diffHours / 24);
+
+    if (diffMins < 1) return "الآن";
+    if (diffMins < 60) return `منذ ${toArabicNumeral(diffMins)} دقيقة`;
+    if (diffHours < 24) return `منذ ${toArabicNumeral(diffHours)} ساعة`;
+    if (diffDays === 1) return "أمس";
+    if (diffDays < 7) return `منذ ${toArabicNumeral(diffDays)} أيام`;
+    return date.toLocaleDateString("ar-SA");
+  };
 
   const statsDisplay = [
     { label: "التمارين المكتملة", value: toArabicNumeral(stats.exercisesCompleted), icon: Target, color: "text-turquoise" },
@@ -236,22 +250,25 @@ const ProfileView = () => {
         >
           <h2 className="text-lg font-bold mb-4">النشاط الأخير</h2>
           <div className="space-y-3">
-            {[
-              { title: "تمرين الكسور", score: "٩٠٪", time: "منذ ساعة" },
-              { title: "المتتاليات العددية", score: "٧٥٪", time: "منذ ٣ ساعات" },
-              { title: "التناظر اللفظي", score: "١٠٠٪", time: "أمس" },
-            ].map((activity, index) => (
-              <div
-                key={index}
-                className="flex items-center justify-between p-3 bg-muted/30 rounded-xl"
-              >
-                <div>
-                  <p className="font-medium text-sm">{activity.title}</p>
-                  <p className="text-xs text-muted-foreground">{activity.time}</p>
+            {recentActivities.length > 0 ? (
+              recentActivities.slice(0, 5).map((activity, index) => (
+                <div
+                  key={activity.id}
+                  className="flex items-center justify-between p-3 bg-muted/30 rounded-xl"
+                >
+                  <div>
+                    <p className="font-medium text-sm">{activity.title}</p>
+                    <p className="text-xs text-muted-foreground">{formatRelativeTime(activity.timestamp)}</p>
+                  </div>
+                  <span className="text-turquoise font-bold">{toArabicNumeral(activity.score)}٪</span>
                 </div>
-                <span className="text-turquoise font-bold">{activity.score}</span>
+              ))
+            ) : (
+              <div className="text-center py-6 text-muted-foreground">
+                <p className="text-sm">لا يوجد نشاط بعد</p>
+                <p className="text-xs mt-1">ابدأ بحل التمارين لرؤية نشاطك هنا</p>
               </div>
-            ))}
+            )}
           </div>
         </motion.div>
       </div>
@@ -443,15 +460,19 @@ const ProfileView = () => {
           <h2 className="text-xl font-bold mb-3">اليوم</h2>
           <div className="grid grid-cols-3 gap-3 mb-6">
             <div className="bg-muted/20 rounded-xl p-3 text-center">
-              <p className="text-2xl font-bold text-turquoise">{toArabicNumeral(3)}</p>
+              <p className="text-2xl font-bold text-turquoise">{toArabicNumeral(todayStats.exercisesCompleted)}</p>
               <p className="text-xs text-muted-foreground">تمارين</p>
             </div>
             <div className="bg-muted/20 rounded-xl p-3 text-center">
-              <p className="text-2xl font-bold text-turquoise">{toArabicNumeral(88)}٪</p>
+              <p className="text-2xl font-bold text-turquoise">
+                {todayStats.questionsAnswered > 0
+                  ? toArabicNumeral(Math.round((todayStats.correctAnswers / todayStats.questionsAnswered) * 100))
+                  : toArabicNumeral(0)}٪
+              </p>
               <p className="text-xs text-muted-foreground">النجاح</p>
             </div>
             <div className="bg-muted/20 rounded-xl p-3 text-center">
-              <p className="text-2xl font-bold text-turquoise">{toArabicNumeral(15)}</p>
+              <p className="text-2xl font-bold text-turquoise">{toArabicNumeral(todayStats.timeSpent)}</p>
               <p className="text-xs text-muted-foreground">دقيقة</p>
             </div>
           </div>
@@ -517,13 +538,15 @@ const ProfileView = () => {
               >
                 <div className="flex justify-between items-center">
                   <span className="font-medium">{category.name}</span>
-                  <span className="text-muted-foreground">{toArabicNumeral(category.score)}٪</span>
+                  <span className={`text-sm ${category.hasData ? "text-muted-foreground" : "text-muted-foreground/50"}`}>
+                    {category.hasData ? `${toArabicNumeral(category.score)}٪` : "لم يتم التجربة"}
+                  </span>
                 </div>
                 <div className="h-3 bg-muted/20 rounded-full overflow-hidden">
                   <motion.div
-                    className={`h-full rounded-full ${category.color}`}
+                    className={`h-full rounded-full ${category.hasData ? category.color : "bg-muted/30"}`}
                     initial={{ width: 0 }}
-                    animate={{ width: `${category.score}%` }}
+                    animate={{ width: category.hasData ? `${category.score}%` : "0%" }}
                     transition={{ delay: 0.8 + index * 0.1, duration: 0.6, ease: "easeOut" }}
                   />
                 </div>
@@ -557,13 +580,15 @@ const ProfileView = () => {
               >
                 <div className="flex justify-between items-center">
                   <span className="font-medium">{category.name}</span>
-                  <span className="text-muted-foreground">{toArabicNumeral(category.score)}٪</span>
+                  <span className={`text-sm ${category.hasData ? "text-muted-foreground" : "text-muted-foreground/50"}`}>
+                    {category.hasData ? `${toArabicNumeral(category.score)}٪` : "لم يتم التجربة"}
+                  </span>
                 </div>
                 <div className="h-3 bg-muted/20 rounded-full overflow-hidden">
                   <motion.div
-                    className={`h-full rounded-full ${category.color}`}
+                    className={`h-full rounded-full ${category.hasData ? category.color : "bg-muted/30"}`}
                     initial={{ width: 0 }}
-                    animate={{ width: `${category.score}%` }}
+                    animate={{ width: category.hasData ? `${category.score}%` : "0%" }}
                     transition={{ delay: 0.85 + index * 0.1, duration: 0.6, ease: "easeOut" }}
                   />
                 </div>
