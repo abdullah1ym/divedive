@@ -76,7 +76,7 @@ const ACTIVITY_STORAGE_KEY = "divedive-activity-history";
 const CATEGORY_STATS_KEY = "divedive-category-stats";
 const DAILY_STATS_KEY = "divedive-daily-stats";
 
-// Mapping from English skillTags to Arabic category names
+// Mapping from skillTags and unit titles to Arabic category names
 const skillTagToCategory: Record<string, string> = {
   // Math categories
   "fractions": "الكسور",
@@ -86,14 +86,16 @@ const skillTagToCategory: Record<string, string> = {
   "ratio": "النسبة والتناسب",
   "statistics": "الإحصاء",
   "comparison": "المقارنات",
-  // Verbal categories
+  // Verbal categories (skillTags)
   "analogy": "التناظر اللفظي",
   "completion": "إكمال الجمل",
   "contextual-error": "الخطأ السياقي",
   "odd-word": "المفردة الشاذة",
   "reading": "استيعاب المقروء",
-  "vocabulary": "المفردة الشاذة", // vocabulary maps to odd-word category
-  "grammar": "الخطأ السياقي", // grammar maps to contextual error
+  "vocabulary": "المفردة الشاذة",
+  "grammar": "الخطأ السياقي",
+  // Verbal categories (unit titles that differ from profile category names)
+  "المفردات والمعاني": "المفردة الشاذة",
 };
 
 // Default math categories

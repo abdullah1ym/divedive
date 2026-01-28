@@ -267,8 +267,12 @@ const CollectionView = ({ collection, onBack }: CollectionViewProps) => {
     const activityCategory = collection.category === "quantitative" ? "math" : "language";
     recordQuestionAnswer(isCorrect, activityCategory);
 
-    // Record category-specific performance if question has a skillTag
-    if (currentQ.skillTag) {
+    // Record category-specific performance
+    // For verbal: use collection.name which is the exercise title (التناظر اللفظي, إكمال الجمل, etc.)
+    // For math: use skillTag if available
+    if (activityCategory === "language") {
+      recordCategoryAnswer(collection.name, isCorrect, activityCategory);
+    } else if (currentQ.skillTag) {
       recordCategoryAnswer(currentQ.skillTag, isCorrect, activityCategory);
     }
 
