@@ -73,7 +73,8 @@ const modeLabels: Record<ViewMode, { label: string; icon: React.ReactNode }> = {
 
 const CollectionView = ({ collection, onBack }: CollectionViewProps) => {
   // Bank selection state for collections with banks
-  const initialBankId = collection.banks && collection.banks.length > 0 ? collection.banks[0].id : null;
+  // Select last bank (bank-1) since display is reversed to show smaller numbers first
+  const initialBankId = collection.banks && collection.banks.length > 0 ? collection.banks[collection.banks.length - 1].id : null;
   const [selectedBankId, setSelectedBankId] = useState<string | null>(initialBankId);
 
   // Load saved progress
@@ -374,7 +375,7 @@ const CollectionView = ({ collection, onBack }: CollectionViewProps) => {
           <div className="bg-card rounded-3xl p-4 border border-border/50 shadow-sm">
             <h3 className="text-sm font-bold text-muted-foreground mb-3 px-2">الإصدارات</h3>
             <div className="space-y-1 max-h-[70vh] overflow-y-auto">
-              {collection.banks.map((bank) => (
+              {[...collection.banks].reverse().map((bank) => (
                 <button
                   key={bank.id}
                   onClick={() => handleBankSelect(bank.id)}
@@ -396,7 +397,7 @@ const CollectionView = ({ collection, onBack }: CollectionViewProps) => {
       {collection.banks && collection.banks.length > 0 && (
         <div className="lg:hidden mb-4 -mx-3 px-3">
           <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
-            {collection.banks.map((bank) => (
+            {[...collection.banks].reverse().map((bank) => (
               <button
                 key={bank.id}
                 onClick={() => handleBankSelect(bank.id)}
@@ -692,27 +693,30 @@ const CollectionView = ({ collection, onBack }: CollectionViewProps) => {
                             transition={{ duration: 0.3, ease: "easeInOut" }}
                           >
                           <div className="p-8 relative">
-                            {/* Report Button */}
-                            <button
-                              onClick={() => setReportModal({ show: true, questionId: question.id, questionPrompt: question.prompt })}
-                              className="absolute top-3 left-3 p-2 rounded-full hover:bg-muted transition-colors text-muted-foreground hover:text-red-500"
-                              title="الإبلاغ عن السؤال"
-                            >
-                              <Flag className="w-4 h-4" />
-                            </button>
-
-                            {/* Flip Button - Only show if hasFlipFeature and howToSolve exists */}
-                            {collection.hasFlipFeature && question.howToSolve && !isAnswered && (
-                              <motion.button
-                                onClick={() => toggleFlipCard(qIndex)}
-                                className="absolute top-3 left-12 p-2 rounded-full hover:bg-amber-500/20 transition-colors text-amber-500 hover:text-amber-400"
-                                title="كيف أحل؟"
-                                whileHover={{ scale: 1.1 }}
-                                whileTap={{ scale: 0.95 }}
+                            {/* Top Left Buttons Container */}
+                            <div className="absolute top-3 left-2 flex items-center gap-0.5">
+                              {/* Report Button */}
+                              <button
+                                onClick={() => setReportModal({ show: true, questionId: question.id, questionPrompt: question.prompt })}
+                                className="p-2 rounded-full hover:bg-muted transition-colors text-muted-foreground hover:text-red-500"
+                                title="الإبلاغ عن السؤال"
                               >
-                                <HelpCircle className="w-5 h-5" />
-                              </motion.button>
-                            )}
+                                <Flag className="w-4 h-4" />
+                              </button>
+
+                              {/* Flip Button - Only show if hasFlipFeature and howToSolve exists */}
+                              {collection.hasFlipFeature && question.howToSolve && !isAnswered && (
+                                <motion.button
+                                  onClick={() => toggleFlipCard(qIndex)}
+                                  className="p-2 rounded-full hover:bg-amber-500/20 transition-colors text-amber-500 hover:text-amber-400"
+                                  title="كيف أحل؟"
+                                  whileHover={{ scale: 1.1 }}
+                                  whileTap={{ scale: 0.95 }}
+                                >
+                                  <HelpCircle className="w-5 h-5" />
+                                </motion.button>
+                              )}
+                            </div>
 
                             {/* Reading Comprehension Passage Box */}
                             {question.passageText && (
@@ -821,25 +825,28 @@ const CollectionView = ({ collection, onBack }: CollectionViewProps) => {
                             transition={{ duration: 0.3, ease: "easeInOut" }}
                           >
                             <div className="p-8 relative">
-                              {/* Report Button */}
-                              <button
-                                onClick={() => setReportModal({ show: true, questionId: question.id, questionPrompt: question.prompt })}
-                                className="absolute top-3 left-3 p-2 rounded-full hover:bg-red-500/20 transition-colors text-muted-foreground hover:text-red-500"
-                                title="الإبلاغ عن السؤال"
-                              >
-                                <Flag className="w-4 h-4" />
-                              </button>
+                              {/* Top Left Buttons Container */}
+                              <div className="absolute top-3 left-2 flex items-center gap-0.5">
+                                {/* Report Button */}
+                                <button
+                                  onClick={() => setReportModal({ show: true, questionId: question.id, questionPrompt: question.prompt })}
+                                  className="p-2 rounded-full hover:bg-muted transition-colors text-muted-foreground hover:text-red-500"
+                                  title="الإبلاغ عن السؤال"
+                                >
+                                  <Flag className="w-4 h-4" />
+                                </button>
 
-                              {/* Back to Question Button */}
-                              <motion.button
-                                onClick={() => toggleFlipCard(qIndex)}
-                                className="absolute top-3 left-12 p-2 rounded-full bg-amber-500/20 hover:bg-amber-500/30 transition-colors text-amber-500"
-                                title="العودة للسؤال"
-                                whileHover={{ scale: 1.1 }}
-                                whileTap={{ scale: 0.95 }}
-                              >
-                                <RotateCcw className="w-5 h-5" />
-                              </motion.button>
+                                {/* Back to Question Button */}
+                                <motion.button
+                                  onClick={() => toggleFlipCard(qIndex)}
+                                  className="p-2 rounded-full hover:bg-amber-500/20 transition-colors text-amber-500 hover:text-amber-400"
+                                  title="العودة للسؤال"
+                                  whileHover={{ scale: 1.1 }}
+                                  whileTap={{ scale: 0.95 }}
+                                >
+                                  <RotateCcw className="w-5 h-5" />
+                                </motion.button>
+                              </div>
 
                               <div className="flex items-center gap-3 mb-6 mt-6">
                                 <div className="w-12 h-12 rounded-full bg-amber-500/20 flex items-center justify-center flex-shrink-0">
@@ -980,7 +987,7 @@ const CollectionView = ({ collection, onBack }: CollectionViewProps) => {
                     {/* Report Button */}
                     <button
                       onClick={() => setReportModal({ show: true, questionId: question.id, questionPrompt: question.prompt })}
-                      className="absolute top-3 left-3 p-2 rounded-full hover:bg-muted transition-colors text-muted-foreground hover:text-red-500"
+                      className="absolute top-3 left-2 p-2 rounded-full hover:bg-muted transition-colors text-muted-foreground hover:text-red-500"
                       title="الإبلاغ عن السؤال"
                     >
                       <Flag className="w-4 h-4" />
@@ -1144,7 +1151,7 @@ const CollectionView = ({ collection, onBack }: CollectionViewProps) => {
                 {/* Report Button */}
                 <button
                   onClick={() => setReportModal({ show: true, questionId: question.id, questionPrompt: question.prompt })}
-                  className="absolute top-3 left-3 p-2 rounded-full hover:bg-muted transition-colors text-muted-foreground hover:text-red-500"
+                  className="absolute top-3 left-2 p-2 rounded-full hover:bg-muted transition-colors text-muted-foreground hover:text-red-500"
                   title="الإبلاغ عن السؤال"
                 >
                   <Flag className="w-4 h-4" />
