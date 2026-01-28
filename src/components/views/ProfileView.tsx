@@ -520,47 +520,37 @@ const ProfileView = () => {
         >
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-xl font-bold">الأداء في الكمي</h2>
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-muted-foreground">المجموع</span>
+              <span className="text-2xl font-bold text-turquoise">{toArabicNumeral(mathTotalPercentage)}٪</span>
+            </div>
           </div>
-          {hasMathData ? (
-            <div className="space-y-4">
-              <div className="text-center py-3">
-                <div className="text-4xl font-bold text-turquoise mb-1">{toArabicNumeral(mathTotalPercentage)}٪</div>
-                <p className="text-sm text-muted-foreground">المجموع ({toArabicNumeral(overallMathPerformance.correctAnswers)}/{toArabicNumeral(overallMathPerformance.totalQuestions)})</p>
-              </div>
-              {/* Per-category breakdown */}
-              <div className="space-y-3 pt-2">
-                {mathPerformance.map((category, index) => (
+          <div className="space-y-4">
+            {mathPerformance.map((category, index) => (
+              <motion.div
+                key={category.name}
+                className="space-y-2"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.7 + index * 0.1 }}
+              >
+                <div className="flex justify-between items-center">
+                  <span className="font-medium">{category.name}</span>
+                  <span className={`text-sm ${category.hasData ? "text-muted-foreground" : "text-muted-foreground/50"}`}>
+                    {category.hasData ? `${toArabicNumeral(category.score)}٪` : "لم يتم التجربة"}
+                  </span>
+                </div>
+                <div className="h-3 bg-muted/20 rounded-full overflow-hidden">
                   <motion.div
-                    key={category.name}
-                    className="space-y-1"
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.7 + index * 0.05 }}
-                  >
-                    <div className="flex justify-between items-center text-sm">
-                      <span className="font-medium">{category.name}</span>
-                      <span className={category.hasData ? "text-muted-foreground" : "text-muted-foreground/50"}>
-                        {category.hasData ? `${toArabicNumeral(category.score)}٪` : "—"}
-                      </span>
-                    </div>
-                    <div className="h-2 bg-muted/20 rounded-full overflow-hidden">
-                      <motion.div
-                        className={`h-full rounded-full ${category.hasData ? "bg-turquoise" : "bg-muted/30"}`}
-                        initial={{ width: 0 }}
-                        animate={{ width: category.hasData ? `${category.score}%` : "0%" }}
-                        transition={{ delay: 0.75 + index * 0.05, duration: 0.5 }}
-                      />
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-            </div>
-          ) : (
-            <div className="text-center py-8 text-muted-foreground">
-              <p className="text-lg mb-2">لا توجد بيانات بعد</p>
-              <p className="text-sm">ابدأ بحل أسئلة الكمي لرؤية أدائك</p>
-            </div>
-          )}
+                    className={`h-full rounded-full ${category.hasData ? "bg-turquoise" : "bg-muted/30"}`}
+                    initial={{ width: 0 }}
+                    animate={{ width: category.hasData ? `${category.score}%` : "0%" }}
+                    transition={{ delay: 0.8 + index * 0.1, duration: 0.6, ease: "easeOut" }}
+                  />
+                </div>
+              </motion.div>
+            ))}
+          </div>
         </motion.div>
 
         {/* Language Performance */}
@@ -572,47 +562,37 @@ const ProfileView = () => {
         >
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-xl font-bold">الأداء في اللفظي</h2>
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-muted-foreground">المجموع</span>
+              <span className="text-2xl font-bold text-turquoise">{toArabicNumeral(languageTotalPercentage)}٪</span>
+            </div>
           </div>
-          {hasLanguageData ? (
-            <div className="space-y-4">
-              <div className="text-center py-3">
-                <div className="text-4xl font-bold text-turquoise mb-1">{toArabicNumeral(languageTotalPercentage)}٪</div>
-                <p className="text-sm text-muted-foreground">المجموع ({toArabicNumeral(overallLanguagePerformance.correctAnswers)}/{toArabicNumeral(overallLanguagePerformance.totalQuestions)})</p>
-              </div>
-              {/* Per-category breakdown */}
-              <div className="space-y-3 pt-2">
-                {languagePerformance.map((category, index) => (
+          <div className="space-y-4">
+            {languagePerformance.map((category, index) => (
+              <motion.div
+                key={category.name}
+                className="space-y-2"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.75 + index * 0.1 }}
+              >
+                <div className="flex justify-between items-center">
+                  <span className="font-medium">{category.name}</span>
+                  <span className={`text-sm ${category.hasData ? "text-muted-foreground" : "text-muted-foreground/50"}`}>
+                    {category.hasData ? `${toArabicNumeral(category.score)}٪` : "لم يتم التجربة"}
+                  </span>
+                </div>
+                <div className="h-3 bg-muted/20 rounded-full overflow-hidden">
                   <motion.div
-                    key={category.name}
-                    className="space-y-1"
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.75 + index * 0.05 }}
-                  >
-                    <div className="flex justify-between items-center text-sm">
-                      <span className="font-medium">{category.name}</span>
-                      <span className={category.hasData ? "text-muted-foreground" : "text-muted-foreground/50"}>
-                        {category.hasData ? `${toArabicNumeral(category.score)}٪` : "—"}
-                      </span>
-                    </div>
-                    <div className="h-2 bg-muted/20 rounded-full overflow-hidden">
-                      <motion.div
-                        className={`h-full rounded-full ${category.hasData ? "bg-turquoise" : "bg-muted/30"}`}
-                        initial={{ width: 0 }}
-                        animate={{ width: category.hasData ? `${category.score}%` : "0%" }}
-                        transition={{ delay: 0.8 + index * 0.05, duration: 0.5 }}
-                      />
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-            </div>
-          ) : (
-            <div className="text-center py-8 text-muted-foreground">
-              <p className="text-lg mb-2">لا توجد بيانات بعد</p>
-              <p className="text-sm">ابدأ بحل أسئلة اللفظي لرؤية أدائك</p>
-            </div>
-          )}
+                    className={`h-full rounded-full ${category.hasData ? "bg-turquoise" : "bg-muted/30"}`}
+                    initial={{ width: 0 }}
+                    animate={{ width: category.hasData ? `${category.score}%` : "0%" }}
+                    transition={{ delay: 0.85 + index * 0.1, duration: 0.6, ease: "easeOut" }}
+                  />
+                </div>
+              </motion.div>
+            ))}
+          </div>
         </motion.div>
       </div>
 
