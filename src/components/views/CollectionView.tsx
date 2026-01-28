@@ -92,7 +92,7 @@ const CollectionView = ({ collection, onBack }: CollectionViewProps) => {
   const [showModeSelector, setShowModeSelector] = useState(false);
 
   // Get the questions array from selected bank or directly from collection
-  // Automatically ensure all questions have variants for the 3-attempt feature
+  // Automatically ensure all questions have variants for the 3-attempt feature (math only)
   const questions = useMemo(() => {
     let rawQuestions;
     if (collection.banks && selectedBankId) {
@@ -101,9 +101,13 @@ const CollectionView = ({ collection, onBack }: CollectionViewProps) => {
     } else {
       rawQuestions = collection.questions;
     }
-    // Ensure all questions have variants (auto-generates if missing)
-    return ensureAllVariants(rawQuestions);
-  }, [collection.banks, collection.questions, selectedBankId]);
+    // Ensure all questions have variants (auto-generates if missing) - ONLY for math/quantitative
+    // Verbal questions don't use the 3-attempt variant feature
+    if (collection.category === "quantitative") {
+      return ensureAllVariants(rawQuestions);
+    }
+    return rawQuestions;
+  }, [collection.banks, collection.questions, selectedBankId, collection.category]);
 
   // Progressive mode state - restore from saved progress
   const [revealedCount, setRevealedCount] = useState(savedProgress?.revealedCount || 1);
