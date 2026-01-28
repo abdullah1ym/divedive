@@ -2379,7 +2379,7 @@ export const pinnedCollections: Record<string, Collection[]> = {
           options: ["تفاح", "برتقال", "جزر", "موز"],
           correctAnswer: 2,
           explanation: "جزر هو الشاذ لأنه من الخضروات، بينما الباقي فواكه",
-          skillTag: "vocabulary",
+          skillTag: "odd-word",
         },
       ],
     },

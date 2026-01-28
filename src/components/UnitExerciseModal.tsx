@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X, CheckCircle, XCircle, RotateCcw, ChevronLeft, BookOpen, Lightbulb } from "lucide-react";
 import { LearningUnit, UnitQuestion, ExerciseSet } from "@/types/units";
 import { useUnits } from "@/contexts/UnitsContext";
+import { useActivityTracking } from "@/contexts/ActivityTrackingContext";
 
 interface UnitExerciseModalProps {
   unit: LearningUnit;
@@ -14,6 +15,7 @@ type ViewState = "select" | "exercise" | "lesson";
 
 const UnitExerciseModal = ({ unit, isOpen, onClose }: UnitExerciseModalProps) => {
   const { recordQuestionAnswer } = useUnits();
+  const { recordQuestionAnswer: recordActivityAnswer, recordCategoryAnswer } = useActivityTracking();
   const [viewState, setViewState] = useState<ViewState>("select");
   const [selectedSet, setSelectedSet] = useState<ExerciseSet | null>(null);
   const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -46,8 +48,13 @@ const UnitExerciseModal = ({ unit, isOpen, onClose }: UnitExerciseModalProps) =>
       setScore(score + 1);
     }
 
-    // Record the answer
+    // Record the answer for unit progress
     recordQuestionAnswer(unit.id, selectedSet.id, isCorrect, question.id);
+
+    // Record for profile stats - use unit.title as the category name
+    // Unit titles are exactly the category names: التناظر اللفظي, إكمال الجمل, etc.
+    recordActivityAnswer(isCorrect, "language");
+    recordCategoryAnswer(unit.title, isCorrect, "language");
   };
 
   const handleNext = () => {
