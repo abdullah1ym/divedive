@@ -1,8 +1,9 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronRight, CheckCircle, XCircle, Library, Zap, Lock, ChevronDown, ChevronUp, Layers, List, Unlock, Lightbulb, AlertCircle, Flag, X, RotateCcw, HelpCircle, BookOpen } from "lucide-react";
 import { Collection } from "@/components/LessonGrid";
 import { useSkillProgress } from "@/contexts/SkillProgressContext";
+import { ensureAllVariants } from "@/utils/variantGenerator";
 
 // Progress persistence system
 const COLLECTION_PROGRESS_KEY = "divedive-collection-progress";
@@ -86,13 +87,18 @@ const CollectionView = ({ collection, onBack }: CollectionViewProps) => {
   const [showModeSelector, setShowModeSelector] = useState(false);
 
   // Get the questions array from selected bank or directly from collection
-  const questions = (() => {
+  // Automatically ensure all questions have variants for the 3-attempt feature
+  const questions = useMemo(() => {
+    let rawQuestions;
     if (collection.banks && selectedBankId) {
       const selectedBank = collection.banks.find(b => b.id === selectedBankId);
-      return selectedBank ? selectedBank.questions : [];
+      rawQuestions = selectedBank ? selectedBank.questions : [];
+    } else {
+      rawQuestions = collection.questions;
     }
-    return collection.questions;
-  })();
+    // Ensure all questions have variants (auto-generates if missing)
+    return ensureAllVariants(rawQuestions);
+  }, [collection.banks, collection.questions, selectedBankId]);
 
   // Progressive mode state - restore from saved progress
   const [revealedCount, setRevealedCount] = useState(savedProgress?.revealedCount || 1);
@@ -694,7 +700,7 @@ const CollectionView = ({ collection, onBack }: CollectionViewProps) => {
                           >
                           <div className="p-8 relative">
                             {/* Top Left Buttons Container */}
-                            <div className="absolute top-3 left-2 flex items-center gap-0.5">
+                            <div className="absolute top-1 left-2 flex items-center gap-0.5">
                               {/* Report Button */}
                               <button
                                 onClick={() => setReportModal({ show: true, questionId: question.id, questionPrompt: question.prompt })}
@@ -826,7 +832,7 @@ const CollectionView = ({ collection, onBack }: CollectionViewProps) => {
                           >
                             <div className="p-8 relative">
                               {/* Top Left Buttons Container */}
-                              <div className="absolute top-3 left-2 flex items-center gap-0.5">
+                              <div className="absolute top-1 left-2 flex items-center gap-0.5">
                                 {/* Report Button */}
                                 <button
                                   onClick={() => setReportModal({ show: true, questionId: question.id, questionPrompt: question.prompt })}
@@ -987,7 +993,7 @@ const CollectionView = ({ collection, onBack }: CollectionViewProps) => {
                     {/* Report Button */}
                     <button
                       onClick={() => setReportModal({ show: true, questionId: question.id, questionPrompt: question.prompt })}
-                      className="absolute top-3 left-2 p-2 rounded-full hover:bg-muted transition-colors text-muted-foreground hover:text-red-500"
+                      className="absolute top-1 left-2 p-2 rounded-full hover:bg-muted transition-colors text-muted-foreground hover:text-red-500"
                       title="الإبلاغ عن السؤال"
                     >
                       <Flag className="w-4 h-4" />
@@ -1151,7 +1157,7 @@ const CollectionView = ({ collection, onBack }: CollectionViewProps) => {
                 {/* Report Button */}
                 <button
                   onClick={() => setReportModal({ show: true, questionId: question.id, questionPrompt: question.prompt })}
-                  className="absolute top-3 left-2 p-2 rounded-full hover:bg-muted transition-colors text-muted-foreground hover:text-red-500"
+                  className="absolute top-1 left-2 p-2 rounded-full hover:bg-muted transition-colors text-muted-foreground hover:text-red-500"
                   title="الإبلاغ عن السؤال"
                 >
                   <Flag className="w-4 h-4" />
