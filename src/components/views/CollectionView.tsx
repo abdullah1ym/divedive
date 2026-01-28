@@ -73,8 +73,8 @@ const modeLabels: Record<ViewMode, { label: string; icon: React.ReactNode }> = {
 
 const CollectionView = ({ collection, onBack }: CollectionViewProps) => {
   // Bank selection state for collections with banks
-  // Select last bank (bank-1) since display is reversed to show smaller numbers first
-  const initialBankId = collection.banks && collection.banks.length > 0 ? collection.banks[collection.banks.length - 1].id : null;
+  // Select first bank (bank-1) by default
+  const initialBankId = collection.banks && collection.banks.length > 0 ? collection.banks[0].id : null;
   const [selectedBankId, setSelectedBankId] = useState<string | null>(initialBankId);
 
   // Load saved progress
@@ -375,7 +375,7 @@ const CollectionView = ({ collection, onBack }: CollectionViewProps) => {
           <div className="bg-card rounded-3xl p-4 border border-border/50 shadow-sm">
             <h3 className="text-sm font-bold text-muted-foreground mb-3 px-2">الإصدارات</h3>
             <div className="space-y-1 max-h-[70vh] overflow-y-auto">
-              {[...collection.banks].reverse().map((bank) => (
+              {collection.banks.map((bank) => (
                 <button
                   key={bank.id}
                   onClick={() => handleBankSelect(bank.id)}
@@ -397,7 +397,7 @@ const CollectionView = ({ collection, onBack }: CollectionViewProps) => {
       {collection.banks && collection.banks.length > 0 && (
         <div className="lg:hidden mb-4 -mx-3 px-3">
           <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
-            {[...collection.banks].reverse().map((bank) => (
+            {collection.banks.map((bank) => (
               <button
                 key={bank.id}
                 onClick={() => handleBankSelect(bank.id)}
