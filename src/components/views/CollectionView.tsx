@@ -602,7 +602,7 @@ const CollectionView = ({ collection, onBack }: CollectionViewProps) => {
       >
         <div className="h-2 bg-muted rounded-full overflow-hidden">
           <motion.div
-            className="h-full bg-gradient-to-r from-blue-500 via-violet-500 to-purple-600 shadow-lg shadow-violet-500/50 rounded-full"
+            className="h-full bg-gradient-to-r from-blue-400 via-blue-500 to-blue-600 dark:from-blue-500 dark:via-violet-500 dark:to-purple-600 shadow-lg shadow-blue-500/50 dark:shadow-violet-500/50 rounded-full"
             initial={{ width: 0 }}
             animate={{ width: `${(answeredCount / questions.length) * 100}%` }}
             transition={{ duration: 0.5, ease: "easeOut" }}
@@ -722,18 +722,18 @@ const CollectionView = ({ collection, onBack }: CollectionViewProps) => {
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: 0.1 }}
                               >
-                                <div className="absolute -right-3 top-4 w-1 h-16 bg-gradient-to-b from-blue-500 via-violet-500 to-purple-500 rounded-full" />
-                                <div className="bg-gradient-to-br from-blue-50 to-sky-50 dark:from-slate-800/80 dark:to-slate-900/60 rounded-2xl p-6 border border-blue-200/50 dark:border-slate-700/50 shadow-sm">
-                                  <div className="flex items-center gap-3 mb-4 pb-3 border-b border-slate-200/50 dark:border-slate-700/50">
-                                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-violet-500 flex items-center justify-center shadow-lg shadow-violet-500/20">
+                                <div className="absolute -right-3 top-4 w-1 h-16 bg-gradient-to-b from-blue-400 via-blue-500 to-blue-600 dark:from-blue-500 dark:via-violet-500 dark:to-purple-500 rounded-full" />
+                                <div className="bg-gradient-to-br from-blue-100 to-blue-50 dark:from-slate-800/80 dark:to-slate-900/60 rounded-2xl p-6 border border-blue-300/60 dark:border-slate-700/50 shadow-sm">
+                                  <div className="flex items-center gap-3 mb-4 pb-3 border-b border-blue-200/50 dark:border-slate-700/50">
+                                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-500 dark:to-violet-500 flex items-center justify-center shadow-lg shadow-blue-500/30 dark:shadow-violet-500/20">
                                       <BookOpen className="w-5 h-5 text-white" />
                                     </div>
                                     <div>
-                                      <h4 className="font-bold text-sm text-slate-700 dark:text-slate-200">{question.passageTitle || "القطعة"}</h4>
-                                      <p className="text-xs text-slate-500 dark:text-slate-400">اقرأ النص بتمعن ثم أجب</p>
+                                      <h4 className="font-bold text-sm text-blue-800 dark:text-slate-200">{question.passageTitle || "القطعة"}</h4>
+                                      <p className="text-xs text-blue-600 dark:text-slate-400">اقرأ النص بتمعن ثم أجب</p>
                                     </div>
                                   </div>
-                                  <p className="text-lg leading-loose text-slate-700 dark:text-slate-300 whitespace-pre-line">
+                                  <p className="text-lg leading-loose text-blue-900 dark:text-slate-300 whitespace-pre-line">
                                     {question.passageText}
                                   </p>
                                 </div>
@@ -994,18 +994,18 @@ const CollectionView = ({ collection, onBack }: CollectionViewProps) => {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.1 }}
                       >
-                        <div className="absolute -right-3 top-4 w-1 h-16 bg-gradient-to-b from-blue-500 via-violet-500 to-purple-500 rounded-full" />
-                        <div className="bg-gradient-to-br from-blue-50 to-sky-50 dark:from-slate-800/80 dark:to-slate-900/60 rounded-2xl p-6 border border-blue-200/50 dark:border-slate-700/50 shadow-sm">
-                          <div className="flex items-center gap-3 mb-4 pb-3 border-b border-slate-200/50 dark:border-slate-700/50">
-                            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-violet-500 flex items-center justify-center shadow-lg shadow-violet-500/20">
+                        <div className="absolute -right-3 top-4 w-1 h-16 bg-gradient-to-b from-blue-400 via-blue-500 to-blue-600 dark:from-blue-500 dark:via-violet-500 dark:to-purple-500 rounded-full" />
+                        <div className="bg-gradient-to-br from-blue-100 to-blue-50 dark:from-slate-800/80 dark:to-slate-900/60 rounded-2xl p-6 border border-blue-300/60 dark:border-slate-700/50 shadow-sm">
+                          <div className="flex items-center gap-3 mb-4 pb-3 border-b border-blue-200/50 dark:border-slate-700/50">
+                            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-500 dark:to-violet-500 flex items-center justify-center shadow-lg shadow-blue-500/30 dark:shadow-violet-500/20">
                               <BookOpen className="w-5 h-5 text-white" />
                             </div>
                             <div>
-                              <h4 className="font-bold text-sm text-slate-700 dark:text-slate-200">{question.passageTitle || "القطعة"}</h4>
-                              <p className="text-xs text-slate-500 dark:text-slate-400">اقرأ النص بتمعن ثم أجب</p>
+                              <h4 className="font-bold text-sm text-blue-800 dark:text-slate-200">{question.passageTitle || "القطعة"}</h4>
+                              <p className="text-xs text-blue-600 dark:text-slate-400">اقرأ النص بتمعن ثم أجب</p>
                             </div>
                           </div>
-                          <p className="text-lg leading-loose text-slate-700 dark:text-slate-300 whitespace-pre-line">
+                          <p className="text-lg leading-loose text-blue-900 dark:text-slate-300 whitespace-pre-line">
                             {question.passageText}
                           </p>
                         </div>
@@ -1158,18 +1158,18 @@ const CollectionView = ({ collection, onBack }: CollectionViewProps) => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.1 }}
                   >
-                    <div className="absolute -right-3 top-4 w-1 h-16 bg-gradient-to-b from-blue-500 via-violet-500 to-purple-500 rounded-full" />
-                    <div className="bg-gradient-to-br from-blue-50 to-sky-50 dark:from-slate-800/80 dark:to-slate-900/60 rounded-2xl p-6 border border-blue-200/50 dark:border-slate-700/50 shadow-sm">
-                      <div className="flex items-center gap-3 mb-4 pb-3 border-b border-slate-200/50 dark:border-slate-700/50">
-                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-violet-500 flex items-center justify-center shadow-lg shadow-violet-500/20">
+                    <div className="absolute -right-3 top-4 w-1 h-16 bg-gradient-to-b from-blue-400 via-blue-500 to-blue-600 dark:from-blue-500 dark:via-violet-500 dark:to-purple-500 rounded-full" />
+                    <div className="bg-gradient-to-br from-blue-100 to-blue-50 dark:from-slate-800/80 dark:to-slate-900/60 rounded-2xl p-6 border border-blue-300/60 dark:border-slate-700/50 shadow-sm">
+                      <div className="flex items-center gap-3 mb-4 pb-3 border-b border-blue-200/50 dark:border-slate-700/50">
+                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-500 dark:to-violet-500 flex items-center justify-center shadow-lg shadow-blue-500/30 dark:shadow-violet-500/20">
                           <BookOpen className="w-5 h-5 text-white" />
                         </div>
                         <div>
-                          <h4 className="font-bold text-sm text-slate-700 dark:text-slate-200">{question.passageTitle || "القطعة"}</h4>
-                          <p className="text-xs text-slate-500 dark:text-slate-400">اقرأ النص بتمعن ثم أجب</p>
+                          <h4 className="font-bold text-sm text-blue-800 dark:text-slate-200">{question.passageTitle || "القطعة"}</h4>
+                          <p className="text-xs text-blue-600 dark:text-slate-400">اقرأ النص بتمعن ثم أجب</p>
                         </div>
                       </div>
-                      <p className="text-base leading-loose text-slate-700 dark:text-slate-300 whitespace-pre-line">
+                      <p className="text-base leading-loose text-blue-900 dark:text-slate-300 whitespace-pre-line">
                         {question.passageText}
                       </p>
                     </div>
