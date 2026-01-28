@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronRight, CheckCircle, XCircle, Library, Zap, Lock, ChevronDown, ChevronUp, Layers, List, Unlock, Lightbulb, AlertCircle, Flag, X, RotateCcw, HelpCircle } from "lucide-react";
+import { ChevronRight, CheckCircle, XCircle, Library, Zap, Lock, ChevronDown, ChevronUp, Layers, List, Unlock, Lightbulb, AlertCircle, Flag, X, RotateCcw, HelpCircle, BookOpen } from "lucide-react";
 import { Collection } from "@/components/LessonGrid";
 import { useSkillProgress } from "@/contexts/SkillProgressContext";
 
@@ -714,7 +714,34 @@ const CollectionView = ({ collection, onBack }: CollectionViewProps) => {
                               </motion.button>
                             )}
 
-                            <div className="flex items-start gap-4 mb-6">
+                            {/* Reading Comprehension Passage Box */}
+                            {question.passageText && (
+                              <motion.div
+                                className="mb-6 relative"
+                                initial={{ opacity: 0, y: -10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.1 }}
+                              >
+                                <div className="absolute -right-3 top-4 w-1 h-16 bg-gradient-to-b from-blue-500 via-violet-500 to-purple-500 rounded-full" />
+                                <div className="bg-gradient-to-br from-blue-50 to-sky-50 dark:from-slate-800/80 dark:to-slate-900/60 rounded-2xl p-6 border border-blue-200/50 dark:border-slate-700/50 shadow-sm">
+                                  <div className="flex items-center gap-3 mb-4 pb-3 border-b border-slate-200/50 dark:border-slate-700/50">
+                                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-violet-500 flex items-center justify-center shadow-lg shadow-violet-500/20">
+                                      <BookOpen className="w-5 h-5 text-white" />
+                                    </div>
+                                    <div>
+                                      <h4 className="font-bold text-sm text-slate-700 dark:text-slate-200">{question.passageTitle || "القطعة"}</h4>
+                                      <p className="text-xs text-slate-500 dark:text-slate-400">اقرأ النص بتمعن ثم أجب</p>
+                                    </div>
+                                  </div>
+                                  <p className="text-lg leading-loose text-slate-700 dark:text-slate-300 whitespace-pre-line">
+                                    {question.passageText}
+                                  </p>
+                                </div>
+                              </motion.div>
+                            )}
+
+                            {/* Question Section */}
+                            <div className={`flex items-start gap-4 ${question.passageText ? 'mb-4 pt-4 border-t border-border/50' : 'mb-6'}`}>
                               <span className={`flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center text-lg font-bold ${
                                 isAnswered
                                   ? isCorrect ? "bg-green-500/20 text-green-500" : "bg-red-500/20 text-red-400"
@@ -724,9 +751,17 @@ const CollectionView = ({ collection, onBack }: CollectionViewProps) => {
                                   isCorrect ? <CheckCircle className="w-6 h-6" /> : <XCircle className="w-6 h-6" />
                                 ) : qIndex + 1}
                               </span>
-                              <p className="text-xl font-medium pt-2" dangerouslySetInnerHTML={{ __html: question.prompt }} />
+                              <div className="flex-1">
+                                {question.passageText && (
+                                  <span className="inline-flex items-center gap-1.5 text-xs font-medium text-violet-500 dark:text-violet-400 mb-2">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-violet-500" />
+                                    السؤال
+                                  </span>
+                                )}
+                                <p className="text-xl font-medium" dangerouslySetInnerHTML={{ __html: question.prompt }} />
+                              </div>
                             </div>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 mr-0 sm:mr-16">
+                            <div className={`grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 ${question.passageText ? 'mr-0' : 'mr-0 sm:mr-16'}`}>
                               {question.options.map((option, optIndex) => {
                                 const isSelected = selectedAnswer === optIndex;
                                 const isCorrectOption = optIndex === question.correctAnswer;
@@ -951,7 +986,34 @@ const CollectionView = ({ collection, onBack }: CollectionViewProps) => {
                       <Flag className="w-4 h-4" />
                     </button>
 
-                    <div className="flex items-start gap-4 mb-6">
+                    {/* Reading Comprehension Passage Box */}
+                    {question.passageText && (
+                      <motion.div
+                        className="mb-6 relative"
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.1 }}
+                      >
+                        <div className="absolute -right-3 top-4 w-1 h-16 bg-gradient-to-b from-blue-500 via-violet-500 to-purple-500 rounded-full" />
+                        <div className="bg-gradient-to-br from-blue-50 to-sky-50 dark:from-slate-800/80 dark:to-slate-900/60 rounded-2xl p-6 border border-blue-200/50 dark:border-slate-700/50 shadow-sm">
+                          <div className="flex items-center gap-3 mb-4 pb-3 border-b border-slate-200/50 dark:border-slate-700/50">
+                            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-violet-500 flex items-center justify-center shadow-lg shadow-violet-500/20">
+                              <BookOpen className="w-5 h-5 text-white" />
+                            </div>
+                            <div>
+                              <h4 className="font-bold text-sm text-slate-700 dark:text-slate-200">{question.passageTitle || "القطعة"}</h4>
+                              <p className="text-xs text-slate-500 dark:text-slate-400">اقرأ النص بتمعن ثم أجب</p>
+                            </div>
+                          </div>
+                          <p className="text-lg leading-loose text-slate-700 dark:text-slate-300 whitespace-pre-line">
+                            {question.passageText}
+                          </p>
+                        </div>
+                      </motion.div>
+                    )}
+
+                    {/* Question Section */}
+                    <div className={`flex items-start gap-4 ${question.passageText ? 'mb-4 pt-4 border-t border-border/50' : 'mb-6'}`}>
                       <span className={`flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center text-lg font-bold ${
                         isAnswered
                           ? isCorrect ? "bg-green-500/20 text-green-500" : "bg-red-500/20 text-red-400"
@@ -961,9 +1023,17 @@ const CollectionView = ({ collection, onBack }: CollectionViewProps) => {
                           isCorrect ? <CheckCircle className="w-6 h-6" /> : <XCircle className="w-6 h-6" />
                         ) : qIndex + 1}
                       </span>
-                      <p className="text-xl font-medium pt-2" dangerouslySetInnerHTML={{ __html: question.prompt }} />
+                      <div className="flex-1">
+                        {question.passageText && (
+                          <span className="inline-flex items-center gap-1.5 text-xs font-medium text-violet-500 dark:text-violet-400 mb-2">
+                            <span className="w-1.5 h-1.5 rounded-full bg-violet-500" />
+                            السؤال
+                          </span>
+                        )}
+                        <p className="text-xl font-medium" dangerouslySetInnerHTML={{ __html: question.prompt }} />
+                      </div>
                     </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 mr-0 sm:mr-16">
+                    <div className={`grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 ${question.passageText ? 'mr-0' : 'mr-0 sm:mr-16'}`}>
                       {question.options.map((option, optIndex) => {
                         const isSelected = selectedAnswer === optIndex;
                         const isCorrectOption = optIndex === question.correctAnswer;
@@ -1080,7 +1150,34 @@ const CollectionView = ({ collection, onBack }: CollectionViewProps) => {
                   <Flag className="w-4 h-4" />
                 </button>
 
-                <div className="flex items-start gap-4 mb-6">
+                {/* Reading Comprehension Passage Box */}
+                {question.passageText && (
+                  <motion.div
+                    className="mb-6 relative"
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.1 }}
+                  >
+                    <div className="absolute -right-3 top-4 w-1 h-16 bg-gradient-to-b from-blue-500 via-violet-500 to-purple-500 rounded-full" />
+                    <div className="bg-gradient-to-br from-blue-50 to-sky-50 dark:from-slate-800/80 dark:to-slate-900/60 rounded-2xl p-6 border border-blue-200/50 dark:border-slate-700/50 shadow-sm">
+                      <div className="flex items-center gap-3 mb-4 pb-3 border-b border-slate-200/50 dark:border-slate-700/50">
+                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-violet-500 flex items-center justify-center shadow-lg shadow-violet-500/20">
+                          <BookOpen className="w-5 h-5 text-white" />
+                        </div>
+                        <div>
+                          <h4 className="font-bold text-sm text-slate-700 dark:text-slate-200">{question.passageTitle || "القطعة"}</h4>
+                          <p className="text-xs text-slate-500 dark:text-slate-400">اقرأ النص بتمعن ثم أجب</p>
+                        </div>
+                      </div>
+                      <p className="text-base leading-loose text-slate-700 dark:text-slate-300 whitespace-pre-line">
+                        {question.passageText}
+                      </p>
+                    </div>
+                  </motion.div>
+                )}
+
+                {/* Question Section */}
+                <div className={`flex items-start gap-4 ${question.passageText ? 'mb-4 pt-4 border-t border-border/50' : 'mb-6'}`}>
                   <span className={`flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center text-lg font-bold ${
                     isAnswered
                       ? isCorrect ? "bg-green-500/20 text-green-500" : "bg-red-500/20 text-red-400"
@@ -1090,9 +1187,17 @@ const CollectionView = ({ collection, onBack }: CollectionViewProps) => {
                       isCorrect ? <CheckCircle className="w-6 h-6" /> : <XCircle className="w-6 h-6" />
                     ) : qIndex + 1}
                   </span>
-                  <p className="text-xl font-medium pt-2" dangerouslySetInnerHTML={{ __html: question.prompt }} />
+                  <div className="flex-1">
+                    {question.passageText && (
+                      <span className="inline-flex items-center gap-1.5 text-xs font-medium text-violet-500 dark:text-violet-400 mb-2">
+                        <span className="w-1.5 h-1.5 rounded-full bg-violet-500" />
+                        السؤال
+                      </span>
+                    )}
+                    <p className="text-xl font-medium" dangerouslySetInnerHTML={{ __html: question.prompt }} />
+                  </div>
                 </div>
-                <div className="grid grid-cols-2 gap-3 mr-16">
+                <div className={`grid grid-cols-1 sm:grid-cols-2 gap-3 ${question.passageText ? 'mr-0' : 'mr-16'}`}>
                   {question.options.map((option, optIndex) => {
                     const isSelected = selectedAnswer === optIndex;
                     const isCorrectOption = optIndex === question.correctAnswer;

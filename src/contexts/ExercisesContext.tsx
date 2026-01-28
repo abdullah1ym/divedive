@@ -3,6 +3,11 @@ import bank1TanadhurData from "@/data/bank1_tanadhur_questions.json";
 import bank1SentenceCompletionData from "@/data/bank1_sentence_completion_questions.json";
 import bank1ContextualErrorData from "@/data/bank1_contextual_error_questions.json";
 import bank1OddWordData from "@/data/bank1_odd_word_questions.json";
+import bank1ReadingComprehensionData from "@/data/bank1_reading_comprehension_questions.json";
+import bank2SentenceCompletionData from "@/data/bank2_sentence_completion_questions.json";
+import bank2ContextualErrorData from "@/data/bank2_contextual_error_questions.json";
+import bank2OddWordData from "@/data/bank2_odd_word_questions.json";
+import bank2ReadingComprehensionData from "@/data/bank2_reading_comprehension_questions.json";
 
 // Transform bank1 tanadhur questions to match Question interface
 const bank1TanadhurQuestions = bank1TanadhurData.questions.map((q: any) => ({
@@ -44,6 +49,64 @@ const bank1OddWordQuestions = bank1OddWordData.questions.map((q: any) => ({
   explanation: q.explanation,
 }));
 
+// Transform bank1 reading comprehension questions (flatten passages with questions)
+const bank1ReadingComprehensionQuestions = (bank1ReadingComprehensionData as any).passages.flatMap((passage: any) =>
+  passage.questions.map((q: any) => ({
+    id: `bank1-rc-${q.id}`,
+    prompt: q.prompt,
+    audioPlaceholder: passage.title || "استيعاب المقروء",
+    options: q.options.filter((opt: string) => opt !== ""),
+    correctAnswer: q.correctAnswer,
+    explanation: q.explanation || "",
+    passageText: passage.text,
+    passageTitle: passage.title || "القطعة",
+  }))
+);
+
+// Transform bank2 sentence completion questions to match Question interface
+const bank2SentenceCompletionQuestions = bank2SentenceCompletionData.questions.map((q: any) => ({
+  id: `bank2-sc-${q.id}`,
+  prompt: q.prompt,
+  audioPlaceholder: "إكمال جملة",
+  options: q.options.filter((opt: string) => opt !== ""),
+  correctAnswer: q.correctAnswer,
+  explanation: q.explanation,
+}));
+
+// Transform bank2 contextual error questions to match Question interface
+const bank2ContextualErrorQuestions = bank2ContextualErrorData.questions.map((q: any) => ({
+  id: `bank2-ce-${q.id}`,
+  prompt: q.prompt,
+  audioPlaceholder: "خطأ سياقي",
+  options: q.options.filter((opt: string) => opt !== ""),
+  correctAnswer: q.correctAnswer,
+  explanation: q.explanation,
+}));
+
+// Transform bank2 odd word questions to match Question interface
+const bank2OddWordQuestions = bank2OddWordData.questions.map((q: any) => ({
+  id: `bank2-ow-${q.id}`,
+  prompt: q.prompt,
+  audioPlaceholder: "مفردة شاذة",
+  options: q.options.filter((opt: string) => opt !== ""),
+  correctAnswer: q.correctAnswer,
+  explanation: q.explanation,
+}));
+
+// Transform bank2 reading comprehension questions (flatten passages with questions)
+const bank2ReadingComprehensionQuestions = (bank2ReadingComprehensionData as any).passages.flatMap((passage: any) =>
+  passage.questions.map((q: any) => ({
+    id: `bank2-rc-${q.id}`,
+    prompt: q.prompt,
+    audioPlaceholder: passage.title || "استيعاب المقروء",
+    options: q.options.filter((opt: string) => opt !== ""),
+    correctAnswer: q.correctAnswer,
+    explanation: q.explanation || "",
+    passageText: passage.text,
+    passageTitle: passage.title || "القطعة",
+  }))
+);
+
 export interface Question {
   id: string;
   prompt: string;
@@ -51,6 +114,8 @@ export interface Question {
   options: string[];
   correctAnswer: number;
   explanation?: string;
+  passageText?: string;
+  passageTitle?: string;
   variants?: Array<{
     id: string;
     prompt: string;
@@ -296,87 +361,213 @@ const defaultExercises: Exercise[] = [
     category: "verbal",
     difficulty: "intermediate",
     type: "verbal",
-    duration: "١٠ دقائق",
-    questions: [
-      { id: "q1", prompt: "الفكرة الرئيسية للنص هي:", audioPlaceholder: "نص قرائي", options: ["أهمية القراءة", "فوائد الرياضة", "أضرار التلوث", "قيمة الوقت"], correctAnswer: 0 },
-      { id: "q2", prompt: "يمكن وصف أسلوب الكاتب بأنه:", audioPlaceholder: "نص قرائي", options: ["علمي", "أدبي", "صحفي", "قصصي"], correctAnswer: 0 },
-      { id: "q3", prompt: "الهدف من النص هو:", audioPlaceholder: "نص قرائي", options: ["الإقناع", "الترفيه", "التوعية", "السرد"], correctAnswer: 2 },
-    ],
+    duration: "٦٠ دقيقة",
+    questions: bank1ReadingComprehensionQuestions,
   },
   // البنك الثاني - التناظر اللفظي
   {
     id: "verbal-b2-1",
     title: "التناظر اللفظي",
-    description: "إيجاد العلاقة بين الكلمات",
+    description: "إيجاد العلاقة بين الكلمات - ١٤٩ سؤال",
     category: "verbal-bank-2",
     difficulty: "beginner",
     type: "verbal",
-    duration: "٦ دقائق",
+    duration: "٤٥ دقيقة",
     questions: [
-      { id: "q1", prompt: "كاتب : رواية :: رسام : ؟", audioPlaceholder: "تناظر لفظي", options: ["ألوان", "لوحة", "فرشاة", "معرض"], correctAnswer: 1 },
-      { id: "q2", prompt: "نحلة : عسل :: بقرة : ؟", audioPlaceholder: "تناظر لفظي", options: ["مزرعة", "حليب", "عشب", "لحم"], correctAnswer: 1 },
-      { id: "q3", prompt: "طائرة : مطار :: قطار : ؟", audioPlaceholder: "تناظر لفظي", options: ["سكة", "محطة", "عجلات", "سفر"], correctAnswer: 1 },
-    ],
+        { id: "q1", prompt: "دعج : عين", audioPlaceholder: "تناظر لفظي", options: ["فظاظة : كلام", "فلج : أسنان", "سماجة : طبع", "برص : جسم"], correctAnswer: 1, explanation: "وصف ل - الدعج صفة للعين (سواد العين) كما أن الفلج صفة للأسنان (تباعدها)" },
+        { id: "q2", prompt: "شجاعة : جبن", audioPlaceholder: "تناظر لفظي", options: ["اقدام : احجام", "تقدم : بطء", "استفحال : تأني", ""], correctAnswer: 0, explanation: "تضاد - الشجاعة عكس الجبن كما أن الإقدام عكس الإحجام" },
+        { id: "q3", prompt: "نار : شرارة", audioPlaceholder: "تناظر لفظي", options: ["ذوبان : حرارة", "نجاح : إخفاق", "ماء : طين", "فرن : حطب"], correctAnswer: 0, explanation: "ناتج عن - النار تنتج عن الشرارة كما أن الذوبان ينتج عن الحرارة" },
+        { id: "q4", prompt: "نور : مصباح", audioPlaceholder: "تناظر لفظي", options: ["شمس : ضياء", "صمت : هدوء", "ليل : ظلام", "صوت : مذياع"], correctAnswer: 3, explanation: "بواسطة - ناتج عن - النور ينتج بواسطة المصباح كما أن الصوت ينتج بواسطة المذياع" },
+        { id: "q5", prompt: "قماش : ملابس", audioPlaceholder: "تناظر لفظي", options: ["زجاج : طاولة", "بيت : غرفة", "طائرة : قطار", "فحم : شواء"], correctAnswer: 0, explanation: "نصنع منه - يدخل في صناعة - القماش يُصنع منه الملابس كما أن الزجاج يدخل في صناعة الطاولة" },
+        { id: "q6", prompt: "ثعبان : سم", audioPlaceholder: "تناظر لفظي", options: ["عقرب : موت", "وحيد القرن : ضخم", "خروف : صوف", "دودة القز : الحرير"], correctAnswer: 3, explanation: "ينتج - الثعبان ينتج السم كما أن دودة القز تنتج الحرير" },
+        { id: "q7", prompt: "طائرة : طيّار", audioPlaceholder: "تناظر لفظي", options: ["فيلم : مخرج", "طريق : مشاة", "كلمة : شاعر", "كتاب : مؤلف"], correctAnswer: 0, explanation: "يقودها - الطيار يقود الطائرة كما أن المخرج يدير الفيلم" },
+        { id: "q8", prompt: "غابة : أسد", audioPlaceholder: "تناظر لفظي", options: ["عش : عصفور", "سفينة : قبطان", "نهر : رمل", "طائرة : مسافر"], correctAnswer: 0, explanation: "مكان يعيش فيه - الأسد يعيش في الغابة كما أن العصفور يعيش في العش" },
+        { id: "q9", prompt: "غابة : أسد", audioPlaceholder: "تناظر لفظي", options: ["عش : عصفور", "مطار : مسافر", "كون : إنسان", "إطارات : سيارة"], correctAnswer: 1, explanation: "مكان يوجد فيه - الأسد في الغابة كما أن المسافر في المطار" },
+        { id: "q10", prompt: "متعرج : ممر", audioPlaceholder: "تناظر لفظي", options: ["معقد : تعبير", "نهر : مجرى", "مستقبل : ماضي", "تشاؤم : انكسار"], correctAnswer: 1, explanation: "وصف ل - المتعرج وصف للممر كما أن المجرى وصف للنهر" },
+        { id: "q11", prompt: "خيار : طماطم", audioPlaceholder: "تناظر لفظي", options: ["سهم : سلاح", "سيف : رمح", "عطر : ورد", "كواكب : قمر"], correctAnswer: 1, explanation: "فئة - الخيار والطماطم من فئة الخضروات كما أن السيف والرمح من فئة الأسلحة" },
+        { id: "q12", prompt: "لين : صلب", audioPlaceholder: "تناظر لفظي", options: ["لؤم : شهامة", "سهو : نسيان", "سهم : رمح", "عزاء : وفاة"], correctAnswer: 0, explanation: "تضاد - اللين عكس الصلب كما أن اللؤم عكس الشهامة" },
+        { id: "q13", prompt: "نعمة : نقمة", audioPlaceholder: "تناظر لفظي", options: ["يقظة : رقاد", "أباد : أزال", "خوف : فزع", "رسالة : خطاب"], correctAnswer: 0, explanation: "تضاد - النعمة عكس النقمة كما أن اليقظة عكس الرقاد" },
+        { id: "q14", prompt: "تصدع : انهيار", audioPlaceholder: "تناظر لفظي", options: ["إرهاق : تعب", "تسخين : غليان", "ظمأ : عطش", "ارتفاع : سقوط"], correctAnswer: 1, explanation: "ينتج عنه - التصدع يؤدي للانهيار كما أن التسخين يؤدي للغليان" },
+        { id: "q15", prompt: "أرشيف : وثائق", audioPlaceholder: "تناظر لفظي", options: ["صيدلية : أدوية", "مكتبة : رفوف", "خزانة : أموال", "متحف : آثار"], correctAnswer: 0, explanation: "يستخدم لحفظ - الأرشيف يحفظ الوثائق كما أن الصيدلية تحفظ الأدوية" },
+        { id: "q16", prompt: "سد : طاقة", audioPlaceholder: "تناظر لفظي", options: ["الجفاف : الصحراء", "رتيب : ملل", "قلم : إجادة", "الرزق : بكور"], correctAnswer: 1, explanation: "ينتج عنه - السد ينتج الطاقة كما أن الرتيب ينتج عنه الملل" },
+        { id: "q17", prompt: "إهمال : رسوب", audioPlaceholder: "تناظر لفظي", options: ["رياضة : نشاط", "مذاكرة : نجاح", "تفريط : ندم", "جمية : صحة"], correctAnswer: 1, explanation: "يؤدي إلى - الإهمال يؤدي للرسوب كما أن المذاكرة تؤدي للنجاح" },
+        { id: "q18", prompt: "مرسل : أوراق", audioPlaceholder: "تناظر لفظي", options: ["سفينة : بضاعة", "محرّك : سيارة", "أجنحة : طائرة", "وقود : قطار"], correctAnswer: 1, explanation: "ينقل - المرسل ينقل الأوراق كما أن المحرك يحرك السيارة" },
+        { id: "q19", prompt: "مراسل : أوراق (رسالة)", audioPlaceholder: "تناظر لفظي", options: ["طائرة : مسافرون", "محرك : سيارة", "وقود : قطار", "جناح : طائرة"], correctAnswer: 1, explanation: "ينقل - المراسل ينقل الأوراق كما أن المحرك ينقل السيارة" },
+        { id: "q20", prompt: "تداين : وفاء", audioPlaceholder: "تناظر لفظي", options: ["خلاف : اتفاق", "بيع : سماحة", "قسط : عدل", "تلف : تقتير"], correctAnswer: 1, explanation: "يحتاج إلى - التداين يحتاج للوفاء كما أن البيع يحتاج للسماحة" },
+        { id: "q21", prompt: "قيلولة : نهار", audioPlaceholder: "تناظر لفظي", options: ["ماشية : رعى", "ظهر : فراش", "غذاء : نوم", "سحور : فجر"], correctAnswer: 3, explanation: "تكون في - القيلولة تكون في النهار كما أن السحور يكون في الفجر" },
+        { id: "q22", prompt: "ضحى : نهار", audioPlaceholder: "تناظر لفظي", options: ["جناح : طير", "سواد : ليل", "دهر : شهر", "سنة : صيف"], correctAnswer: 0, explanation: "جزء من - الضحى جزء من النهار كما أن الجناح جزء من الطير" },
+        { id: "q23", prompt: "خسوف : قمر", audioPlaceholder: "تناظر لفظي", options: ["مرض : حيوان", "سطوع : نجم", "كوكب : شمس", "اجتهاد : لعب"], correctAnswer: 0, explanation: "يصيب - الخسوف يصيب القمر كما أن المرض يصيب الحيوان" },
+        { id: "q24", prompt: "قمر : خسوف", audioPlaceholder: "تناظر لفظي", options: ["ضياء : سطوع", "شمس : إحراق", "وردة : ذبول", "نجم : شهاب"], correctAnswer: 2, explanation: "يصاب بـ - القمر يصاب بالخسوف كما أن الوردة تصاب بالذبول" },
+        { id: "q25", prompt: "علو : دنو", audioPlaceholder: "تناظر لفظي", options: ["تواضع : تكبر", "ارتفاع : صعود", "نزول : هبوط", "صبر : سخط"], correctAnswer: 0, explanation: "تضاد - العلو عكس الدنو كما أن التواضع عكس التكبر" },
+        { id: "q26", prompt: "حوت : سمك", audioPlaceholder: "تناظر لفظي", options: ["ماء : قرش", "صيد : بحر", "عنب : شجر", "حيوان : أسد"], correctAnswer: 2, explanation: "فئة - الحوت من فئة السمك كما أن العنب من الشجر" },
+        { id: "q27", prompt: "عسل : حلاوة", audioPlaceholder: "تناظر لفظي", options: ["مؤمن : فطن", "مرارة : حنظل", "سواد : كحل", "شفاف : زجاج"], correctAnswer: 0, explanation: "من صفاته - الحلاوة من صفات العسل كما أن الفطنة من صفات المؤمن" },
+        { id: "q28", prompt: "نقاء : عسل", audioPlaceholder: "تناظر لفظي", options: ["فطنة : مؤمن", "مرارة : حنظل", "شفاف : زجاج", ""], correctAnswer: 1, explanation: "وصف ل - النقاء وصف للعسل كما أن المرارة وصف للحنظل" },
+        { id: "q29", prompt: "موت : بعث", audioPlaceholder: "تناظر لفظي", options: ["ولادة : حمل", "شباب : شيخوخة", "شوال : رمضان", "علاج : مرض"], correctAnswer: 1, explanation: "بعده - الموت يأتي بعده البعث كما أن الشباب يأتي بعده الشيخوخة" },
+        { id: "q30", prompt: "وثيقة : تخرج", audioPlaceholder: "تناظر لفظي", options: ["عقد : بيت", "شراء : بيع", "دين : رهن", "شهود : نكاح"], correctAnswer: 0, explanation: "دلالة على - تثبت - الوثيقة تدل على التخرج كما أن العقد يثبت البيت" },
+        { id: "q31", prompt: "ولد : دلو", audioPlaceholder: "تناظر لفظي", options: ["بحر : رحب", "غنى : طغيان", "كسوف : خسوف", "ليمون : حمضيات"], correctAnswer: 1, explanation: "عكس الحروف - ولد عكسها دلو كما أن غنى عكسها طغيان" },
+        { id: "q32", prompt: "راح : حار", audioPlaceholder: "تناظر لفظي", options: ["لمح : حمل", "سكن : كنس", "بحر : ريح", "ابتعاد : اقتراب"], correctAnswer: 1, explanation: "عكس الحروف - راح عكسها حار كما أن سكن عكسها كنس" },
+        { id: "q33", prompt: "باع : عاب", audioPlaceholder: "تناظر لفظي", options: ["لحم : ملح", "مسح : حسم", "دار : در", "حضر : حاضر"], correctAnswer: 1, explanation: "عكس الحروف - باع عكسها عاب كما أن مسح عكسها حسم" },
+        { id: "q34", prompt: "يُثبط : يشجّع", audioPlaceholder: "تناظر لفظي", options: ["يأمر : يحث", "يرسم : يلوّن", "يعتني : يهمل", "يستشير : يقرّر"], correctAnswer: 2, explanation: "تضاد - يثبط عكس يشجع كما أن يعتني عكس يهمل" },
+        { id: "q35", prompt: "حشد : مشجعين", audioPlaceholder: "تناظر لفظي", options: ["تشجيع : مدربين", "تفريق : متسولين", "تحفيز : موظفين", "جذب : سائقين"], correctAnswer: 2, explanation: "يكون ل - الحشد يكون للمشجعين كما أن التحفيز يكون للموظفين" },
+        { id: "q36", prompt: "استنفار : الجيش", audioPlaceholder: "تناظر لفظي", options: ["تشجيع : المدربين", "تحفيز : المعلمين", "حشد : الأفراد", "تفريق : لاعبين"], correctAnswer: 1, explanation: "يكون ل - الاستنفار يكون للجيش كما أن التحفيز يكون للمعلمين" },
+        { id: "q37", prompt: "الكعبة : المطاف", audioPlaceholder: "تناظر لفظي", options: ["الورد : الحديقة", "الملتزم : الركن اليماني", "المقام : الحجر الأسود", "البيت : السور"], correctAnswer: 2, explanation: "يحيط بها - المطاف يحيط بالكعبة كما أن المقام قريب من الحجر الأسود" },
+        { id: "q38", prompt: "الكعبة : المطاف", audioPlaceholder: "تناظر لفظي", options: ["السور : البيت", "البطن : الحزام", "الحديقة : الورد", "المقام : الحجر الأسود"], correctAnswer: 1, explanation: "يحيط بها - المطاف يحيط بالكعبة كما أن الحزام يحيط بالبطن" },
+        { id: "q39", prompt: "استغفار : سيئات", audioPlaceholder: "تناظر لفظي", options: ["زهايمر : معلومات", "ذكريات : نسيان", "ماء : طهارة", "استحمام : منشفة"], correctAnswer: 0, explanation: "يمحو - يزيل - يقضي على - الاستغفار يمحو السيئات كما أن الزهايمر يمحو المعلومات" },
+        { id: "q40", prompt: "استغفار : مغفرة", audioPlaceholder: "تناظر لفظي", options: ["تنظيف : تعقيم", "سعال : إلتهاب", "غروب : مساء", "نعاس : نوم"], correctAnswer: 1, explanation: "بعده - الاستغفار يؤدي للمغفرة كما أن السعال يدل على الالتهاب" },
+        { id: "q41", prompt: "عطاس : حمد", audioPlaceholder: "تناظر لفظي", options: ["ذنب استغفار", "أكل : شبع", "مهندس : بناية", "فرح : سعيد"], correctAnswer: 1, explanation: "يحتاج إلى - العطاس يُتبع بالحمد كما أن الأكل يؤدي للشبع" },
+        { id: "q42", prompt: "طائرة : سيارة", audioPlaceholder: "تناظر لفظي", options: ["دراجة : صاروخ", "شجاعة : جسارة", "الزهرة : الأرض", "القطار : العربة"], correctAnswer: 2, explanation: "فئة - الطائرة والسيارة وسائل نقل كما أن الزهرة والأرض كواكب" },
+        { id: "q43", prompt: "مربع : مكعب", audioPlaceholder: "تناظر لفظي", options: ["دائرة : كرة", "مثلث : زاوية", "مستطيل : معين", "مخروط : اسطوانة"], correctAnswer: 0, explanation: "فئة - المربع ثنائي الأبعاد والمكعب ثلاثي كما أن الدائرة والكرة" },
+        { id: "q44", prompt: "أرض : دائرة", audioPlaceholder: "تناظر لفظي", options: ["سيارة : مستطيل", "ناقة : مثلث", "فيل : معين", "طابعة : مجسم"], correctAnswer: 0, explanation: "تشبه في الشكل - الأرض تشبه الدائرة كما أن السيارة تشبه المستطيل" },
+        { id: "q45", prompt: "مكعب : نرد", audioPlaceholder: "تناظر لفظي", options: ["دائرة : حلقة", "أفعى : حبل", "فل : ياسمين", ""], correctAnswer: 0, explanation: "من أشكاله - النرد شكله مكعب كما أن الحلقة شكلها دائرة" },
+        { id: "q46", prompt: "سبات : حُلم (أحلام)", audioPlaceholder: "تناظر لفظي", options: ["سيطرة : قوة", "تاريخ : أحداث", "جغرافيا : مناخ", "نهار : سعي"], correctAnswer: 2, explanation: "يحدث فيه - الحلم يحدث في السبات كما أن المناخ يُدرس في الجغرافيا" },
+        { id: "q47", prompt: "سبات : ليل", audioPlaceholder: "تناظر لفظي", options: ["عمل : نهار", "ضحى : نهار", "سحور : فجر", "طواف : إحرام"], correctAnswer: 0, explanation: "يحدث في - السبات يحدث في الليل كما أن العمل يحدث في النهار" },
+        { id: "q48", prompt: "الزاد : الراحلة", audioPlaceholder: "تناظر لفظي", options: ["الحج : الجمرات", "مستشفى : مدينة", "إحرام : منى", "أسمنت : حديد"], correctAnswer: 3, explanation: "فئة - الزاد والراحلة من لوازم السفر كما أن الأسمنت والحديد من مواد البناء" },
+        { id: "q49", prompt: "سوق : محل", audioPlaceholder: "تناظر لفظي", options: ["قواعد : كرسي", "نادي : لاعب", "مدرسة : مقصف", "باب : خشب"], correctAnswer: 1, explanation: "يوجد به - المحل يوجد في السوق كما أن اللاعب يوجد في النادي" },
+        { id: "q50", prompt: "شظف : رخاء", audioPlaceholder: "تناظر لفظي", options: ["إذاعة : تلفاز", "بذل : عطاء", "بذور : جذور", "قسوة : لين"], correctAnswer: 3, explanation: "تضاد - الشظف (الضيق) عكس الرخاء كما أن القسوة عكس اللين" },
+        { id: "q51", prompt: "إهمال : إخفاق", audioPlaceholder: "تناظر لفظي", options: ["تقدم : تراجع", "تسويف : تراكم", "تهاون : تكاسل", "تعاون : تكاتف"], correctAnswer: 1, explanation: "يؤدي إلى - الإهمال يؤدي للإخفاق كما أن التسويف يؤدي للتراكم" },
+        { id: "q52", prompt: "الكفر : النار", audioPlaceholder: "تناظر لفظي", options: ["إيمان : سعادة", "رمضان : شوال", "إهمال : اخفاق", "نجاح : فرح"], correctAnswer: 2, explanation: "يؤدي إلى - الكفر يؤدي للنار كما أن الإهمال يؤدي للإخفاق" },
+        { id: "q53", prompt: "حاجة : تدريب", audioPlaceholder: "تناظر لفظي", options: ["رغبة : إرادة", "قحط : استسقاء", "طبخ : جوع", "استزراع : تصحر"], correctAnswer: 1, explanation: "الحاجة تحتاج إلى تدريب - القحط يحتاج للاستسقاء" },
+        { id: "q54", prompt: "الإحسان : الدين", audioPlaceholder: "تناظر لفظي", options: ["العطر : القنينة", "الفردوس : الجنة", "الرمال : الحرارة", "اللؤلؤ : الشبكة"], correctAnswer: 1, explanation: "أعلى مراتب - الإحسان أعلى مراتب الدين كما أن الفردوس أعلى الجنة" },
+        { id: "q55", prompt: "الدين : الإحسان", audioPlaceholder: "تناظر لفظي", options: ["الجنة : الفردوس", "نخلة : عسل", "جبل : تسلق", "الصحة : الرياضة"], correctAnswer: 0, explanation: "أعلى مراتبه - الإحسان أعلى مراتب الدين كما أن الفردوس أعلى الجنة" },
+        { id: "q56", prompt: "الإحسان : الدين", audioPlaceholder: "تناظر لفظي", options: ["العسل : النحل", "الفردوس : الجنة", "الصحة : الرياضة", "سيف سلاح"], correctAnswer: 1, explanation: "أعلى مراتب - الإحسان أعلى مراتب الدين كما أن الفردوس أعلى الجنة" },
+        { id: "q57", prompt: "خيار : طماطم", audioPlaceholder: "تناظر لفظي", options: ["حبر : رصاص", "أواني قلادة", "سهم جعبة", "سيف سلاح"], correctAnswer: 1, explanation: "فئة - الخيار والطماطم من الخضروات كما أن الأواني والقلادة أدوات" },
+        { id: "q58", prompt: "الإسلام : الصلاة", audioPlaceholder: "تناظر لفظي", options: ["طلاب : مدرسة", "طب : مستشفى", "أستاذ : جامعة", "اللغة : النحو"], correctAnswer: 2, explanation: "جزء منه - أهم أركانه - الصلاة ركن من الإسلام كما أن الأستاذ جزء من الجامعة" },
+        { id: "q59", prompt: "حكيم : عاقل", audioPlaceholder: "تناظر لفظي", options: ["صبور : حليم", "هادئ : مرتاح", "قوي : متين", "نشيط : حريص"], correctAnswer: 0, explanation: "من صفاته - الحكيم من صفاته أنه عاقل كما أن الصبور من صفاته الحلم" },
+        { id: "q60", prompt: "ظمأ : ماء", audioPlaceholder: "تناظر لفظي", options: ["عزاء : مواساة", "قيادة : رخصة", "جهل : عِلم", "أكل : شبع"], correctAnswer: 1, explanation: "يحتاج إلى - الظمأ يحتاج للماء كما أن القيادة تحتاج لرخصة" },
+        { id: "q61", prompt: "ظمأ : شرب", audioPlaceholder: "تناظر لفظي", options: ["أبيض : أسود", "ليل : نهار", "أكل : شبع", "جوع : طعام"], correctAnswer: 1, explanation: "يزال بـ - الظمأ يزال بالشرب كما أن الليل يعقبه النهار" },
+        { id: "q62", prompt: "إنفاق : تقتير", audioPlaceholder: "تناظر لفظي", options: ["محو : إزالة", "نُهى : حمق", "مساواة : عدل", "إلزام : فرصة"], correctAnswer: 1, explanation: "تضاد - الإنفاق عكس التقتير كما أن النُهى عكس الحمق" },
+        { id: "q63", prompt: "حصى : صخور", audioPlaceholder: "تناظر لفظي", options: ["نبتة : شجرة", "نهر : وادي", "طين : تراب", "بحر : مالح"], correctAnswer: 0, explanation: "تكون - الصخور أصلها حصى - الطين من التراب" },
+        { id: "q64", prompt: "حصى : صخور", audioPlaceholder: "تناظر لفظي", options: ["مونومرات : بوليمرات", "طين : تراب", "نهر : وادي", ""], correctAnswer: 0, explanation: "تكون - الحصى تتكون منه الصخور كما أن المونومرات تتكون منها البوليمرات" },
+        { id: "q65", prompt: "جبال : تلال", audioPlaceholder: "تناظر لفظي", options: ["أسد : شبل", "جداول : أنهار", "شجرة : نخلة", "الحشرات : نملة"], correctAnswer: 1, explanation: "فئة - أكبر من - الجبال أكبر من التلال كما أن الأنهار أكبر من الجداول" },
+        { id: "q66", prompt: "الجبال : التلال", audioPlaceholder: "تناظر لفظي", options: ["أسود : أشبال", "الشجرة : النخلة", "الجداول : الأنهار", "الحشرات : نملة"], correctAnswer: 1, explanation: "فئة - الجبال والتلال من التضاريس كما أن الشجرة والنخلة من النباتات" },
+        { id: "q67", prompt: "سمك : بحر", audioPlaceholder: "تناظر لفظي", options: ["بشر : يابسة", "ضب : صحراء", "بطريق : ثلج", "بيت : إنسان"], correctAnswer: 1, explanation: "يعيش في - السمك يعيش في البحر كما أن الضب يعيش في الصحراء" },
+        { id: "q68", prompt: "بحر : سمك", audioPlaceholder: "تناظر لفظي", options: ["غابة : أشجار", "حديقة : زهرة", "صحراء : جمال", "سماء : نجم"], correctAnswer: 0, explanation: "يوجد به - السمك يوجد في البحر كما أن الأشجار توجد في الغابة" },
+        { id: "q69", prompt: "أعلى : أسفل", audioPlaceholder: "تناظر لفظي", options: ["أخضر : أحمر", "أظهر : أخفى", "شمال : شرق", "جديد : متسخ"], correctAnswer: 1, explanation: "تضاد - أعلى عكس أسفل كما أن أظهر عكس أخفى" },
+        { id: "q70", prompt: "صدر : قلب", audioPlaceholder: "تناظر لفظي", options: ["عروق : دم", "علم : ممارسة", "بكاء : دموع", "سفر : طائرة"], correctAnswer: 0, explanation: "بداخله - القلب داخل الصدر كما أن الدم داخل العروق" },
+        { id: "q71", prompt: "قلب : صدر", audioPlaceholder: "تناظر لفظي", options: ["كعبة : حرم", "حقيبة : كتاب", "", ""], correctAnswer: 0, explanation: "بداخل - القلب داخل الصدر كما أن الكعبة داخل الحرم" },
+        { id: "q72", prompt: "إنسان : قلب", audioPlaceholder: "تناظر لفظي", options: ["مصنع : عمال", "", "", ""], correctAnswer: 0, explanation: "بداخله - القلب داخل الإنسان كما أن العمال داخل المصنع" },
+        { id: "q73", prompt: "ريح : عاصف", audioPlaceholder: "تناظر لفظي", options: ["حرب : ضروس", "بكاء : نشيج", "نيزك : كوكب", "صحراء : ناقة"], correctAnswer: 0, explanation: "صفتها - الريح العاصف كما أن الحرب الضروس" },
+        { id: "q74", prompt: "حرب : ضروس", audioPlaceholder: "تناظر لفظي", options: ["جبل : شاهق", "بكاء : نشيج", "فل : ياسمين", "صحراء : ناقة"], correctAnswer: 0, explanation: "صفتها - الحرب ضروس كما أن الجبل شاهق" },
+        { id: "q75", prompt: "جبل : شاهق", audioPlaceholder: "تناظر لفظي", options: ["حرب : ضروس", "بكاء : نشيج", "فل : ياسمين", ""], correctAnswer: 0, explanation: "صفته - الجبل شاهق كما أن الحرب ضروس" },
+        { id: "q76", prompt: "كدر : صفاء", audioPlaceholder: "تناظر لفظي", options: ["إخلاص : شك", "ضجر : ضيق", "لقاء : فراق", "تجلى : تباين"], correctAnswer: 2, explanation: "تضاد - الكدر عكس الصفاء كما أن اللقاء عكس الفراق" },
+        { id: "q77", prompt: "كدر : صفو (صفاء)", audioPlaceholder: "تناظر لفظي", options: ["صحو : غائم", "صافي : نقي", "ماء : طين", "نظيف : طاهر"], correctAnswer: 0, explanation: "تضاد - الكدر عكس الصفو كما أن الصحو عكس الغائم" },
+        { id: "q78", prompt: "سراج المؤمنين : الهدى", audioPlaceholder: "تناظر لفظي", options: ["سراج البيت : الدابة المطيعة", "السراج الكاشف : شاحب الوجه", "سراج النهار : الشمس المضيئة", "السراج الوهاج : النجم الصغير"], correctAnswer: 2, explanation: "هو تعبير مجازي، المعنى الحقيقي له - سراج المؤمنين هو الهدى كما أن سراج النهار هو الشمس المضيئة" },
+        { id: "q79", prompt: "حراشف : سمك", audioPlaceholder: "تناظر لفظي", options: ["ريش : طير", "أنف : إنسان", "غواصة : ماء", "طائر : منقار"], correctAnswer: 0, explanation: "تغطي - الحراشف تغطي السمك كما أن الريش يغطي الطير" },
+        { id: "q80", prompt: "خياشيم : سمك", audioPlaceholder: "تناظر لفظي", options: ["طير : ريش", "أنف : إنسان", "غواصة : ماء", "طائر : منقار"], correctAnswer: 1, explanation: "جزء من - عضو التنفس - الخياشيم عضو تنفس السمك كما أن الأنف عضو تنفس الإنسان" },
+        { id: "q81", prompt: "توبة : معفرة", audioPlaceholder: "تناظر لفظي", options: ["كرم : جود", "رحمة : عفو", "ذهب : ميزان", ""], correctAnswer: 1, explanation: "تؤدي إلى - التوبة تؤدي للمغفرة كما أن الرحمة تؤدي للعفو" },
+        { id: "q82", prompt: "خور : بسالة", audioPlaceholder: "تناظر لفظي", options: ["غريم : خصم", "كبح : تردد", "زهو : تواضع", "تعويم : تفويض"], correctAnswer: 2, explanation: "تضاد - الخور (الضعف) عكس البسالة كما أن الزهو عكس التواضع" },
+        { id: "q83", prompt: "خور : بسالة", audioPlaceholder: "تناظر لفظي", options: ["سلام : حرب", "", "", ""], correctAnswer: 0, explanation: "تضاد - الخور عكس البسالة كما أن السلام عكس الحرب" },
+        { id: "q84", prompt: "رياض : فلاة", audioPlaceholder: "تناظر لفظي", options: ["نهب : سرقة", "إظهار : إخفاء", "اجتهاد : نجاح", "بخل : شح"], correctAnswer: 1, explanation: "تضاد - الرياض (الخضرة) عكس الفلاة (الصحراء) كما أن الإظهار عكس الإخفاء" },
+        { id: "q85", prompt: "بيت : سور", audioPlaceholder: "تناظر لفظي", options: ["مضمار : حصان", "شجرة : ثمرة", "عنق : عقد", "خيمة : عمود"], correctAnswer: 1, explanation: "يحيط به - السور يحيط بالبيت كما أن الثمرة على الشجرة" },
+        { id: "q86", prompt: "أنف : تنفس", audioPlaceholder: "تناظر لفظي", options: ["بصر : عين", "مشي : قدم", "لسان : ذوق", "معدة : طعام"], correctAnswer: 2, explanation: "وظيفته - وظيفة الأنف التنفس كما أن وظيفة اللسان الذوق" },
+        { id: "q87", prompt: "مجهر : عدسة", audioPlaceholder: "تناظر لفظي", options: ["ساعة : عقرب", "كتاب : صفحة", "سيف : غمد", "محرك : تروس"], correctAnswer: 1, explanation: "يوجد به - العدسة جزء من المجهر كما أن الصفحة جزء من الكتاب" },
+        { id: "q88", prompt: "كتابة : يد", audioPlaceholder: "تناظر لفظي", options: ["رجل : مشي", "عقل : تكفير", "لسان : تذوق", "بصر : عين"], correctAnswer: 1, explanation: "بواسطة - الكتابة بواسطة اليد كما أن التفكير بواسطة العقل" },
+        { id: "q89", prompt: "تفكير : استنباط", audioPlaceholder: "تناظر لفظي", options: ["ملاحظة : تحليل", "تحفيظ : تلقين", "استرجاع : تذكر", "اهداف : تحقيق"], correctAnswer: 2, explanation: "ينتج عنه - التفكير ينتج عنه الاستنباط كما أن الاسترجاع ينتج عنه التذكر" },
+        { id: "q90", prompt: "ملاحظة : تحليل", audioPlaceholder: "تناظر لفظي", options: ["تحفيظ : تلقين", "بحث : اكتشاف", "أهداف : تحقيق", "نضج : خبرة"], correctAnswer: 1, explanation: "ينتج عنه - الملاحظة تؤدي للتحليل كما أن البحث يؤدي للاكتشاف" },
+        { id: "q91", prompt: "حفظ : تلقين", audioPlaceholder: "تناظر لفظي", options: ["بحث : اكتشاف", "نضج : خبرة", "أهداف : تحقيق", "تأخر : انتظار"], correctAnswer: 1, explanation: "ناتج عن - الحفظ ناتج عن التلقين كما أن النضج ينتج عنه الخبرة" },
+        { id: "q92", prompt: "مرض : وقاية", audioPlaceholder: "تناظر لفظي", options: ["لوحة : تحذير", "نظام : تشتت", "حفرة : سياج", "أسد ضرغام"], correctAnswer: 2, explanation: "يحتاج إلى - نحتمي منه بواسطة - المرض نحتمي منه بالوقاية كما أن الحفرة نحتمي منها بالسياج" },
+        { id: "q93", prompt: "ثريا : قبة", audioPlaceholder: "تناظر لفظي", options: ["حجر : أبيض", "باب : شباك", "كرة : ملعب", "بركان : حمم"], correctAnswer: 1, explanation: "بداخل - الثريا داخل القبة كما أن الباب والشباك في المبنى" },
+        { id: "q94", prompt: "مفاعل نووي : إشعاع", audioPlaceholder: "تناظر لفظي", options: ["بطارية : كهرباء", "مصنع : تلوث", "بركان : حمم", "مصباح : ضوء"], correctAnswer: 1, explanation: "ينتج عنه - المفاعل النووي ينتج إشعاع كما أن المصنع ينتج تلوث" },
+        { id: "q95", prompt: "طلاق : زوج", audioPlaceholder: "تناظر لفظي", options: ["شفاء : طبيب", "نجاح : معلم", "حكم : قاضي", "غنى : صدقة"], correctAnswer: 2, explanation: "بواسطة - الطلاق يكون من الزوج كما أن الحكم يكون من القاضي" },
+        { id: "q96", prompt: "شروق : غروب", audioPlaceholder: "تناظر لفظي", options: ["عهد : وعد", "زمن : وقت", "احجاف : جور", "نهم : قنوع"], correctAnswer: 3, explanation: "تضاد - الشروق عكس الغروب كما أن النهم عكس القنوع" },
+        { id: "q97", prompt: "شروق : غروب", audioPlaceholder: "تناظر لفظي", options: ["السراج : الظلام", "الظهر : المغرب", "ساعة : وقت", "ضياء : نور"], correctAnswer: 1, explanation: "فئة - بعده - الشروق يسبق الغروب كما أن الظهر يسبق المغرب" },
+        { id: "q98", prompt: "قافية : بيت", audioPlaceholder: "تناظر لفظي", options: ["بداية : نهاية", "خاتمة : قصة", "ذيل : طائرة", "بداية : نهاية"], correctAnswer: 1, explanation: "في نهاية - القافية في نهاية البيت كما أن الخاتمة في نهاية القصة" },
+        { id: "q99", prompt: "قافية : بيت", audioPlaceholder: "تناظر لفظي", options: ["قصة : خاتمة", "طفولة : هرم", "ذيل : طائرة", "بداية : نهاية"], correctAnswer: 1, explanation: "في نهاية - القافية في نهاية البيت الشعري كما أن الهرم في نهاية الطفولة" },
+        { id: "q100", prompt: "شاعر : قصيدة", audioPlaceholder: "تناظر لفظي", options: ["صحفي : خبر", "رسام : رواية", "كاتب : تحقيق", "رواية : كاتب"], correctAnswer: 0, explanation: "يقوم بكتابة - الشاعر يكتب القصيدة كما أن الصحفي يكتب الخبر" },
+        { id: "q101", prompt: "فحم : وقود", audioPlaceholder: "تناظر لفظي", options: ["دواء : علاج", "قمح : غذاء", "غاز : نار", "فاكهة : برتقال"], correctAnswer: 1, explanation: "من أنواع - الفحم من أنواع الوقود كما أن القمح من أنواع الغذاء" },
+        { id: "q102", prompt: "ليل : حالك", audioPlaceholder: "تناظر لفظي", options: ["حصان : أبيض", "شعر : أشقر", "شفة : لمياء", "عيون : حولاء"], correctAnswer: 2, explanation: "صفته - الليل الحالك كما أن الشفة اللمياء (سوداء)" },
+        { id: "q103", prompt: "بندقية : رصاص", audioPlaceholder: "تناظر لفظي", options: ["مدينة : دولة", "واحة : نخلة", "سيارة : طيارة", "مستشفى : جامعة"], correctAnswer: 1, explanation: "يوجد بها - الرصاص في البندقية كما أن النخلة في الواحة" },
+        { id: "q104", prompt: "رصاص : مسدس", audioPlaceholder: "تناظر لفظي", options: ["نخلة : واحة", "", "", ""], correctAnswer: 0, explanation: "يوجد في - الرصاص في المسدس كما أن النخلة في الواحة" },
+        { id: "q105", prompt: "الجدي : السنبلة", audioPlaceholder: "تناظر لفظي", options: ["شعبان : رمضان", "الوسم : المطر", "شبل : أسد", "ابتسامة : ضحكة"], correctAnswer: 0, explanation: "فئة - الجدي والسنبلة من الأبراج كما أن شعبان ورمضان من الأشهر" },
+        { id: "q106", prompt: "مذياع : صوت", audioPlaceholder: "تناظر لفظي", options: ["سحاب : برق", "صورة : تلفاز", "شبل : أسد", ""], correctAnswer: 1, explanation: "يصدر - المذياع يصدر الصوت كما أن التلفاز يعرض الصورة" },
+        { id: "q107", prompt: "برق : سحاب", audioPlaceholder: "تناظر لفظي", options: ["صوت : مذياع", "شمس : شعاع", "طفل : كهل", ""], correctAnswer: 1, explanation: "ناتج عن - البرق من السحاب كما أن الشعاع من الشمس" },
+        { id: "q108", prompt: "عمل : نهار", audioPlaceholder: "تناظر لفظي", options: ["صوم : رمضان", "شوال : شعبان", "طفل : كهل", ""], correctAnswer: 0, explanation: "يكون في - العمل يكون في النهار كما أن الصوم يكون في رمضان" },
+        { id: "q109", prompt: "توق : حنين", audioPlaceholder: "تناظر لفظي", options: ["غنى : ثروة", "نقيصة : فضيلة", "نهار : معاش", ""], correctAnswer: 1, explanation: "تضاد - التوق ينتج عنه الحنين كما أن النقيصة عكس الفضيلة" },
+        { id: "q110", prompt: "الخميس : السبت", audioPlaceholder: "تناظر لفظي", options: ["ستة : ثمانية", "شوال : شعبان", "طفل : كهل", ""], correctAnswer: 1, explanation: "بعده - السبت بعد الخميس كما أن شوال بعد شعبان" },
+        { id: "q111", prompt: "ينظر : يحدق", audioPlaceholder: "تناظر لفظي", options: ["يركض : يلهث", "يحذر : ينتبه", "يحبو : يمشي", "يقف : يصعد"], correctAnswer: 1, explanation: "ثم - تدرج - النظر ثم التحديق كما أن التحذير ثم الانتباه" },
+        { id: "q112", prompt: "مستشفى : جناح", audioPlaceholder: "تناظر لفظي", options: ["أرض : جبال", "بنك : نقود", "", ""], correctAnswer: 0, explanation: "جزء منها - الجناح جزء من المستشفى كما أن الجبال جزء من الأرض" },
+        { id: "q113", prompt: "ذل : عز", audioPlaceholder: "تناظر لفظي", options: ["كآبة : سرور", "", "", ""], correctAnswer: 0, explanation: "تضاد - الذل عكس العز كما أن الكآبة عكس السرور" },
+        { id: "q114", prompt: "غضب : حلم", audioPlaceholder: "تناظر لفظي", options: ["قتل : سجن", "جوع : شبع", "لعب : نوم", "دراسة : إجازة"], correctAnswer: 1, explanation: "تضاد - الغضب عكس الحلم كما أن الجوع عكس الشبع" },
+        { id: "q115", prompt: "حقيبة : طالب", audioPlaceholder: "تناظر لفظي", options: ["بحر : سفينة", "مسطرة : قلم", "صفحة : كتاب", "بضائع : قطار"], correctAnswer: 1, explanation: "يحملها - الطالب يحمل الحقيبة كما أن القلم بجانب المسطرة" },
+        { id: "q116", prompt: "تباين : تجانس", audioPlaceholder: "تناظر لفظي", options: ["اغواء : إرشاد", "إيفاد : إخلاص", "إيهام : إطراء", ""], correctAnswer: 0, explanation: "تضاد - التباين عكس التجانس كما أن الإغواء عكس الإرشاد" },
+        { id: "q117", prompt: "ضفدع : نقيق", audioPlaceholder: "تناظر لفظي", options: ["ذئب : عواء", "نسر : ثغاء", "صهيل : حصان", ""], correctAnswer: 0, explanation: "صوته - صوت الضفدع النقيق كما أن صوت الذئب العواء" },
+        { id: "q118", prompt: "ضفدع : نقيق", audioPlaceholder: "تناظر لفظي", options: ["نحلة : طنين", "أسد : عويل", "ماء : هدير", "ضفدع : نعيق"], correctAnswer: 0, explanation: "صوته - صوت الضفدع النقيق كما أن صوت النحلة الطنين" },
+        { id: "q119", prompt: "ماعز : ثغاء", audioPlaceholder: "تناظر لفظي", options: ["بعير : هدير", "خفاش : نقيق", "أفعى : حفيف", "ضفدع : نعيق"], correctAnswer: 2, explanation: "صوته - صوت الماعز الثغاء كما أن صوت الأفعى الحفيف" },
+        { id: "q120", prompt: "نجاح : فرح", audioPlaceholder: "تناظر لفظي", options: ["زراعة : حصاد", "حلم : جرأة", "كرم : غنى", "فقر : بخل"], correctAnswer: 0, explanation: "ينتج عنه - النجاح ينتج عنه الفرح كما أن الزراعة ينتج عنها الحصاد" },
+        { id: "q121", prompt: "نجاح : اجتهاد", audioPlaceholder: "تناظر لفظي", options: ["عجين : خبز", "تهور : سرعة", "إهمال : إصابة", "شفاء : دواء"], correctAnswer: 1, explanation: "ناتج عن - يحتاج إلى - النجاح يحتاج للاجتهاد كما أن التهور ينتج عن السرعة" },
+        { id: "q122", prompt: "نجاح : بهجة", audioPlaceholder: "تناظر لفظي", options: ["تنظيم : انجاز", "", "", ""], correctAnswer: 0, explanation: "ينتج عنه - النجاح ينتج عنه البهجة كما أن التنظيم ينتج عنه الإنجاز" },
+        { id: "q123", prompt: "نجاح : اجتهاد", audioPlaceholder: "تناظر لفظي", options: ["سيارة : بنزين", "استهتار : حادث", "إهمال : رسوب", "مريض : مستشفى"], correctAnswer: 0, explanation: "يحتاج إلى - النجاح يحتاج للاجتهاد كما أن السيارة تحتاج للبنزين" },
+        { id: "q124", prompt: "اجتهاد : نجاح", audioPlaceholder: "تناظر لفظي", options: ["عجين : خبز", "كذب : إفك", "رياضة : قوة", "موقف : سيارة"], correctAnswer: 1, explanation: "ينتج عنه - الاجتهاد ينتج عنه النجاح كما أن الكذب نوع من الإفك" },
+        { id: "q125", prompt: "طائرة : مدرج", audioPlaceholder: "تناظر لفظي", options: ["سفن : مرسى", "دواء : صيدلية", "موقف : سيارة", ""], correctAnswer: 1, explanation: "على - الطائرة على المدرج كما أن الدواء في الصيدلية" },
+        { id: "q126", prompt: "وريد : دم", audioPlaceholder: "تناظر لفظي", options: ["رأس : مُخ", "سلك : كهرباء", "", ""], correctAnswer: 1, explanation: "يوجد بداخله - الدم في الوريد كما أن الكهرباء في السلك" },
+        { id: "q127", prompt: "وريد : دم", audioPlaceholder: "تناظر لفظي", options: ["رأس : مُخ", "سلك : كهرباء", "", ""], correctAnswer: 1, explanation: "يجري فيه - الدم يجري في الوريد كما أن الكهرباء تجري في السلك" },
+        { id: "q128", prompt: "وريد : دم", audioPlaceholder: "تناظر لفظي", options: ["بحر : سمك", "", "", ""], correctAnswer: 0, explanation: "يوجد به - الدم في الوريد كما أن السمك في البحر" },
+        { id: "q129", prompt: "قائد : جنود", audioPlaceholder: "تناظر لفظي", options: ["ممثلون : مخرج", "مدير : موظفون", "", ""], correctAnswer: 1, explanation: "يرأس - يقود - القائد يقود الجنود كما أن المدير يقود الموظفين" },
+        { id: "q130", prompt: "شارع : مدينة", audioPlaceholder: "تناظر لفظي", options: ["شجرة : غابة", "سيارات : معرض", "مسجد : مئذنة", ""], correctAnswer: 0, explanation: "يوجد في - الشارع في المدينة كما أن الشجرة في الغابة" },
+        { id: "q131", prompt: "نهر : غابة", audioPlaceholder: "تناظر لفظي", options: ["كهرباء : سلك", "ازدحام : ملعب", "سيارات : معرض", "مسجد : مئذنة"], correctAnswer: 0, explanation: "يجري فيه - النهر يجري في الغابة كما أن الكهرباء تجري في السلك" },
+        { id: "q132", prompt: "نزاع : تراضي", audioPlaceholder: "تناظر لفظي", options: ["نشاط : خمول", "كسل : نجاح", "ظل : شجرة", ""], correctAnswer: 0, explanation: "تضاد - النزاع عكس التراضي كما أن النشاط عكس الخمول" },
+        { id: "q133", prompt: "حائك : خياطة", audioPlaceholder: "تناظر لفظي", options: ["قاضي : محكمة", "صائغ : ذهب", "تربية : معلم", "فنان : رسم"], correctAnswer: 1, explanation: "وظيفته - الحائك وظيفته الخياطة كما أن الصائغ يعمل بالذهب" },
+        { id: "q134", prompt: "قطع : سكين", audioPlaceholder: "تناظر لفظي", options: ["تقليم : قص", "لؤلؤ : شبكة", "آلة : إيقاع", "نقد : أديب"], correctAnswer: 2, explanation: "وظيفة - بواسطة - القطع بالسكين كما أن الإيقاع بالآلة" },
+        { id: "q135", prompt: "سكين : قطع", audioPlaceholder: "تناظر لفظي", options: ["سيف : بتر", "كهرباء : إضاءة", "", ""], correctAnswer: 1, explanation: "يستخدم لـ - السكين للقطع كما أن الكهرباء للإضاءة" },
+        { id: "q136", prompt: "سكين : قطع", audioPlaceholder: "تناظر لفظي", options: ["بتر : سيف", "كهرباء : إضاءة", "", ""], correctAnswer: 1, explanation: "يستخدم لـ - السكين للقطع كما أن الكهرباء للإضاءة" },
+        { id: "q137", prompt: "سكينة : قطع", audioPlaceholder: "تناظر لفظي", options: ["قلم : كتابة", "", "", ""], correctAnswer: 0, explanation: "تستخدم لـ - السكينة للقطع كما أن القلم للكتابة" },
+        { id: "q138", prompt: "سكين : قطع", audioPlaceholder: "تناظر لفظي", options: ["تقليم : قص", "سوط : جلد", "سكين : شحذ", ""], correctAnswer: 1, explanation: "تستخدم لـ - السكين للقطع كما أن السوط للجلد" },
+        { id: "q139", prompt: "نظارات : عين", audioPlaceholder: "تناظر لفظي", options: ["مسن : سكين", "نافذة : قمر", "طالب : معلم", "فصل : كتاب"], correctAnswer: 1, explanation: "تحسّن عمل - النظارات تحسن عمل العين كما أن النافذة تُظهر القمر" },
+        { id: "q140", prompt: "البر : صلة الرحم", audioPlaceholder: "تناظر لفظي", options: ["قتال : مبارزة", "إصلاح : إحسان", "اجتهاد : علم", "بخل : شح"], correctAnswer: 1, explanation: "من أنواعه - صلة الرحم من أنواع البر كما أن الإصلاح من الإحسان" },
+        { id: "q141", prompt: "بر : صلة الرحم", audioPlaceholder: "تناظر لفظي", options: ["الاجتهاد : العلم", "القتال : المبارزة", "سحاب : نجوم", "بخل : شح"], correctAnswer: 1, explanation: "من أنواعه - صلة الرحم من البر كما أن القتال نوع من المبارزة" },
+        { id: "q142", prompt: "سنام : جمل", audioPlaceholder: "تناظر لفظي", options: ["شعر : رأس", "ساق : ركبة", "لحية : وجه", "صلاة : عبادة"], correctAnswer: 0, explanation: "أعلى - السنام أعلى الجمل كما أن الشعر أعلى الرأس" },
+        { id: "q143", prompt: "خيل : سرج", audioPlaceholder: "تناظر لفظي", options: ["حمار : بردعة", "جمل : سنام", "", ""], correctAnswer: 0, explanation: "نضع على ظهره - السرج على الخيل كما أن البردعة على الحمار" },
+        { id: "q144", prompt: "عبادة : سعادة", audioPlaceholder: "تناظر لفظي", options: ["مطار : تذكرة", "المال : سرور", "طائرة : سفر", "رياضة : صحة"], correctAnswer: 1, explanation: "ينتج عنها - العبادة تنتج السعادة كما أن المال ينتج السرور" },
+        { id: "q145", prompt: "مال : رفاهية", audioPlaceholder: "تناظر لفظي", options: ["سيف : شجاعة", "بئر : مياه", "عبادة : سعادة", "طاحونة : حبوب"], correctAnswer: 2, explanation: "ينتج عنه - المال ينتج الرفاهية كما أن العبادة تنتج السعادة" },
+        { id: "q146", prompt: "رياضة : صحة", audioPlaceholder: "تناظر لفظي", options: ["عبادة : جنة", "ثواب : صيام", "", ""], correctAnswer: 0, explanation: "ينتج عنها - الرياضة تنتج الصحة كما أن العبادة تؤدي للجنة" },
+        { id: "q147", prompt: "قهوة : بن", audioPlaceholder: "تناظر لفظي", options: ["علم : معلومات", "خبز : مخبز", "عمل : كسل", "طلاب : صف"], correctAnswer: 1, explanation: "أصلها - القهوة أصلها البن كما أن الخبز من المخبز" },
+        { id: "q148", prompt: "شاحنة : نقل", audioPlaceholder: "تناظر لفظي", options: ["شبكة : صيد", "سيارة : سائق", "", ""], correctAnswer: 0, explanation: "تستخدم لـ - الشاحنة للنقل كما أن الشبكة للصيد" },
+        { id: "q149", prompt: "نبتة : سقي", audioPlaceholder: "تناظر لفظي", options: ["شباب : صحبة", "روح : تقوى", "فضاء : تحليق", "سعادة : نفس"], correctAnswer: 1, explanation: "تحتاج إلى - النبتة تحتاج للسقي كما أن الروح تحتاج للتقوى" }
+      ],
   },
-  // البنك الثاني - إكمال الجمل
+  // البنك الثاني - إكمال الجمل (101 سؤال)
   {
     id: "verbal-b2-2",
     title: "إكمال الجمل",
-    description: "اختيار الكلمة المناسبة لإكمال الجملة",
+    description: "اختيار الكلمة المناسبة لإكمال الجملة - ١٠١ سؤال",
     category: "verbal-bank-2",
-    difficulty: "beginner",
+    difficulty: "intermediate",
     type: "verbal",
-    duration: "٥ دقائق",
-    questions: [
-      { id: "q1", prompt: "الوقت كالسيف إن لم تقطعه _____", audioPlaceholder: "إكمال جملة", options: ["ضاع", "قطعك", "مضى", "انتهى"], correctAnswer: 1 },
-      { id: "q2", prompt: "القراءة غذاء _____", audioPlaceholder: "إكمال جملة", options: ["الجسم", "العقل", "الروح", "القلب"], correctAnswer: 1 },
-      { id: "q3", prompt: "الصديق وقت _____", audioPlaceholder: "إكمال جملة", options: ["الفرح", "الضيق", "اللعب", "العمل"], correctAnswer: 1 },
-    ],
+    duration: "٣٠ دقيقة",
+    questions: bank2SentenceCompletionQuestions,
   },
-  // البنك الثاني - الخطأ السياقي
+  // البنك الثاني - الخطأ السياقي (100 سؤال)
   {
     id: "verbal-b2-3",
     title: "الخطأ السياقي",
-    description: "تحديد الكلمة الخاطئة في السياق",
+    description: "تحديد الكلمة الخاطئة في السياق - ١٠٠ سؤال",
     category: "verbal-bank-2",
     difficulty: "intermediate",
     type: "verbal",
-    duration: "٧ دقائق",
-    questions: [
-      { id: "q1", prompt: "حدد الكلمة الخاطئة: الطيور تسبح في السماء بحرية", audioPlaceholder: "خطأ سياقي", options: ["الطيور", "تسبح", "السماء", "بحرية"], correctAnswer: 1 },
-      { id: "q2", prompt: "حدد الكلمة الخاطئة: المهندس يصمم الأدوية في المختبر", audioPlaceholder: "خطأ سياقي", options: ["المهندس", "يصمم", "الأدوية", "المختبر"], correctAnswer: 0 },
-      { id: "q3", prompt: "حدد الكلمة الخاطئة: الفلاح يحصد القمح في المحيط", audioPlaceholder: "خطأ سياقي", options: ["الفلاح", "يحصد", "القمح", "المحيط"], correctAnswer: 3 },
-    ],
+    duration: "٣٠ دقيقة",
+    questions: bank2ContextualErrorQuestions,
   },
-  // البنك الثاني - المفردة الشاذة
+  // البنك الثاني - المفردة الشاذة (100 سؤال من الملف المحلول)
   {
     id: "verbal-b2-4",
     title: "المفردة الشاذة",
-    description: "تحديد الكلمة التي لا تنتمي للمجموعة",
+    description: "تحديد الكلمة التي لا تنتمي للمجموعة - ١٠٠ سؤال",
     category: "verbal-bank-2",
     difficulty: "beginner",
     type: "verbal",
-    duration: "٥ دقائق",
-    questions: [
-      { id: "q1", prompt: "حدد المفردة الشاذة:", audioPlaceholder: "مفردة شاذة", options: ["كرسي", "طاولة", "سرير", "تلفاز"], correctAnswer: 3 },
-      { id: "q2", prompt: "حدد المفردة الشاذة:", audioPlaceholder: "مفردة شاذة", options: ["أسد", "نمر", "حصان", "فهد"], correctAnswer: 2 },
-      { id: "q3", prompt: "حدد المفردة الشاذة:", audioPlaceholder: "مفردة شاذة", options: ["الرياض", "جدة", "مصر", "الدمام"], correctAnswer: 2 },
-    ],
+    duration: "٤٥ دقيقة",
+    questions: bank2OddWordQuestions,
   },
-  // البنك الثاني - استيعاب المقروء
+  // البنك الثاني - استيعاب المقروء (93 قطعة)
   {
     id: "verbal-b2-5",
     title: "استيعاب المقروء",
-    description: "قراءة النصوص والإجابة على الأسئلة",
+    description: "قراءة النصوص والإجابة على الأسئلة - ٩٣ قطعة",
     category: "verbal-bank-2",
     difficulty: "intermediate",
     type: "verbal",
-    duration: "١٠ دقائق",
-    questions: [
-      { id: "q1", prompt: "ما العنوان المناسب للنص؟", audioPlaceholder: "نص قرائي", options: ["أهمية التعليم", "مشاكل البيئة", "تاريخ العرب", "الصحة العامة"], correctAnswer: 0 },
-      { id: "q2", prompt: "موقف الكاتب من الموضوع:", audioPlaceholder: "نص قرائي", options: ["محايد", "مؤيد", "معارض", "ساخر"], correctAnswer: 1 },
-      { id: "q3", prompt: "كلمة 'ذلك' في السطر الثالث تعود على:", audioPlaceholder: "نص قرائي", options: ["التعليم", "المجتمع", "الطالب", "المعلم"], correctAnswer: 0 },
-    ],
+    duration: "٦٠ دقيقة",
+    questions: bank2ReadingComprehensionQuestions,
   },
   // البنك الثالث - التناظر اللفظي
   {

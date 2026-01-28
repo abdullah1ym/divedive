@@ -6,8 +6,7 @@ import { useState, useEffect } from "react";
 // Locked banks (3-8) for non-pro users
 const lockedBanks = ["verbal-bank-3", "verbal-bank-4", "verbal-bank-5", "verbal-bank-6", "verbal-bank-7", "verbal-bank-8"];
 
-// Progress tracking for exercises
-const PROGRESS_KEY = "divedive-exercise-progress";
+// Progress tracking for exercises (from CollectionView)
 const COLLECTION_PROGRESS_KEY = "divedive-collection-progress";
 
 interface ExerciseProgress {
@@ -17,17 +16,8 @@ interface ExerciseProgress {
   };
 }
 
-const getExerciseProgress = (): ExerciseProgress => {
-  try {
-    const stored = localStorage.getItem(PROGRESS_KEY);
-    return stored ? JSON.parse(stored) : {};
-  } catch {
-    return {};
-  }
-};
-
 // Get progress from CollectionView format
-const getCollectionProgress = (): ExerciseProgress => {
+const getAllProgress = (): ExerciseProgress => {
   try {
     const stored = localStorage.getItem(COLLECTION_PROGRESS_KEY);
     const collectionProgress = stored ? JSON.parse(stored) : {};
@@ -52,13 +42,6 @@ const getCollectionProgress = (): ExerciseProgress => {
   }
 };
 
-// Merge both progress sources
-const getAllProgress = (): ExerciseProgress => {
-  const exerciseProgress = getExerciseProgress();
-  const collectionProgress = getCollectionProgress();
-  return { ...exerciseProgress, ...collectionProgress };
-};
-
 // نوع السؤال
 export interface Question {
   id: string;
@@ -68,6 +51,8 @@ export interface Question {
   explanation?: string;
   skillTag?: string;
   howToSolve?: string; // شرح طريقة الحل - يظهر عند قلب البطاقة
+  passageText?: string; // نص القطعة لأسئلة استيعاب المقروء
+  passageTitle?: string; // عنوان القطعة
   variants?: Array<{
     id: string;
     prompt: string;

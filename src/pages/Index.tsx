@@ -7,7 +7,6 @@ import CategoryTabs from "@/components/CategoryTabs";
 import LessonGrid, { Collection } from "@/components/LessonGrid";
 import BubbleDecoration from "@/components/BubbleDecoration";
 import AdminPanel from "@/components/AdminPanel";
-import ExerciseModal from "@/components/ExerciseModal";
 import { Exercise } from "@/contexts/ExercisesContext";
 import SettingsView from "@/components/views/SettingsView";
 import HelpView from "@/components/views/HelpView";
@@ -26,20 +25,8 @@ const Index = () => {
   const [activeSection, setActiveSection] = useState("home");
   const [activeCategory, setActiveCategory] = useState("quantitative");
   const [adminOpen, setAdminOpen] = useState(false);
-  const [selectedExercise, setSelectedExercise] = useState<Exercise | null>(null);
-  const [exerciseModalOpen, setExerciseModalOpen] = useState(false);
   const [selectedCollection, setSelectedCollection] = useState<Collection | null>(null);
   const [selectedMixedExercise, setSelectedMixedExercise] = useState<Exercise | null>(null);
-
-  const handleExerciseClick = (exercise: Exercise) => {
-    setSelectedExercise(exercise);
-    setExerciseModalOpen(true);
-  };
-
-  const handleExerciseClose = () => {
-    setExerciseModalOpen(false);
-    setSelectedExercise(null);
-  };
 
   const handleCollectionClick = (collection: Collection) => {
     setSelectedCollection(collection);
@@ -102,13 +89,13 @@ const Index = () => {
         })),
       };
       setSelectedCollection(ratiosCollection);
-    } else if (exercise.category === "verbal" || exercise.category === "analogy") {
-      // Verbal exercises - open in CollectionView like تجميعات
-      const verbalCollection: Collection = {
+    } else {
+      // All other exercises - open in CollectionView (Bank 1 standard design)
+      const collection: Collection = {
         id: `${exercise.id}-collection`,
         name: exercise.title,
         description: exercise.description,
-        category: "verbal",
+        category: exercise.category || "quantitative",
         questions: exercise.questions.map((q) => ({
           id: q.id,
           prompt: q.prompt,
@@ -116,11 +103,11 @@ const Index = () => {
           correctAnswer: q.correctAnswer,
           explanation: (q as any).explanation,
           skillTag: exercise.category,
+          passageText: (q as any).passageText,
+          passageTitle: (q as any).passageTitle,
         })),
       };
-      setSelectedCollection(verbalCollection);
-    } else {
-      handleExerciseClick(exercise);
+      setSelectedCollection(collection);
     }
   };
 
@@ -204,13 +191,6 @@ const Index = () => {
 
       {/* Admin Panel */}
       <AdminPanel open={adminOpen} onOpenChange={setAdminOpen} />
-
-      {/* Exercise Modal */}
-      <ExerciseModal
-        exercise={selectedExercise}
-        open={exerciseModalOpen}
-        onClose={handleExerciseClose}
-      />
     </div>
   );
 };

@@ -14,6 +14,15 @@ import Index from "./pages/Index";
 import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 
+// One-time cleanup of old corrupted progress data
+const CLEANUP_VERSION = "v1";
+if (localStorage.getItem("divedive-cleanup") !== CLEANUP_VERSION) {
+  localStorage.removeItem("divedive-exercise-progress");
+  localStorage.removeItem("divedive-units-progress");
+  localStorage.removeItem("divedive-collection-progress");
+  localStorage.setItem("divedive-cleanup", CLEANUP_VERSION);
+}
+
 const queryClient = new QueryClient();
 
 const App = () => (
