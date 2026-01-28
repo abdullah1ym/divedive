@@ -80,7 +80,7 @@ const CollectionView = ({ collection, onBack }: CollectionViewProps) => {
   const [selectedBankId, setSelectedBankId] = useState<string | null>(initialBankId);
 
   // Activity tracking
-  const { recordActivity } = useActivityTracking();
+  const { recordActivity, recordQuestionAnswer } = useActivityTracking();
   const startTimeRef = useRef<number>(Date.now());
 
   // Load saved progress
@@ -258,6 +258,10 @@ const CollectionView = ({ collection, onBack }: CollectionViewProps) => {
 
     // Record the answer
     setAnswers(prev => ({ ...prev, [questionId]: answerIndex }));
+
+    // Record question answer for profile stats (tracks every answer immediately)
+    const activityCategory = collection.category === "quantitative" ? "math" : "language";
+    recordQuestionAnswer(isCorrect, activityCategory);
 
     // Record skill progress for correct answers
     if (isCorrect && currentQ.skillTag) {

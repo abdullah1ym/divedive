@@ -56,6 +56,7 @@ interface ActivityTrackingContextType {
   activityHeatmap: { date: string; level: number }[];
   recordActivity: (activity: Omit<ActivityEntry, "id" | "timestamp">) => void;
   recordCategoryAnswer: (category: string, isCorrect: boolean, type: "math" | "language") => void;
+  recordQuestionAnswer: (isCorrect: boolean, category: "math" | "language") => void;
 }
 
 const ACTIVITY_STORAGE_KEY = "divedive-activity-history";
@@ -300,6 +301,31 @@ export const ActivityTrackingProvider = ({ children }: { children: ReactNode }) 
     }
   };
 
+  // Record a single question answer (updates daily stats immediately)
+  const recordQuestionAnswer = (isCorrect: boolean, category: "math" | "language") => {
+    const today = getTodayDateString();
+    setDailyStatsHistory(prev => {
+      const existing = prev.find(d => d.date === today);
+      if (existing) {
+        return prev.map(d => d.date === today ? {
+          ...d,
+          questionsAnswered: d.questionsAnswered + 1,
+          correctAnswers: d.correctAnswers + (isCorrect ? 1 : 0),
+        } : d);
+      } else {
+        return [{
+          date: today,
+          exercisesCompleted: 0,
+          questionsAnswered: 1,
+          correctAnswers: isCorrect ? 1 : 0,
+          timeSpent: 0,
+          mathExercises: 0,
+          languageExercises: 0,
+        }, ...prev];
+      }
+    });
+  };
+
   return (
     <ActivityTrackingContext.Provider value={{
       recentActivities,
@@ -310,6 +336,7 @@ export const ActivityTrackingProvider = ({ children }: { children: ReactNode }) 
       activityHeatmap,
       recordActivity,
       recordCategoryAnswer,
+      recordQuestionAnswer,
     }}>
       {children}
     </ActivityTrackingContext.Provider>
