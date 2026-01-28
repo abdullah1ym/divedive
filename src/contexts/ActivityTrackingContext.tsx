@@ -76,6 +76,26 @@ const ACTIVITY_STORAGE_KEY = "divedive-activity-history";
 const CATEGORY_STATS_KEY = "divedive-category-stats";
 const DAILY_STATS_KEY = "divedive-daily-stats";
 
+// Mapping from English skillTags to Arabic category names
+const skillTagToCategory: Record<string, string> = {
+  // Math categories
+  "fractions": "الكسور",
+  "sequences": "المتتاليات",
+  "geometry": "الهندسة",
+  "algebra": "الجبر",
+  "ratio": "النسبة والتناسب",
+  "statistics": "الإحصاء",
+  "comparison": "المقارنات",
+  // Verbal categories
+  "analogy": "التناظر اللفظي",
+  "completion": "إكمال الجمل",
+  "contextual-error": "الخطأ السياقي",
+  "odd-word": "المفردة الشاذة",
+  "reading": "استيعاب المقروء",
+  "vocabulary": "المفردة الشاذة", // vocabulary maps to odd-word category
+  "grammar": "الخطأ السياقي", // grammar maps to contextual error
+};
+
 // Default math categories
 const defaultMathCategories: CategoryPerformance[] = [
   { name: "الكسور", totalQuestions: 0, correctAnswers: 0, score: 0 },
@@ -310,10 +330,14 @@ export const ActivityTrackingProvider = ({ children }: { children: ReactNode }) 
   };
 
   // Record a category answer (for performance tracking)
+  // category can be a skillTag (English) or Arabic category name
   const recordCategoryAnswer = (category: string, isCorrect: boolean, type: "math" | "language") => {
+    // Map skillTag to Arabic category name if needed
+    const arabicCategory = skillTagToCategory[category] || category;
+
     if (type === "math") {
       setMathPerformance(prev => prev.map(cat => {
-        if (cat.name === category || category.includes(cat.name) || cat.name.includes(category)) {
+        if (cat.name === arabicCategory || arabicCategory.includes(cat.name) || cat.name.includes(arabicCategory)) {
           const newTotal = cat.totalQuestions + 1;
           const newCorrect = cat.correctAnswers + (isCorrect ? 1 : 0);
           return {
@@ -327,7 +351,7 @@ export const ActivityTrackingProvider = ({ children }: { children: ReactNode }) 
       }));
     } else {
       setLanguagePerformance(prev => prev.map(cat => {
-        if (cat.name === category || category.includes(cat.name) || cat.name.includes(category)) {
+        if (cat.name === arabicCategory || arabicCategory.includes(cat.name) || cat.name.includes(arabicCategory)) {
           const newTotal = cat.totalQuestions + 1;
           const newCorrect = cat.correctAnswers + (isCorrect ? 1 : 0);
           return {
