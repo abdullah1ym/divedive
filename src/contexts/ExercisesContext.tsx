@@ -357,7 +357,7 @@ const defaultExercises: Exercise[] = [
   {
     id: "verbal-5",
     title: "استيعاب المقروء",
-    description: "قراءة النصوص والإجابة على الأسئلة",
+    description: "قراءة النصوص والإجابة على الأسئلة - ١٠٩ قطعة",
     category: "verbal",
     difficulty: "intermediate",
     type: "verbal",
